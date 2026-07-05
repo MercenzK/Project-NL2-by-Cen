@@ -230,6 +230,20 @@ if (window.supabase && CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY) {
 }
 const CLOUD = !!supa;
 
+/* ---------- admin gate (ซ่อนอีเมล: เทียบด้วยแฮช SHA-256 ไม่เก็บอีเมลจริงในโค้ด) ---------- */
+const ADMIN_HASH = (CFG.ADMIN_EMAIL_HASH || '').trim().toLowerCase();
+let isAdminFlag = false;
+async function sha256Hex(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function computeAdmin(){
+  if(!CLOUD) return true;                         // อุปกรณ์ส่วนตัว/ไม่มีระบบบัญชี
+  if(!user || !user.email || !ADMIN_HASH) return false;
+  try{ return (await sha256Hex(user.email.trim().toLowerCase())) === ADMIN_HASH; }catch(e){ return false; }
+}
+function isAdmin(){ return isAdminFlag; }
+
 /* palette accents per set (for file-card tab labels) */
 const SET_TAGS = {
   set1:["Cardiology","Pulmonology"], set2:["Nephrology","Endocrine"],
@@ -273,6 +287,7 @@ async function bestScores(){
 /* ---------- auth ---------- */
 async function refreshUser(){
   if(!CLOUD){ user=null; } else { const {data}=await supa.auth.getSession(); user=data?.session?.user||null; }
+  isAdminFlag = await computeAdmin();
   renderTopbar(); render();
 }
 function renderTopbar(){
@@ -353,8 +368,8 @@ async function renderHome(app){
   <div class="wrap">
     <section id="categories">
       <div class="sechead"><span class="bar"></span><h2>หมวดหมู่รายวิชา</h2>
-        <span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">⬆️ อัปโหลดชุดข้อสอบ</span>
-        <input id="upl" type="file" accept=".json,.csv" style="display:none" onchange="handleUpload(event)"></div>
+        ${isAdmin()?`<span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">⬆️ อัปโหลดชุดข้อสอบ (แอดมิน)</span>
+        <input id="upl" type="file" accept=".json,.csv" style="display:none" onchange="handleUpload(event)">`:''}</div>
       <div class="cat-grid">
         ${qs.map(q=>{ const b=best[q.id]; const tags=SET_TAGS[q.id]||[q.questions[0]?.topic||'Custom']; const on=bk.includes(q.id);
           return `<div class="file-card" onclick="go('config',{quiz:'${q.id}'})">
@@ -588,7 +603,7 @@ function delCustom(id){ if(!confirm('ลบชุดข้อสอบนี้?
 function reportError(){ alert('พบข้อสอบ/เฉลยผิดพลาด? จดหมายเลขข้อ + ชุด แล้วแจ้งผู้ดูแลเว็บเพื่อแก้ไขในไฟล์ data.js ได้เลย'); }
 
 /* ---------- boot ---------- */
-if(CLOUD){ supa.auth.onAuthStateChange((_e,sess)=>{ user=sess?.user||null; renderTopbar(); }); }
+if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ user=sess?.user||null; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
 refreshUser();
 </script>
 </body>
