@@ -73,12 +73,16 @@ footer{max-width:920px;margin:0 auto 40px;padding:0 16px;color:var(--muted);font
 <div class="wrap" id="app"></div>
 <footer>NL2 Med Quiz • 500 ข้อ อายุรศาสตร์ • เฉลยอ้างอิงแนวทางล่าสุด — ตอนสอบยึดแนวทางไทยเป็นหลัก</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<!-- โหลดไลบรารี Supabase จาก jsdelivr ก่อน ถ้าโหลดไม่ได้ (โดนบล็อก) จะลองโหลดจาก unpkg แทน -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>if(window.APP_CONFIG&&APP_CONFIG.SUPABASE_URL&&!window.supabase){document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');}</script>
 <script src="data.js"></script>
 <script>
 const CFG = window.APP_CONFIG || {};
 const LAB = ["A","B","C","D","E","F"];
+const NEED_CLOUD = !!(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY);
+const LIB_MISSING = NEED_CLOUD && !window.supabase;   // ตั้งค่าไว้แต่ไลบรารีโหลดไม่ขึ้น
 let supa = null, user = null;
 if (window.supabase && CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY) {
   try { supa = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY); } catch(e){ console.warn(e); }
@@ -182,6 +186,10 @@ async function renderHome(app){
   const best = await bestScores();
   const qs = allQuizzes();
   app.innerHTML = `
+   ${LIB_MISSING?`<div class="card" style="background:#fdecea;border-color:#f2b8b5">
+     <b style="color:#b3261e">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b>
+     <div class="small">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดน <b>ตัวบล็อกโฆษณา (AdBlock/uBlock/Brave Shield)</b> หรือเครือข่ายบล็อก CDN) — วิธีแก้: ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช, หรือลองเบราว์เซอร์อื่น/เน็ตอื่น (เช่น มือถือ 4G). ระหว่างนี้ยังทำข้อสอบได้ปกติแบบ Guest</div>
+   </div>`:''}
    <div class="card">
      <h2 class="qtitle">คลังข้อสอบ NL2 (อายุรศาสตร์)</h2>
      <div class="muted">โจทย์ภาษาอังกฤษแนว NLE2 • เฉลยละเอียดภาษาไทย • ${qs.reduce((s,q)=>s+q.questions.length,0)} ข้อ</div>
