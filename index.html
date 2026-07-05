@@ -80,6 +80,8 @@ section{padding:34px 0}
 .file-card .best{color:var(--ok);font-size:14px;font-weight:500}
 .bk{position:absolute;top:10px;right:12px;font-size:20px;cursor:pointer;color:#cbd6e2;z-index:2;user-select:none}
 .bk.on{color:var(--gold)}
+.file-card.subj{text-align:center;cursor:pointer}
+.file-card.subj h3{margin-top:2px}
 
 /* trending horizontal cards */
 .trend-scroll{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory}
@@ -252,6 +254,19 @@ const SET_TAGS = {
 };
 const EST_MIN = q => Math.max(5, Math.round(q*0.9)); // ~0.9 นาที/ข้อ
 
+/* ---------- หมวดหมู่รายวิชา (ward) ---------- */
+const SUBJECTS = [
+  {id:'med',   name:'Medicine',                  th:'อายุรศาสตร์',    icon:'🩺'},
+  {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'🔪'},
+  {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'🤰'},
+  {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'🧸'},
+];
+function quizSubject(q){ return q.subject || (String(q.id).startsWith('set')?'med':'med'); }
+function subjectQuizzes(sid){ return allQuizzes().filter(q=>quizSubject(q)===sid); }
+function curSubject(){ return state.view==='subject' ? state.subject : 'med'; }
+/* เปลี่ยนชื่อชุด Med ให้ขึ้นต้นด้วย "Med ชุดที่ N" */
+function qTitle(q){ return /^ชุดที่/.test(q.title) ? ('Med '+q.title) : q.title; }
+
 /* ---------- storage ---------- */
 const LS = {
   get:(k,d)=>{ try{return JSON.parse(localStorage.getItem(k)) ?? d}catch(e){return d} },
@@ -336,6 +351,7 @@ function hideLoader(){ document.getElementById('loader').style.display='none'; }
 async function render(){
   const app=document.getElementById('app');
   if(state.view==='home') return renderHome(app);
+  if(state.view==='subject') return renderSubject(app);
   if(state.view==='config') return renderConfig(app);
   if(state.view==='quiz') return renderQuiz(app);
   if(state.view==='result') return renderResult(app);
@@ -356,8 +372,8 @@ async function renderHome(app){
   ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
 
   <div class="hero"><div class="wrap">
-    <h1>Test ระบบกันหน่อย 🩺</h1>
-    <p>ก็มาดิวะ — คลังข้อสอบอายุรศาสตร์ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
+    <h1>NL 2 Pass 100% 🎯</h1>
+    <p>ก็มาดิวะ — คลังข้อสอบ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
     <div class="cta">
       <button class="btn" onclick="startCombined()">📝 เริ่มทำข้อสอบเลย</button>
       <button class="btn outline" style="color:#fff;border-color:#fff" onclick="scrollToCat()">📖 เลือกดูตามรายวิชา</button>
@@ -368,19 +384,16 @@ async function renderHome(app){
 
   <div class="wrap">
     <section id="categories">
-      <div class="sechead"><span class="bar"></span><h2>หมวดหมู่รายวิชา</h2>
-        ${isAdmin()?`<span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">⬆️ อัปโหลดชุดข้อสอบ (แอดมิน)</span>
-        <input id="upl" type="file" accept=".json,.csv" style="display:none" onchange="handleUpload(event)">`:''}</div>
+      <div class="sechead"><span class="bar"></span><h2>หมวดหมู่รายวิชา</h2><span class="muted" style="margin-left:auto">เลือกหมวด แล้วกดเข้าไปดูชุดข้อสอบ</span></div>
       <div class="cat-grid">
-        ${qs.map(q=>{ const b=best[q.id]; const tags=SET_TAGS[q.id]||[q.questions[0]?.topic||'Custom']; const on=bk.includes(q.id);
-          return `<div class="file-card" onclick="go('config',{quiz:'${q.id}'})">
-            <div class="tab">📋 CASE FILE</div>
-            <span class="bk ${on?'on':''}" title="บันทึกไว้ทำทีหลัง" onclick="toggleBookmark('${q.id}',event)">${on?'🔖':'🏷️'}</span>
-            <h3>${esc(q.title)}</h3>
-            <div class="tags">${tags.map(t=>`<span class="tag teal">${esc(t)}</span>`).join('')} ${q.custom?'<span class="tag">อัปโหลดเอง</span>':''}</div>
-            <div class="meta"><span>📝 ${q.questions.length} ข้อ</span><span>⏱️ ~${EST_MIN(q.questions.length)} นาที</span></div>
-            ${b?`<div class="best">✓ คะแนนดีสุด ${b.score}/${b.total} (${Math.round(b.pct*100)}%)</div>`:'<div class="muted">ยังไม่เคยทำ</div>'}
-            ${q.custom?`<div style="margin-top:8px"><span class="tag" style="cursor:pointer;background:#fdeceb;color:#c02626" onclick="event.stopPropagation();delCustom('${q.id}')">🗑 ลบชุดนี้</span></div>`:''}
+        ${SUBJECTS.map(sub=>{ const list=subjectQuizzes(sub.id); const tq=list.reduce((s,q)=>s+q.questions.length,0);
+          return `<div class="file-card subj" onclick="go('subject',{subject:'${sub.id}'})">
+            <div class="tab">📋 WARD</div>
+            <div style="font-size:44px;margin:14px 0 2px">${sub.icon}</div>
+            <h3 style="margin-top:2px">${sub.name}</h3>
+            <div class="muted">${sub.th}</div>
+            <div class="meta" style="justify-content:center"><span>🗂️ ${list.length} ชุด</span><span>📝 ${tq} ข้อ</span></div>
+            ${list.length?'<div class="best">พร้อมทำ ✓</div>':'<div class="muted">เร็ว ๆ นี้</div>'}
           </div>`;
         }).join('')}
       </div>
@@ -396,7 +409,7 @@ async function renderHome(app){
               <span class="tag teal">🏷️ ${esc(tags[0])}</span>
               <span class="bk ${on?'on':''}" onclick="toggleBookmark('${q.id}',event)">${on?'🔖':'🏷️'}</span>
             </div>
-            <h3>${esc(q.title)}</h3>
+            <h3>${esc(qTitle(q))}</h3>
             <div class="meta"><span>⏱️ ~${EST_MIN(q.questions.length)} นาที</span><span>📝 ${q.questions.length} ข้อ</span></div>
             <div class="foot"><button class="btn sm" onclick="go('config',{quiz:'${q.id}'})">ทำข้อสอบ</button></div>
           </div>`;
@@ -432,12 +445,35 @@ function doSearch(){
   go('config',{quiz:'search'});
 }
 
+/* ---------- SUBJECT (ชุดข้อสอบในหมวด) ---------- */
+async function renderSubject(app){
+  const sub=SUBJECTS.find(s=>s.id===state.subject)||SUBJECTS[0];
+  const list=subjectQuizzes(sub.id); const best=await bestScores(); const bk=bookmarks();
+  app.innerHTML=`<div class="wrap" style="padding-top:22px">
+    <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="go('home')">← หมวดหมู่ทั้งหมด</button></div>
+    <div class="sechead"><span class="bar"></span><h2>${sub.icon} ${esc(sub.name)}</h2>
+      ${isAdmin()?`<span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">⬆️ อัปโหลดชุด (แอดมิน)</span>
+      <input id="upl" type="file" accept=".json,.csv" style="display:none" onchange="handleUpload(event)">`:''}</div>
+    ${list.length? `<div class="cat-grid">${list.map(q=>{ const b=best[q.id]; const tags=SET_TAGS[q.id]||[q.questions[0]?.topic||'Custom']; const on=bk.includes(q.id);
+      return `<div class="file-card" onclick="go('config',{quiz:'${q.id}'})">
+        <div class="tab">📋 CASE FILE</div>
+        <span class="bk ${on?'on':''}" title="บันทึกไว้ทำทีหลัง" onclick="toggleBookmark('${q.id}',event)">${on?'🔖':'🏷️'}</span>
+        <h3>${esc(qTitle(q))}</h3>
+        <div class="tags">${tags.map(t=>`<span class="tag teal">${esc(t)}</span>`).join('')} ${q.custom?'<span class="tag">อัปโหลดเอง</span>':''}</div>
+        <div class="meta"><span>📝 ${q.questions.length} ข้อ</span><span>⏱️ ~${EST_MIN(q.questions.length)} นาที</span></div>
+        ${b?`<div class="best">✓ คะแนนดีสุด ${b.score}/${b.total} (${Math.round(b.pct*100)}%)</div>`:'<div class="muted">ยังไม่เคยทำ</div>'}
+        ${q.custom?`<div style="margin-top:8px"><span class="tag" style="cursor:pointer;background:#fdeceb;color:#c02626" onclick="event.stopPropagation();delCustom('${q.id}')">🗑 ลบชุดนี้</span></div>`:''}
+      </div>`; }).join('')}</div>`
+    : `<div class="card"><b class="qtitle" style="font-size:19px">ยังไม่มีข้อสอบในหมวด ${esc(sub.name)}</b><div class="muted" style="margin-top:6px">เร็ว ๆ นี้ 🚧${isAdmin()?' — หรือกดปุ่ม “อัปโหลดชุด (แอดมิน)” ด้านบนเพื่อเพิ่มชุดข้อสอบในหมวดนี้':''}</div></div>`}
+  </div>`;
+}
+
 /* ---------- CONFIG ---------- */
 function renderConfig(app){
   const q=findQuiz(state.quiz);
   app.innerHTML=`<div class="wrap" style="padding-top:26px">
    <div class="card">
-     <h2 class="qtitle">${esc(q.title)}</h2>
+     <h2 class="qtitle">${esc(qTitle(q))}</h2>
      <div class="muted">📝 ${q.questions.length} ข้อ • ⏱️ ประมาณ ${EST_MIN(q.questions.length)} นาที</div>
      <label class="fld">โหมด</label>
      <select id="mode">
@@ -466,7 +502,7 @@ function buildSession(quiz,opt){
   if(opt.count!=='all') items=items.slice(0,parseInt(opt.count));
   items=items.map(q=>{ let ch=q.choices.map((c,i)=>({c,orig:i})); if(opt.shuffleO)ch=shuffle(ch);
     return {id:q.id,topic:q.topic,q:q.q,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
-  return {quizId:quiz.id,quizTitle:quiz.title,mode:opt.mode,items,answers:{},submitted:false,timeLeft:(opt.mode==='exam'&&opt.timer)?items.length*60:null};
+  return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,items,answers:{},submitted:false,timeLeft:(opt.mode==='exam'&&opt.timer)?items.length*60:null};
 }
 function beginQuiz(){
   const q=findQuiz(state.quiz);
@@ -575,12 +611,12 @@ function handleUpload(ev){
   const f=ev.target.files[0]; if(!f)return; const rd=new FileReader();
   rd.onload=()=>{ try{ let quiz;
     if(f.name.toLowerCase().endsWith('.json')){ const j=JSON.parse(rd.result); const questions=Array.isArray(j)?j:j.questions;
-      quiz={id:'custom-'+Date.now(),title:(j.title||f.name.replace(/\.json$/i,'')),custom:true,questions:questions.map(normQ)}; }
-    else { quiz={id:'custom-'+Date.now(),title:f.name.replace(/\.csv$/i,''),custom:true,questions:parseCSV(rd.result)}; }
+      quiz={id:'custom-'+Date.now(),title:(j.title||f.name.replace(/\.json$/i,'')),custom:true,subject:(j.subject||curSubject()),questions:questions.map(normQ)}; }
+    else { quiz={id:'custom-'+Date.now(),title:f.name.replace(/\.csv$/i,''),custom:true,subject:curSubject(),questions:parseCSV(rd.result)}; }
     quiz.questions=quiz.questions.filter(Boolean);
     if(!quiz.questions.length){alert('ไม่พบข้อสอบในไฟล์ (ดูรูปแบบใน README)');return;}
     const cs=customQuizzes(); cs.push(quiz); LS.set('customQuizzes',cs);
-    alert('อัปโหลดสำเร็จ: '+quiz.title+' ('+quiz.questions.length+' ข้อ)'); go('home');
+    alert('อัปโหลดสำเร็จ: '+quiz.title+' ('+quiz.questions.length+' ข้อ)'); go(state.view==='subject'?'subject':'home',state.view==='subject'?{subject:quiz.subject}:{});
   }catch(e){ alert('อ่านไฟล์ไม่สำเร็จ: '+e.message); } };
   rd.readAsText(f);
 }
@@ -601,7 +637,11 @@ function csvRows(txt){ const rows=[];let row=[],cur='',q=false;
     else { if(c==='"')q=true; else if(c===','){row.push(cur);cur='';} else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';} else if(c==='\r'){} else cur+=c; } }
   if(cur!==''||row.length){row.push(cur);rows.push(row);} return rows.filter(r=>r.some(x=>x.trim()!=='')); }
 function delCustom(id){ if(!confirm('ลบชุดข้อสอบนี้?'))return; LS.set('customQuizzes',customQuizzes().filter(q=>q.id!==id)); go('home'); }
-function reportError(){ alert('พบข้อสอบ/เฉลยผิดพลาด? จดหมายเลขข้อ + ชุด แล้วแจ้งผู้ดูแลเว็บเพื่อแก้ไขในไฟล์ data.js ได้เลย'); }
+function reportError(){
+  const url=(CFG.REPORT_FORM_URL||'https://forms.gle/rACHgDRm2dFctm847').trim();  // Google Form (override ได้ผ่าน config.js)
+  if(url){ window.open(url,'_blank','noopener'); return; }
+  alert('ยังไม่ได้ตั้งลิงก์ฟอร์มรายงานข้อผิดพลาด');
+}
 
 /* ---------- boot ---------- */
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ user=sess?.user||null; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
