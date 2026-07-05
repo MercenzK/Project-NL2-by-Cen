@@ -231,7 +231,8 @@ if (window.supabase && CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY) {
 const CLOUD = !!supa;
 
 /* ---------- admin gate (ซ่อนอีเมล: เทียบด้วยแฮช SHA-256 ไม่เก็บอีเมลจริงในโค้ด) ---------- */
-const ADMIN_HASH = (CFG.ADMIN_EMAIL_HASH || '').trim().toLowerCase();
+// เก็บเป็นแฮช SHA-256 ของอีเมลแอดมิน (ย้อนกลับเป็นอีเมลไม่ได้) — override ได้ผ่าน config.js
+const ADMIN_HASH = (CFG.ADMIN_EMAIL_HASH || '59e3dc80aba4aa1837d321b12e87eec7ebff154c9bfa994fb88c075662b4853e').trim().toLowerCase();
 let isAdminFlag = false;
 async function sha256Hex(str){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
