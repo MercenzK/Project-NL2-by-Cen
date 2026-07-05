@@ -183,6 +183,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-
       <span class="pill" id="modePill"></span>
       <button onclick="scrollToCat()">หมวดหมู่</button>
       <button onclick="go('history')">สถิติของฉัน</button>
+      <button onclick="openProfile()">โปรไฟล์</button>
       <button id="authBtn" onclick="openAuth()">เข้าสู่ระบบ</button>
     </div>
   </div>
@@ -306,12 +307,45 @@ async function refreshUser(){
   isAdminFlag = await computeAdmin();
   renderTopbar(); render();
 }
+function displayName(){
+  if(CLOUD && user) return (user.user_metadata && user.user_metadata.username) || user.email.split('@')[0];
+  if(!CLOUD) return LS.get('guestName','ผู้เยี่ยม');
+  return '';
+}
 function renderTopbar(){
-  document.getElementById('modePill').textContent = CLOUD ? (user?'☁️ '+(user.email.split('@')[0]):'☁️ ยังไม่ล็อกอิน') : '💾 Guest';
+  const pill=document.getElementById('modePill');
+  pill.textContent = CLOUD ? (user?'👤 '+displayName():'☁️ ยังไม่ล็อกอิน') : '👤 '+displayName();
+  pill.style.cursor='pointer'; pill.title='แก้ชื่อที่แสดง'; pill.onclick=openProfile;
   document.getElementById('authBtn').textContent = user? 'ออกจากระบบ' : (CLOUD?'เข้าสู่ระบบ':'โหมดผู้เยี่ยม');
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
 async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; renderTopbar(); go('home'); }
+function openProfile(){
+  if(CLOUD && !user){ openAuth(); return; }
+  const bg=document.createElement('div'); bg.className='modal-bg';
+  bg.innerHTML=`<div class="modal">
+    <h3 style="margin:0 0 10px;color:var(--navy)">โปรไฟล์</h3>
+    ${CLOUD&&user?`<div class="muted" style="margin-bottom:8px">อีเมล: ${esc(user.email)}</div>`:'<div class="muted" style="margin-bottom:8px">โหมด Guest — ชื่อจะเก็บในเครื่องนี้</div>'}
+    <label class="fld">ชื่อที่แสดง (username)</label>
+    <input id="uname" type="text" maxlength="30" placeholder="ตั้งชื่อของคุณ">
+    <div id="pmsg"></div>
+    <div class="row" style="margin-top:16px"><button class="btn" id="saveP">บันทึก</button><button class="btn sec" id="closeP">ปิด</button></div>
+  </div>`;
+  document.body.appendChild(bg);
+  bg.querySelector('#uname').value = displayName();
+  bg.querySelector('#closeP').onclick=()=>bg.remove();
+  bg.querySelector('#saveP').onclick=async()=>{
+    const name=bg.querySelector('#uname').value.trim(); const msg=bg.querySelector('#pmsg');
+    if(!name){ msg.innerHTML='<div class="err">กรุณาใส่ชื่อ</div>'; return; }
+    msg.innerHTML='<div class="muted">กำลังบันทึก...</div>';
+    if(CLOUD && user){
+      const {data,error}=await supa.auth.updateUser({data:{username:name}});
+      if(error){ msg.innerHTML='<div class="err">'+error.message+'</div>'; return; }
+      user=data.user;
+    } else { LS.set('guestName',name); }
+    bg.remove(); renderTopbar(); render();
+  };
+}
 function openAuth(){
   if(!CLOUD){ alert('ยังไม่ได้ตั้งค่า Supabase — ตอนนี้เว็บทำงานแบบ Guest (เก็บคะแนนในเครื่องนี้)\nดูวิธีเปิดล็อกอินได้ใน README'); return; }
   let tab='in';
@@ -420,7 +454,7 @@ async function renderHome(app){
     <section>
       <div class="monitor">
         <h3>📈 ความคืบหน้าของคุณ</h3>
-        <div class="muted" style="color:#bfe6de">${CLOUD&&user?'บัญชี '+esc(user.email):'เก็บในเครื่องนี้ (Guest)'}</div>
+        <div class="muted" style="color:#bfe6de">${CLOUD&&user?'สวัสดี '+esc(displayName())+' 👋':'เก็บในเครื่องนี้ (Guest)'}</div>
         <div class="stats">
           <div class="stat"><div class="n">${weekDone}</div><div class="l">ข้อ (7 วันล่าสุด)</div></div>
           <div class="stat"><div class="n">${totalDone}</div><div class="l">ข้อทั้งหมด</div></div>
@@ -590,7 +624,7 @@ async function renderHistory(app){
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
    <div class="card">
      <h2 class="qtitle">📊 ประวัติการทำข้อสอบ</h2>
-     <div class="muted">${CLOUD&&user?'บัญชี '+esc(user.email):'เก็บในเครื่องนี้ (Guest)'}</div>
+     <div class="muted">${CLOUD&&user?esc(displayName())+' • '+esc(user.email):'เก็บในเครื่องนี้ (Guest)'}</div>
      ${at.length===0?'<div class="muted" style="margin-top:12px">ยังไม่มีประวัติ ลองทำข้อสอบสักชุด</div>':`
      <div class="tablewrap" style="margin-top:12px"><table>
        <tr><th>วันที่</th><th>ชุด</th><th>คะแนน</th><th>%</th></tr>
