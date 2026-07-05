@@ -1,5 +1,6 @@
 window.APP_CONFIG = {
   SUPABASE_URL: "https://cnbpycjepfsjjizhohtm.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNuYnB5Y2plcGZzamppemhvaHRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMjcyMDUsImV4cCI6MjA5ODgwMzIwNX0.96iKTG-HyJtSL70ckrIipvduhGU3R684eQIF12aU_FE",
+  ADMIN_EMAIL_HASH: "59e3dc80aba4aa1837d321b12e87eec7ebff154c9bfa994fb88c075662b4853e",
   APP_NAME: "NL2 Med Quiz"
 };
