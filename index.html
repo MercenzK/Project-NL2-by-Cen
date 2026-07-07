@@ -120,6 +120,7 @@ select:focus,input:focus{outline:2px solid var(--teal)}
 .exp .tag2{font-weight:700;color:var(--gold-d)}
 .res{font-weight:700} .res.ok{color:var(--ok)} .res.bad{color:var(--bad)}
 .stem{font-weight:400;margin:6px 0 12px;font-size:17px}
+.qimg{display:block;max-width:100%;max-height:380px;border-radius:10px;border:1px solid var(--line,#e3e8f0);margin:2px 0 14px;background:#fff}
 .qhead{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
 .qnum{font-weight:700;color:var(--navy);font-family:"Sarabun"}
 .progressbar{height:9px;background:#dde7f0;border-radius:6px;overflow:hidden}
@@ -261,6 +262,7 @@ const SUBJECTS = [
   {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'🔪'},
   {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'🤰'},
   {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'🧸'},
+  {id:'past',  name:'Past Exams',                 th:'ข้อสอบเก่า',     icon:'📚'},
 ];
 function quizSubject(q){ return q.subject || (String(q.id).startsWith('set')?'med':'med'); }
 function subjectQuizzes(sid){ return allQuizzes().filter(q=>quizSubject(q)===sid); }
@@ -535,7 +537,7 @@ function buildSession(quiz,opt){
   if(opt.shuffleQ) items=shuffle(items);
   if(opt.count!=='all') items=items.slice(0,parseInt(opt.count));
   items=items.map(q=>{ let ch=q.choices.map((c,i)=>({c,orig:i})); if(opt.shuffleO)ch=shuffle(ch);
-    return {id:q.id,topic:q.topic,q:q.q,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
+    return {id:q.id,topic:q.topic,q:q.q,img:q.img,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
   return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,items,answers:{},submitted:false,timeLeft:(opt.mode==='exam'&&opt.timer)?items.length*60:null};
 }
 function beginQuiz(){
@@ -571,7 +573,7 @@ function renderQuiz(app){
 function qCard(q,i){
   const s=state.session; const chosen=s.answers[i]; const reveal=s.mode==='practice'?chosen!==undefined:s.submitted;
   const div=document.createElement('div'); div.className='card';
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span class="badge">${esc(q.topic)}</span></div><div class="stem">${esc(q.q)}</div>`;
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span class="badge">${esc(q.topic)}</span></div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
@@ -658,7 +660,7 @@ function normQ(o){ const choices=o.choices||[o.A,o.B,o.C,o.D,o.E].filter(x=>x!=n
   let ans=o.ans; if(typeof ans==='string')ans=LAB.indexOf(ans.trim().toUpperCase());
   if(ans==null&&o.answer!=null){ans=typeof o.answer==='number'?o.answer:LAB.indexOf(String(o.answer).trim().toUpperCase());}
   if(choices.length<2||ans==null||ans<0)return null;
-  return {id:'u'+Math.random().toString(36).slice(2),topic:o.topic||'Custom',q:o.q||o.question,choices,ans,exp:o.exp||o.explanation||''}; }
+  return {id:'u'+Math.random().toString(36).slice(2),topic:o.topic||'Custom',q:o.q||o.question,img:o.img||o.image||null,choices,ans,exp:o.exp||o.explanation||''}; }
 function parseCSV(txt){ const rows=csvRows(txt); if(!rows.length)return[]; const head=rows[0].map(h=>h.trim().toLowerCase()); const idx=n=>head.indexOf(n);
   return rows.slice(1).map(r=>{ const get=n=>{const i=idx(n);return i>=0?r[i]:''};
     const choices=[get('a'),get('b'),get('c'),get('d'),get('e')].filter(x=>x!=='');
