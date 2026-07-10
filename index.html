@@ -184,6 +184,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-
       <span class="pill" id="modePill"></span>
       <button onclick="scrollToCat()">หมวดหมู่</button>
       <button onclick="go('history')">สถิติของฉัน</button>
+      <button onclick="go('leaderboard')">🏆 Leaderboard</button>
       <button onclick="openProfile()">โปรไฟล์</button>
       <button id="authBtn" onclick="openAuth()">เข้าสู่ระบบ</button>
     </div>
@@ -315,9 +316,9 @@ function displayName(){
 }
 function renderTopbar(){
   const pill=document.getElementById('modePill');
-  pill.textContent = CLOUD ? (user?'👤 '+displayName():'☁️ ยังไม่ล็อกอิน') : '👤 '+displayName();
+  pill.textContent = user ? '👤 '+displayName() : '☁️ ยังไม่ล็อกอิน';
   pill.style.cursor='pointer'; pill.title='แก้ชื่อที่แสดง'; pill.onclick=openProfile;
-  document.getElementById('authBtn').textContent = user? 'ออกจากระบบ' : (CLOUD?'เข้าสู่ระบบ':'โหมดผู้เยี่ยม');
+  document.getElementById('authBtn').textContent = user? 'ออกจากระบบ' : 'เข้าสู่ระบบ / สมัคร';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
 async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; renderTopbar(); go('home'); }
@@ -348,7 +349,6 @@ function openProfile(){
   };
 }
 function openAuth(){
-  if(!CLOUD){ alert('ยังไม่ได้ตั้งค่า Supabase — ตอนนี้เว็บทำงานแบบ Guest (เก็บคะแนนในเครื่องนี้)\nดูวิธีเปิดล็อกอินได้ใน README'); return; }
   let tab='in';
   const bg=document.createElement('div'); bg.className='modal-bg';
   function draw(){
@@ -364,6 +364,7 @@ function openAuth(){
     bg.querySelector('#closeBtn').onclick=()=>bg.remove();
     bg.querySelector('#goBtn').onclick=async()=>{
       const em=bg.querySelector('#em').value.trim(), pw=bg.querySelector('#pw').value; const msg=bg.querySelector('#msg');
+      if(!CLOUD){ msg.innerHTML='<div class="err">ยังไม่ได้ตั้งค่าระบบล็อกอิน (Supabase) — ต้องใส่ SUPABASE_URL และ ANON_KEY ใน config.js ก่อน (ดูวิธีใน README)</div>'; return; }
       msg.innerHTML='<div class="muted">กำลังดำเนินการ...</div>';
       if(tab==='up'){
         const emLower=em.toLowerCase();
@@ -405,6 +406,7 @@ async function render(){
   if(state.view==='quiz') return renderQuiz(app);
   if(state.view==='result') return renderResult(app);
   if(state.view==='history') return renderHistory(app);
+  if(state.view==='leaderboard') return renderLeaderboard(app);
 }
 
 /* ---------- HOME ---------- */
@@ -648,6 +650,61 @@ async function renderHistory(app){
      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
      ${!CLOUD&&at.length?`<button class="btn danger" onclick="if(confirm('ลบประวัติในเครื่องนี้?')){localStorage.removeItem('guestAttempts');go('history')}">ล้างประวัติ</button>`:''}</div>
    </div></div>`;
+}
+
+/* ---------- LEADERBOARD ---------- */
+async function renderLeaderboard(app){
+  app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังโหลด Leaderboard...</b></div></div>`;
+  if(!CLOUD){
+    app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+      <h2 class="qtitle">🏆 Leaderboard</h2>
+      <div class="muted" style="margin-top:8px">ต้องตั้งค่าระบบล็อกอิน (Supabase) ก่อนจึงจะมีอันดับของทุกคนได้</div>
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+    </div></div>`; return;
+  }
+  const {data,error}=await supa.rpc('leaderboard');
+  if(error){
+    app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+      <h2 class="qtitle">🏆 Leaderboard</h2>
+      <div class="err" style="margin-top:8px">โหลดอันดับไม่สำเร็จ: ${esc(error.message)}</div>
+      <div class="muted" style="margin-top:8px">ยังไม่ได้สร้างฟังก์ชัน leaderboard ในฐานข้อมูล? รัน SQL ใน supabase_schema.sql อีกครั้ง</div>
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+    </div></div>`; return;
+  }
+  const rows=(data||[]).filter(r=>+r.total_questions>0);
+  const MIN_Q=20; // ต้องทำอย่างน้อย 20 ข้อจึงจะติดอันดับ "แม่นยำ" (กันคนทำข้อเดียวได้ 100%)
+  const byAcc=rows.filter(r=>+r.total_questions>=MIN_Q)
+                  .sort((a,b)=>b.accuracy-a.accuracy || b.total_questions-a.total_questions).slice(0,20);
+  const byVol=rows.slice().sort((a,b)=>b.total_questions-a.total_questions || b.accuracy-a.accuracy).slice(0,20);
+  const uid=user&&user.id;
+  const medal=i=>['🥇','🥈','🥉'][i]||('<b class="muted">'+(i+1)+'</b>');
+  const nm=r=>esc(r.name||'ผู้ใช้')+(r.user_id===uid?' <span class="pill" style="font-size:11px">คุณ</span>':'');
+  const accTable = byAcc.length? `<div class="tablewrap"><table>
+      <tr><th style="width:64px">อันดับ</th><th>ผู้เล่น</th><th>ความแม่นยำ</th><th>ทำไปแล้ว</th></tr>
+      ${byAcc.map((r,i)=>`<tr${r.user_id===uid?' style="background:#eef7f4"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
+        <td style="color:${r.accuracy>=60?'var(--ok)':'var(--bad)'};font-weight:700">${(+r.accuracy).toFixed(1)}%</td>
+        <td class="muted">${r.total_questions} ข้อ</td></tr>`).join('')}
+    </table></div>` : `<div class="muted" style="margin-top:8px">ยังไม่มีใครทำครบ ${MIN_Q} ข้อ</div>`;
+  const volTable = byVol.length? `<div class="tablewrap"><table>
+      <tr><th style="width:64px">อันดับ</th><th>ผู้เล่น</th><th>จำนวนข้อ</th><th>ความแม่นยำ</th></tr>
+      ${byVol.map((r,i)=>`<tr${r.user_id===uid?' style="background:#eef7f4"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
+        <td style="font-weight:700">${r.total_questions} ข้อ</td>
+        <td class="muted">${(+r.accuracy).toFixed(1)}%</td></tr>`).join('')}
+    </table></div>` : `<div class="muted" style="margin-top:8px">ยังไม่มีข้อมูล</div>`;
+  app.innerHTML=`<div class="wrap" style="padding-top:24px">
+    <div class="card">
+      <h2 class="qtitle">🎯 อันดับความแม่นยำสูงสุด</h2>
+      <div class="muted">เรียงตาม % การตอบถูก (นับเฉพาะคนที่ทำครบ ${MIN_Q} ข้อขึ้นไป)</div>
+      ${accTable}
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2 class="qtitle">🔥 อันดับทำข้อสอบมากสุด</h2>
+      <div class="muted">เรียงตามจำนวนข้อที่ทำทั้งหมด</div>
+      ${volTable}
+    </div>
+    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
+      <button class="btn sec" onclick="go('leaderboard')">🔄 รีเฟรช</button></div>
+  </div>`;
 }
 
 /* ---------- combined + upload ---------- */
