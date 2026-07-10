@@ -197,7 +197,6 @@ footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-
     <div class="cols">
       <div style="flex:2;min-width:220px">
         <h4>🩺 NL2 Med Quiz</h4>
-        <span>คลังข้อสอบอายุรศาสตร์ 500 ข้อ แนว NLE2 พร้อมเฉลยละเอียดภาษาไทย</span>
         <span class="muted" style="color:#8aa6c0">ใช้ทบทวนก่อนสอบ — ตอนสอบจริงยึดแนวทางไทยเป็นหลัก</span>
       </div>
       <div>
@@ -366,6 +365,11 @@ function openAuth(){
     bg.querySelector('#goBtn').onclick=async()=>{
       const em=bg.querySelector('#em').value.trim(), pw=bg.querySelector('#pw').value; const msg=bg.querySelector('#msg');
       msg.innerHTML='<div class="muted">กำลังดำเนินการ...</div>';
+      if(tab==='up'){
+        const emLower=em.toLowerCase();
+        const allowed = emLower.endsWith('@up.ac.th') || (await sha256Hex(emLower))===ADMIN_HASH;
+        if(!allowed){ msg.innerHTML='<div class="err">สมัครสมาชิกได้เฉพาะอีเมล @up.ac.th เท่านั้น</div>'; return; }
+      }
       let res = tab==='in'? await supa.auth.signInWithPassword({email:em,password:pw}) : await supa.auth.signUp({email:em,password:pw});
       if(res.error){ msg.innerHTML='<div class="err">'+res.error.message+'</div>'; return; }
       if(tab==='up' && !res.data.session){ msg.innerHTML='<div class="ok-msg">สมัครสำเร็จ! ถ้าเปิดยืนยันอีเมลไว้ ให้เช็คอีเมลก่อนเข้าสู่ระบบ</div>'; return; }
@@ -377,7 +381,16 @@ function openAuth(){
 
 /* ---------- router ---------- */
 let state={view:'home',quiz:null,session:null};
-function go(v,extra={}){ state.view=v; Object.assign(state,extra); render(); window.scrollTo(0,0); }
+function requireLogin(){
+  if(user) return true;
+  if(CLOUD){ openAuth(); }
+  else { alert('ต้องเข้าสู่ระบบก่อนจึงจะทำข้อสอบได้ (ยังไม่ได้ตั้งค่า Supabase — ดูวิธีเปิดล็อกอินใน README)'); }
+  return false;
+}
+function go(v,extra={}){
+  if((v==='config'||v==='quiz') && !requireLogin()) return;
+  state.view=v; Object.assign(state,extra); render(); window.scrollTo(0,0);
+}
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function scrollToCat(){ if(state.view!=='home'){go('home');setTimeout(()=>document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}),80);} else document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}); }
@@ -409,7 +422,7 @@ async function renderHome(app){
 
   <div class="hero"><div class="wrap">
     <h1>NL 2 Pass 100% 🎯</h1>
-    <p>ก็มาดิวะ — คลังข้อสอบ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
+    <p>You can do it — คลังข้อสอบ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
     <div class="cta">
       <button class="btn" onclick="startCombined()">📝 เริ่มทำข้อสอบเลย</button>
       <button class="btn outline" style="color:#fff;border-color:#fff" onclick="scrollToCat()">📖 เลือกดูตามรายวิชา</button>
