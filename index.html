@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NL2 Med Quiz — คลังข้อสอบแพทย์</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#12395f">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NL2 Quiz">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -162,7 +167,42 @@ footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-
   .hero .wrap{padding:40px 18px}
   .monitor .ecg{display:none}
 }
+
+/* ---------- dark mode ---------- */
+html[data-theme="dark"]{
+  --navy:#8fbde8; --navy2:#a9cef0; --ink:#e6edf3; --muted:#9db0c2;
+  --bg:#0e151d; --paper:#182430; --line:#26333f;
+  --ok:#4cc27e; --okbg:#14301f; --bad:#ef6a63; --badbg:#3a1c1b; --gold:#e8bf5a; --gold-d:#e0a82e; --goldbg:#2c2513;
+}
+html[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+html[data-theme="dark"] input,html[data-theme="dark"] select{background:#111c26;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .opt{background:#111c26;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .opt:hover{background:#16242f;border-color:var(--teal)}
+html[data-theme="dark"] .opt.sel{background:#12303a;border-color:var(--navy2)}
+html[data-theme="dark"] .opt.correct{background:var(--okbg);border-color:var(--ok)}
+html[data-theme="dark"] .opt.wrong{background:var(--badbg);border-color:var(--bad)}
+html[data-theme="dark"] .tag,html[data-theme="dark"] .badge{background:#20303f;color:var(--navy2)}
+html[data-theme="dark"] .tag.teal{background:#123230;color:#5fd6c6}
+html[data-theme="dark"] .btn.sec{background:#1b2732;color:var(--navy2);border-color:#2c3d4c}
+html[data-theme="dark"] .btn.sec:hover{background:#22303d}
+html[data-theme="dark"] .btn.outline{color:var(--navy2);border-color:var(--navy2)}
+html[data-theme="dark"] .progressbar{background:#26333f}
+html[data-theme="dark"] .modal{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .qimg{background:#fff}
+html[data-theme="dark"] .file-card::before{background:var(--navy2)}
+html[data-theme="dark"] .file-card .tab{color:#0e151d}
+html[data-theme="dark"] .file-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
 </style>
+<script>
+(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
+function toggleTheme(){var d=document.documentElement;var t=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=t;try{localStorage.setItem('theme',t);}catch(e){}var b=document.getElementById('themeBtn');if(b)b.textContent=t==='dark'?'☀️':'🌙';}
+/* ---- PWA: service worker + install prompt ---- */
+if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+var __deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); __deferredPrompt=e; var b=document.getElementById('installBtn'); if(b)b.style.display=''; });
+window.addEventListener('appinstalled',function(){ var b=document.getElementById('installBtn'); if(b)b.style.display='none'; });
+function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferredPrompt.userChoice.finally(function(){ __deferredPrompt=null; var b=document.getElementById('installBtn'); if(b)b.style.display='none'; }); } else { alert('ติดตั้งแอป: บนมือถือใช้เมนูเบราว์เซอร์ → "เพิ่มไปยังหน้าจอโฮม / Add to Home Screen"; บนคอมพิวเตอร์กดไอคอนติดตั้งในแถบที่อยู่'); } }
+</script>
 </head>
 <body>
 <header>
@@ -184,8 +224,16 @@ footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-
       <span class="pill" id="modePill"></span>
       <button onclick="scrollToCat()">หมวดหมู่</button>
       <button onclick="go('history')">สถิติของฉัน</button>
+      <button onclick="go('systems')">🫀 By System</button>
+      <button onclick="go('study')">📖 สรุปสอบ</button>
+      <button onclick="go('weakness')">🎯 My Weakness</button>
+      <button onclick="startMistakes()">🔁 Redo Mistakes</button>
+      <button onclick="go('simconfig')">🧪 NL2 Simulator</button>
+      <button onclick="go('readiness')">📈 Readiness</button>
       <button onclick="go('leaderboard')">🏆 Leaderboard</button>
       <button onclick="openProfile()">โปรไฟล์</button>
+      <button id="installBtn" onclick="installApp()" style="display:none" title="ติดตั้งเป็นแอป">⬇️ ติดตั้งแอป</button>
+      <button id="themeBtn" onclick="toggleTheme()" title="สลับโหมดมืด/สว่าง">🌙</button>
       <button id="authBtn" onclick="openAuth()">เข้าสู่ระบบ</button>
     </div>
   </div>
@@ -277,7 +325,25 @@ const LS = {
 };
 function customQuizzes(){ return LS.get('customQuizzes',[]); }
 function allQuizzes(){ return [...window.QUIZ_DATA, ...customQuizzes()]; }
-function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; return allQuizzes().find(q=>q.id===id); }
+function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; if(id==='mistakes'&&window.__mistakes)return window.__mistakes; if(id==='nl2sim'&&window.__sim)return window.__sim; if(id==='sysquiz'&&window.__sys)return window.__sys; return allQuizzes().find(q=>q.id===id); }
+/* ---------- stable question key + global index (for mistakes & weakness) ---------- */
+function qkey(text){ let h=5381; const s=String(text||''); for(let i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;} return 'q'+h.toString(36); }
+let __qidx=null;
+function QIDX(){ if(__qidx)return __qidx; __qidx={}; allQuizzes().forEach(qz=>{ (qz.questions||[]).forEach(x=>{ __qidx[qkey(x.q)]={q:x, subject:quizSubject(qz), topic:x.topic, quizTitle:qTitle(qz)}; }); }); return __qidx; }
+function resetIdx(){ __qidx=null; }
+/* map a fine topic to a broad clinical system/subject bucket */
+function sysBucket(t){ t=(t||'').toLowerCase();
+  if(t.includes('pediatr')||t.includes('neonat')) return 'Pediatrics';
+  if(t.includes('obstet')||t.includes('gyneco')||t.includes('ob-gyn')||t.includes('obgyn')) return 'OB-GYN';
+  if(t.includes('orthop')||t.includes('rehab')||t.includes('fracture')) return 'Orthopedics';
+  if(t.includes('ophthal')||t.includes('eye')) return 'Ophthalmology';
+  if(t.includes('otolaryng')||t==='ent'||t.includes('ear, nose')) return 'ENT';
+  if(t.includes('psychiat')||t.includes('behavioral')||t.includes('adolescent')) return 'Psychiatry/Behavioral';
+  if(t.includes('emergen')||t.includes('toxic')||t.includes('trauma')||t.includes('resuscitation')) return 'Emergency';
+  if(t.includes('forensic')||t.includes('ethic')||t.includes('community')||t.includes('ebm')||t.includes('family')) return 'Forensic/Ethics/Community';
+  if(t==='surgery'||t.includes('surgical')) return 'Surgery';
+  return 'Internal Medicine';
+}
 function bookmarks(){ return LS.get('bookmarks',[]); }
 function toggleBookmark(id,ev){ if(ev)ev.stopPropagation(); let b=bookmarks(); b=b.includes(id)?b.filter(x=>x!==id):[...b,id]; LS.set('bookmarks',b); render(); }
 
@@ -318,6 +384,7 @@ function renderTopbar(){
   const pill=document.getElementById('modePill');
   pill.textContent = user ? '👤 '+displayName() : '☁️ ยังไม่ล็อกอิน';
   pill.style.cursor='pointer'; pill.title='แก้ชื่อที่แสดง'; pill.onclick=openProfile;
+  const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
   document.getElementById('authBtn').textContent = user? 'ออกจากระบบ' : 'เข้าสู่ระบบ / สมัคร';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
@@ -407,6 +474,22 @@ async function render(){
   if(state.view==='result') return renderResult(app);
   if(state.view==='history') return renderHistory(app);
   if(state.view==='leaderboard') return renderLeaderboard(app);
+  if(state.view==='weakness') return renderWeakness(app);
+  if(state.view==='simconfig') return renderSimConfig(app);
+  if(state.view==='systems') return renderSystems(app);
+  if(state.view==='readiness') return renderReadiness(app);
+  if(state.view==='study') return renderStudy(app);
+}
+function renderStudy(app){
+  app.innerHTML=`<div class="wrap" style="padding-top:16px">
+    <div class="row" style="margin-bottom:10px;align-items:center">
+      <b class="qtitle" style="font-size:19px">📖 สรุปอ่านสอบ High-Yield แยก Ward</b>
+      <span style="flex:1"></span>
+      <button class="btn sm sec" onclick="window.open('study.html','_blank')">↗ เปิดแท็บใหม่</button>
+      <button class="btn sm sec" onclick="go('home')">🏠 หน้าแรก</button>
+    </div>
+    <iframe src="study.html" title="สรุปอ่านสอบ" style="width:100%;height:82vh;border:1px solid var(--line);border-radius:12px;background:var(--paper)"></iframe>
+  </div>`;
 }
 
 /* ---------- HOME ---------- */
@@ -427,6 +510,7 @@ async function renderHome(app){
     <p>You can do it — คลังข้อสอบ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
     <div class="cta">
       <button class="btn" onclick="startCombined()">📝 เริ่มทำข้อสอบเลย</button>
+      <button class="btn gold" onclick="go('study')">📖 อ่านสรุป High-Yield</button>
       <button class="btn outline" style="color:#fff;border-color:#fff" onclick="scrollToCat()">📖 เลือกดูตามรายวิชา</button>
     </div>
   </div>
@@ -552,8 +636,9 @@ function buildSession(quiz,opt){
   if(opt.shuffleQ) items=shuffle(items);
   if(opt.count!=='all') items=items.slice(0,parseInt(opt.count));
   items=items.map(q=>{ let ch=q.choices.map((c,i)=>({c,orig:i})); if(opt.shuffleO)ch=shuffle(ch);
-    return {id:q.id,topic:q.topic,q:q.q,img:q.img,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
-  return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,items,answers:{},submitted:false,timeLeft:(opt.mode==='exam'&&opt.timer)?items.length*60:null};
+    return {id:q.id,key:qkey(q.q),topic:q.topic,q:q.q,img:q.img,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
+  const secPer=opt.secPerItem||60;
+  return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,sim:!!opt.sim,items,answers:{},flags:{},submitted:false,timeLeft:((opt.mode==='exam'&&opt.timer)||opt.sim)?Math.round(items.length*secPer):null};
 }
 function beginQuiz(){
   const q=findQuiz(state.quiz);
@@ -574,21 +659,55 @@ function renderQuiz(app){
      <div class="row"><b class="qtitle" style="font-size:19px">${esc(s.quizTitle)}</b><span class="badge">${s.mode==='exam'?'📝 Exam':'📖 Practice'}</span>
        <span style="flex:1"></span>
        ${s.timeLeft!=null?`<span id="timer-disp" class="pill" style="background:var(--navy);color:#fff"></span>`:''}
+       <span class="badge" id="flagcnt" style="background:var(--goldbg);color:var(--gold-d)"></span>
        <span class="muted" id="cnt">${answered}/${s.items.length}</span></div>
      <div class="progressbar" style="margin-top:10px"><div id="pbar" style="width:${answered/s.items.length*100}%"></div></div>
    </div>
    <div id="qlist"></div>
    <div class="card">
-     ${s.mode==='exam'&&!s.submitted?`<button class="btn" onclick="submitExam()">✅ ส่งคำตอบ</button>`:''}
+     ${s.mode==='exam'&&!s.submitted?`<button class="btn" onclick="confirmSubmit()">✅ ส่งคำตอบ</button>`:''}
      ${s.mode==='practice'?`<button class="btn" onclick="finishPractice()">📊 ดูสรุปคะแนน / บันทึก</button>`:''}
      <button class="btn sec" onclick="if(confirm('ออกจากข้อสอบ? ความคืบหน้าจะไม่ถูกบันทึก'))go('home')">ออก</button>
    </div></div>`;
   const list=document.getElementById('qlist'); s.items.forEach((q,i)=>list.appendChild(qCard(q,i)));
+  updateFlagCount();
+}
+function updateFlagCount(){ const s=state.session; const fc=document.getElementById('flagcnt'); if(!fc)return;
+  const n=s.flags?Object.values(s.flags).filter(Boolean).length:0; fc.textContent=n?('🚩 '+n):''; }
+function toggleFlag(i){ const s=state.session; if(!s.flags)s.flags={}; s.flags[i]=!s.flags[i];
+  const list=document.getElementById('qlist'); list.replaceChild(qCard(s.items[i],i),list.children[i]); updateFlagCount(); }
+function jumpTo(i){ __closeSubmit(); const el=document.getElementById('qc'+i); if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'}); const old=el.style.boxShadow; el.style.boxShadow='0 0 0 3px var(--teal)';
+  setTimeout(()=>{ el.style.boxShadow=old||''; },1300); }
+function __closeSubmit(){ if(window.__submitModal){ window.__submitModal.remove(); window.__submitModal=null; } }
+function confirmSubmit(){ const s=state.session;
+  const unanswered=[]; s.items.forEach((q,i)=>{ if(s.answers[i]===undefined)unanswered.push(i); });
+  const flagged=Object.keys(s.flags||{}).filter(k=>s.flags[k]).map(Number).sort((a,b)=>a-b);
+  const chip=i=>`<button class="btn sm sec" style="padding:3px 9px;margin:2px;min-width:38px" onclick="jumpTo(${i})">${i+1}</button>`;
+  const bg=document.createElement('div'); bg.className='modal-bg';
+  bg.innerHTML=`<div class="modal" style="max-width:540px">
+    <h3 style="margin:0 0 6px;color:var(--navy)">ยืนยันการส่งคำตอบ</h3>
+    <div class="muted">ตอบแล้ว ${Object.keys(s.answers).length}/${s.items.length} ข้อ • คลิกเลขข้อเพื่อกลับไปดู</div>
+    <div style="margin-top:12px"><b style="color:var(--bad)">ยังไม่ได้ตอบ (${unanswered.length})</b>
+      <div style="max-height:120px;overflow:auto;margin-top:4px">${unanswered.length?unanswered.map(chip).join(''):'<span class="muted">— ตอบครบแล้ว —</span>'}</div></div>
+    <div style="margin-top:12px"><b style="color:var(--gold-d)">🚩 ทำเครื่องหมายไว้ (${flagged.length})</b>
+      <div style="max-height:120px;overflow:auto;margin-top:4px">${flagged.length?flagged.map(chip).join(''):'<span class="muted">— ไม่มี —</span>'}</div></div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn" onclick="__closeSubmit();submitExam()">✅ ส่งเลย</button>
+      <button class="btn sec" onclick="__closeSubmit()">↩ กลับไปตรวจ</button></div>
+  </div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg)__closeSubmit(); });
+  document.body.appendChild(bg); window.__submitModal=bg;
 }
 function qCard(q,i){
   const s=state.session; const chosen=s.answers[i]; const reveal=s.mode==='practice'?chosen!==undefined:s.submitted;
-  const div=document.createElement('div'); div.className='card';
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span class="badge">${esc(q.topic)}</span></div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
+  const flagged=!!(s.flags&&s.flags[i]);
+  const div=document.createElement('div'); div.className='card'; div.id='qc'+i;
+  if(flagged) div.style.boxShadow='0 0 0 2px var(--gold)';
+  const flagCtl = (s.mode==='exam'&&!s.submitted)
+    ? `<button class="btn sm sec" style="margin-left:auto;padding:4px 10px" onclick="toggleFlag(${i})">${flagged?'🚩 มาร์กไว้':'⚑ Mark for review'}</button>`
+    : (flagged?'<span class="badge" style="margin-left:auto;background:var(--goldbg);color:var(--gold-d)">🚩 marked</span>':'');
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span class="badge">${esc(q.topic)}</span>${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
@@ -605,13 +724,283 @@ function selectAns(i,j){ const s=state.session;
   const pb=document.getElementById('pbar'); if(pb)pb.style.width=(answered/s.items.length*100)+'%';
   const list=document.getElementById('qlist'); list.replaceChild(qCard(state.session.items[i],i),list.children[i]);
 }
+function answerLog(s){ return s.items.map((q,i)=>({k:q.key,t:q.topic,c:s.answers[i]===q.ans,a:s.answers[i]!==undefined})); }
 async function submitExam(){ const s=state.session; if(s.submitted)return; s.submitted=true; clearInterval(timerInt);
   let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score;
-  await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:s.items.map((q,i)=>({id:q.id,chosen:s.answers[i]??null,correct:q.ans}))});
+  await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
 async function finishPractice(){ const s=state.session; let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score; s.submitted=true;
-  await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:s.items.map((q,i)=>({id:q.id,chosen:s.answers[i]??null,correct:q.ans}))});
+  await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
+
+/* ================= Mistakes / Weakness / NL2 Simulator ================= */
+/* OFFICIAL NL2 blueprint (แพทยสภา, เริ่มใช้ ก.ค. 2567): 300 ข้อ = หมวด1 30 + หมวด2 270 (ฉุกเฉิน 50 + ระบบ 220) */
+const NL2_TOTAL = 300, NL2_GENERAL = 30, NL2_EMERGENCY = 50;
+const NL2_SYS = [
+  {id:'I',   n:16, label:'I. Infectious & parasitic diseases'},
+  {id:'II',  n:7,  label:'II. Neoplasms'},
+  {id:'III', n:12, label:'III. Blood, blood-forming organs & immune'},
+  {id:'IV',  n:14, label:'IV. Endocrine, nutritional & metabolic'},
+  {id:'V',   n:12, label:'V. Mental & behavioral disorders'},
+  {id:'VI',  n:14, label:'VI. Nervous system'},
+  {id:'VII', n:7,  label:'VII. Eye & adnexa'},
+  {id:'VIII',n:7,  label:'VIII. Ear & mastoid'},
+  {id:'IX',  n:14, label:'IX. Circulatory system'},
+  {id:'X',   n:14, label:'X. Respiratory system'},
+  {id:'XI',  n:14, label:'XI. Digestive system'},
+  {id:'XII', n:7,  label:'XII. Skin & subcutaneous tissue'},
+  {id:'XIII',n:14, label:'XIII. Musculoskeletal & connective tissue'},
+  {id:'XIV', n:15, label:'XIV. Genito-urinary system'},
+  {id:'XV',  n:18, label:'XV. Pregnancy, childbirth & puerperium'},
+  {id:'XVI', n:8,  label:'XVI. Perinatal conditions'},
+  {id:'XVII',n:5,  label:'XVII. Congenital & chromosomal'},
+  {id:'XVIII',n:12,label:'XVIII. Injury, poisoning & external causes'},
+  {id:'XIX', n:10, label:'XIX. External causes of morbidity/mortality'},
+];
+/* map a question topic to an official blueprint bucket id (or 'flex' for cross-system tags) */
+function classifyICD(t){ t=(t||'').toLowerCase();
+  if(t.includes('forensic')||t.includes('ethic')||t.includes('community')||t.includes('ebm')||t.includes('family med')) return 'general';
+  if(t.includes('emergen')||t.includes('resuscitation')) return 'emergency';
+  if(t.includes('obstet')||t.includes('pregnan')||t.includes('childbirth')||t.includes('puerper')||t.includes('labor')||t.includes('antenatal')) return 'XV';
+  if(t.includes('perinat')||t.includes('neonat')||t.includes('newborn')) return 'XVI';
+  if(t.includes('congenital')||t.includes('chromosom')||t.includes('genetic')||t.includes('syndrome')) return 'XVII';
+  if(t.includes('neoplasm')||t.includes('cancer')||t.includes('tumor')||t.includes('oncolog')||t.includes('leukemia')||t.includes('lymphoma')||t.includes('sarcoma')||t.includes('blastoma')) return 'II';
+  if(t.includes('infect')||t.includes('parasit')||t.includes('dengue')||t.includes('malaria')||t.includes('tubercul')||t.includes('hiv')||t.includes('sepsis')) return 'I';
+  if(t.includes('hematolog')||t.includes('blood')||t.includes('anemia')||t.includes('thalassemia')||t.includes('immun')||t.includes('bleeding')||t.includes('coagul')) return 'III';
+  if(t.includes('endocrin')||t.includes('metabol')||t.includes('nutrition')||t.includes('diabet')||t.includes('thyroid')||t.includes('adrenal')||t.includes('growth')) return 'IV';
+  if(t.includes('psychiat')||t.includes('mental')||t.includes('behav')||t.includes('adolescent')||t.includes('depress')) return 'V';
+  if(t.includes('neurolog')||t.includes('nervous')||t.includes('seizure')||t.includes('stroke')||t.includes('epilep')||t.includes('meningitis')||t.includes('cerebral')) return 'VI';
+  if(t.includes('ophthal')||t.includes('eye')||t.includes('retina')||t.includes('conjunctiv')) return 'VII';
+  if(t.includes('otolaryng')||t==='ent'||t.includes('ear')||t.includes('mastoid')||t.includes('otitis')||t.includes('sinus')||t.includes('epistaxis')) return 'VIII';
+  if(t.includes('cardio')||t.includes('circulat')||t.includes('vascular')||t.includes('heart')||t.includes('hypertens')||t.includes('arrhythm')) return 'IX';
+  if(t.includes('respir')||t.includes('pulmon')||t.includes('lung')||t.includes('asthma')||t.includes('pneumonia')||t.includes('bronchi')||t.includes('croup')) return 'X';
+  if(t.includes('gi/')||t.includes('digest')||t.includes('hepatolog')||t.includes('gastro')||t.includes('liver')||t.includes('bowel')||t.includes('append')||t.includes('hepat')) return 'XI';
+  if(t.includes('derm')||t.includes('skin')) return 'XII';
+  if(t.includes('orthop')||t.includes('musculoskelet')||t.includes('rheumat')||t.includes('connective')||t.includes('bone')||t.includes('joint')||t.includes('fracture')||t.includes('arthritis')) return 'XIII';
+  if(t.includes('gyneco')||t.includes('nephrolog')||t.includes('urolog')||t.includes('genito')||t.includes('renal')||t.includes('kidney')||t.includes('bladder')||t.includes('nephro')) return 'XIV';
+  if(t.includes('injury')||t.includes('poison')||t.includes('trauma')||t.includes('burn')||t.includes('toxic')||t.includes('bite')||t.includes('drowning')) return 'XVIII';
+  if(t.includes('external cause')) return 'XIX';
+  return 'flex';   // e.g. "Internal medicine", "Pediatrics", "Surgery", "Medicine" — cross-system tags
+}
+
+async function analytics(){
+  const at = await listAttempts();
+  const latest={}, topic={}, sys={};
+  at.forEach(a=>{ (a.answers||[]).forEach(e=>{
+    if(!e || !e.k) return;                       // skip old-format entries
+    if(!(e.k in latest)) latest[e.k]={c:!!e.c, t:e.t};   // attempts are newest-first
+    if(e.a){                                     // count accuracy over answered only
+      const tp=e.t||'อื่นๆ'; (topic[tp]=topic[tp]||{n:0,ok:0}); topic[tp].n++; if(e.c)topic[tp].ok++;
+      const b=sysBucket(e.t); (sys[b]=sys[b]||{n:0,ok:0}); sys[b].n++; if(e.c)sys[b].ok++;
+    }
+  }); });
+  return {latest, topic, sys};
+}
+
+async function startMistakes(){
+  if(!requireLogin()) return;
+  showLoader('กำลังรวบรวมข้อที่เคยพลาด...');
+  const {latest}=await analytics(); const idx=QIDX(); const qs=[];
+  Object.keys(latest).forEach(k=>{ if(!latest[k].c && idx[k]) qs.push(idx[k].q); });
+  hideLoader();
+  if(!qs.length){ alert('ยังไม่มีข้อที่ยังตอบผิดค้างอยู่ 🎉\nลองทำข้อสอบสักชุด แล้วข้อที่พลาดจะถูกเก็บมาให้ทบทวนที่นี่'); return; }
+  window.__mistakes={id:'mistakes',title:'🔁 Redo My Mistakes ('+qs.length+' ข้อ)',subject:'past',questions:shuffle(qs)};
+  go('config',{quiz:'mistakes'});
+}
+
+function bar(pct,color){ return `<div style="background:#e7eef2;border-radius:6px;height:12px;overflow:hidden;flex:1"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`; }
+function accColor(p){ return p>=70?'var(--ok)':p>=50?'#e0a800':'var(--bad)'; }
+
+async function renderWeakness(app){
+  app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังวิเคราะห์จุดอ่อน...</b></div></div>`;
+  const {sys,topic}=await analytics();
+  const sysArr=Object.entries(sys).map(([k,v])=>({k,...v,p:Math.round(100*v.ok/v.n)})).sort((a,b)=>a.p-b.p);
+  const weakTopics=Object.entries(topic).map(([k,v])=>({k,...v,p:Math.round(100*v.ok/v.n)})).filter(x=>x.n>=3).sort((a,b)=>a.p-b.p).slice(0,15);
+  if(!sysArr.length){
+    app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+      <h2 class="qtitle">🎯 My Weakness</h2>
+      <div class="muted" style="margin-top:8px">ยังไม่มีข้อมูลพอ — ทำข้อสอบสักชุดก่อน แล้วระบบจะสรุป % ความแม่นแยกตามระบบและหัวข้อให้อัตโนมัติ</div>
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+  }
+  const sysRows=sysArr.map(x=>`<div style="margin:10px 0">
+      <div class="row" style="gap:10px;align-items:center"><b style="min-width:190px">${esc(x.k)}</b>
+      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span></div></div>`).join('');
+  const topicRows=weakTopics.length? weakTopics.map(x=>`<div style="margin:8px 0">
+      <div class="row" style="gap:10px;align-items:center"><span style="min-width:190px">${esc(x.k)}</span>
+      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span></div></div>`).join('')
+    : '<div class="muted">ยังมีข้อมูลไม่พอต่อหัวข้อ (ต้องทำอย่างน้อย 3 ข้อต่อหัวข้อ)</div>';
+  app.innerHTML=`<div class="wrap" style="padding-top:24px">
+    <div class="card">
+      <h2 class="qtitle">🎯 My Weakness — ความแม่นแยกตามระบบ</h2>
+      <div class="muted">เรียงจากอ่อนสุดก่อน • คำนวณจากทุกครั้งที่ทำข้อสอบ</div>
+      <div style="margin-top:14px">${sysRows}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="startMistakes()">🔁 ทบทวนข้อที่เคยผิด</button></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2 class="qtitle">🔎 หัวข้อที่ควรทบทวนที่สุด</h2>
+      <div class="muted">15 หัวข้อที่ % ต่ำสุด (นับเฉพาะหัวข้อที่ทำ ≥ 3 ข้อ)</div>
+      <div style="margin-top:12px">${topicRows}</div>
+    </div>
+    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
+      <button class="btn sec" onclick="go('weakness')">🔄 รีเฟรช</button></div>
+  </div>`;
+}
+
+function simTime(n){ const m=Math.round(n*1.5); const h=Math.floor(m/60), mm=m%60; return (h?h+' ชม. ':'')+(mm?mm+' นาที':''); }
+function renderSimConfig(app){
+  const rows=[`<tr><td>หมวด 1 — ภาวะปกติ/หลักการดูแลทั่วไป (health promotion, ระบาดวิทยา, นิติเวช, จริยธรรม/กฎหมาย)</td><td style="text-align:right">${NL2_GENERAL}</td></tr>`,
+    `<tr><td>ภาวะฉุกเฉิน (Emergency — กลุ่มที่ 1)</td><td style="text-align:right">${NL2_EMERGENCY}</td></tr>`]
+    .concat(NL2_SYS.map(s=>`<tr><td>${esc(s.label)}</td><td style="text-align:right">${s.n}</td></tr>`)).join('');
+  app.innerHTML=`<div class="wrap" style="padding-top:26px">
+    <div class="card">
+      <h2 class="qtitle">🧪 NL2 Simulator</h2>
+      <div class="muted">จำลองสนามสอบจริง — จับเวลา, ไม่เฉลยจนกว่าจะส่ง, สุ่มตาม <b>blueprint อย่างเป็นทางการของแพทยสภา (เริ่มใช้ ก.ค. 2567)</b> โดยดึงจาก<b>ข้อสอบ NL2 เก่าเท่านั้น</b></div>
+      <label class="fld">จำนวนข้อ (เวลา = 1.5 นาที/ข้อ)</label>
+      <select id="simSize">
+        <option value="300" selected>เต็มรูปแบบ 300 ข้อ • ~${simTime(300)} (เท่าข้อสอบจริง)</option>
+        <option value="150">ครึ่งชุด 150 ข้อ • ~${simTime(150)}</option>
+        <option value="100">100 ข้อ • ~${simTime(100)}</option>
+        <option value="50">mini mock 50 ข้อ • ~${simTime(50)}</option>
+      </select>
+      <div class="tablewrap" style="margin-top:14px"><table>
+        <tr><th>หมวด / ระบบอวัยวะ (ICD)</th><th style="text-align:right">ข้อ (เต็ม 300)</th></tr>
+        ${rows}
+        <tr style="font-weight:700;background:#eef7f4"><td>รวม</td><td style="text-align:right">${NL2_TOTAL}</td></tr>
+      </table></div>
+      <div class="warn" style="margin-top:12px"><span class="muted">อ้างอิงตาม "ตารางข้อสอบฯ ขั้นตอนที่ 2" ของแพทยสภา: 300 ข้อ (One Best Response) = หมวด1 30 + หมวด2 270 (ฉุกเฉิน 50 + โรคตามระบบ 220). ระบบจะดึงข้อจากคลัง NL2 เก่าให้ตรงตามโควตาแต่ละระบบเท่าที่มี แล้วเติมส่วนที่เหลือจากข้อที่ tag เป็น Med/Ped/Surgery (คร่อมหลายระบบ). เวลา 1.5 นาที/ข้อเป็นค่าประมาณ</span></div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn" onclick="startSimulator()">▶ เริ่มจำลองสอบ</button>
+        <button class="btn sec" onclick="go('home')">ย้อนกลับ</button>
+      </div>
+    </div></div>`;
+}
+
+function startSimulator(){
+  if(!requireLogin()) return;
+  const size=parseInt(val('simSize'))||NL2_TOTAL;
+  const scale=size/NL2_TOTAL;
+  const g={general:[],emergency:[],flex:[]}; NL2_SYS.forEach(s=>g[s.id]=[]);
+  let pool=0;
+  window.QUIZ_DATA.forEach(qz=>{ if(quizSubject(qz)==='past'){ qz.questions.forEach(x=>{ const c=x.sys||classifyICD(x.topic); (g[c]||g.flex).push(x); pool++; }); } });
+  if(!pool){ alert('ไม่พบคลังข้อสอบ NL2 เก่า'); return; }
+  Object.keys(g).forEach(k=>g[k]=shuffle(g[k]));
+  const used=new Set(), picks=[];
+  function take(arr,n){ let c=0; for(const q of (arr||[])){ if(c>=n)break; if(!used.has(q)){used.add(q);picks.push(q);c++;} } }
+  take(g.general, Math.round(NL2_GENERAL*scale));
+  take(g.emergency, Math.round(NL2_EMERGENCY*scale));
+  NL2_SYS.forEach(s=>take(g[s.id], Math.round(s.n*scale)));
+  // fill remainder to reach exact size: first from flex (Med/Ped/Surg), then anything
+  const everything=shuffle([].concat(...Object.keys(g).map(k=>g[k])));
+  for(const src of [g.flex, everything]){ for(const q of src){ if(picks.length>=size)break; if(!used.has(q)){used.add(q);picks.push(q);} } if(picks.length>=size)break; }
+  const final=shuffle(picks).slice(0,size);
+  window.__sim={id:'nl2sim',title:'🧪 NL2 Simulator ('+final.length+' ข้อ)',subject:'past',questions:final};
+  showLoader('กำลังจัดชุดข้อสอบตาม blueprint แพทยสภา...');
+  setTimeout(()=>{ state.session=buildSession(window.__sim,{mode:'exam',count:'all',shuffleQ:true,shuffleO:true,timer:true,sim:true,secPerItem:90}); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },650);
+}
+
+/* ---------- Practice by Organ System ---------- */
+const SYS_ALL=[{id:'general',label:'หมวด 1 — ภาวะปกติ / ดูแลทั่วไป (Health, Forensic, Ethics, EBM)'},
+  {id:'emergency',label:'ภาวะฉุกเฉิน (Emergency)'}].concat(NL2_SYS.map(s=>({id:s.id,label:s.label})));
+function qBucket(x){ return x.sys||classifyICD(x.topic); }
+function renderSystems(app){
+  const c={}; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ const b=qBucket(x); c[b]=(c[b]||0)+1; }));
+  const cards=SYS_ALL.map(s=>{ const n=c[s.id]||0; return `<div class="file-card" style="cursor:${n?'pointer':'default'};opacity:${n?1:.5}" ${n?`onclick="startSystemPractice('${s.id}')"`:''}>
+     <div class="tab">${s.id}</div><h3 style="margin-top:20px">${esc(s.label)}</h3>
+     <div class="meta">📝 ${n} ข้อ</div>
+     ${n?`<button class="btn sm" onclick="event.stopPropagation();startSystemPractice('${s.id}')">ฝึกทำ</button>`:'<span class="muted">ยังไม่มีข้อ</span>'}</div>`; }).join('');
+  app.innerHTML=`<div class="wrap" style="padding-top:24px">
+    <div class="card"><h2 class="qtitle">🫀 Practice by Organ System</h2>
+      <div class="muted">ฝึกทำแยกตามระบบอวัยวะ (ICD chapter ตาม blueprint แพทยสภา) — รวมทุกคลัง (NL2 เก่า + ชุดที่สร้างใหม่)</div></div>
+    <div class="cat-grid">${cards}</div>
+    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+  </div>`;
+}
+function startSystemPractice(id){
+  if(!requireLogin()) return;
+  const label=(SYS_ALL.find(s=>s.id===id)||{}).label||id;
+  const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if(qBucket(x)===id) qs.push(x); }));
+  if(!qs.length){ alert('ยังไม่มีข้อในระบบนี้'); return; }
+  window.__sys={id:'sysquiz',title:'🫀 '+label,subject:'past',questions:shuffle(qs)};
+  go('config',{quiz:'sysquiz'});
+}
+
+/* ---------- Readiness / Pass prediction ---------- */
+const PASS_MARK = 0.60;   // เกณฑ์ผ่านมาตรฐาน ~60% (ศรว. รายงานผล Pass/Fail; ปรับได้)
+function icdLabel(id){ if(id==='general')return 'หมวด 1 — ภาวะปกติ/ดูแลทั่วไป'; if(id==='emergency')return 'ภาวะฉุกเฉิน'; const s=NL2_SYS.find(x=>x.id===id); return s?s.label:id; }
+async function readinessData(){
+  const at=await listAttempts();
+  const sims=at.filter(a=>a.quiz_id==='nl2sim');
+  const idx=QIDX(); const sys={}; let tOk=0,tN=0;
+  const source = sims.length?sims:at;
+  source.forEach(a=>(a.answers||[]).forEach(e=>{ if(!e||!e.k||!e.a)return; const rec=idx[e.k];
+    const b=rec?(rec.q.sys||classifyICD(rec.topic)):classifyICD(e.t);
+    (sys[b]=sys[b]||{n:0,ok:0}); sys[b].n++; tN++; if(e.c){sys[b].ok++; tOk++;} }));
+  const latestSim=sims[0]||null;
+  const latestSimPct=latestSim?Math.round(100*latestSim.score/latestSim.total):null;
+  const bestSimPct=sims.length?Math.round(100*Math.max(...sims.map(a=>a.score/a.total))):null;
+  const overallPct=tN?Math.round(100*tOk/tN):null;
+  return {sims, usedFallback:(!sims.length&&at.length>0), hasData:!!source.length, sys, latestSimPct, bestSimPct, overallPct};
+}
+async function renderReadiness(app){
+  app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังคำนวณความพร้อมสอบ...</b></div></div>`;
+  const r=await readinessData(); const pm=Math.round(PASS_MARK*100);
+  if(!r.hasData){
+    app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+      <h2 class="qtitle">📈 Readiness / Pass Prediction</h2>
+      <div class="muted" style="margin-top:8px">ยังไม่มีข้อมูล — ลองทำ <b>NL2 Simulator</b> สักรอบ แล้วระบบจะประเมินความพร้อมสอบและชี้ระบบที่ยังไม่ผ่านเกณฑ์ให้</div>
+      <div class="row" style="margin-top:16px"><button class="btn" onclick="go('simconfig')">🧪 เริ่ม NL2 Simulator</button>
+        <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+  }
+  const disp = r.sims.length? r.latestSimPct : r.overallPct;
+  const arr=Object.entries(r.sys).map(([k,v])=>({k,...v,p:Math.round(100*v.ok/v.n)}));
+  const covered=arr.filter(x=>x.n>=3);
+  const passed=covered.filter(x=>x.p>=pm);
+  const breadth=covered.length?passed.length/covered.length:0;
+  const margin=Math.min(1,(disp/100)/PASS_MARK);
+  const readiness=Math.round(100*(0.7*margin+0.3*breadth));
+  const weak=covered.filter(x=>x.p<pm).sort((a,b)=>a.p-b.p);
+  const rc = readiness>=85?'var(--ok)':readiness>=60?'#d99700':'var(--bad)';
+  const verdict = disp>=pm+5?['✅ พร้อมสอบ','var(--ok)'] : disp>=pm-5?['⚠️ เฉียดเกณฑ์ — ดันอีกนิด','#d99700'] : ['❌ ยังต้องเตรียมอีก','var(--bad)'];
+  const ring=`<div style="position:relative;width:150px;height:150px;flex:none">
+    <svg viewBox="0 0 120 120" style="width:150px;height:150px;transform:rotate(-90deg)">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="12"/>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="${rc}" stroke-width="12" stroke-linecap="round"
+        stroke-dasharray="${(2*Math.PI*52).toFixed(1)}" stroke-dashoffset="${(2*Math.PI*52*(1-readiness/100)).toFixed(1)}"/>
+    </svg>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div style="font-size:38px;font-weight:800;font-family:'Sarabun';color:${rc};line-height:1">${readiness}%</div>
+      <div class="muted" style="font-size:12px">ความพร้อม</div></div></div>`;
+  const weakRows = weak.length? weak.map(x=>`<div class="row" style="gap:10px;align-items:center;margin:8px 0">
+      <span style="min-width:210px">${esc(icdLabel(x.k))}</span>
+      ${bar(x.p,accColor(x.p))}<span style="min-width:90px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span>
+      <button class="btn sm sec" onclick="startSystemPractice('${x.k}')">ฝึก</button></div>`).join('')
+    : '<div class="muted">🎉 ทุกระบบที่มีข้อมูลผ่านเกณฑ์แล้ว!</div>';
+  app.innerHTML=`<div class="wrap" style="padding-top:24px">
+    <div class="card">
+      <h2 class="qtitle">📈 Readiness / Pass Prediction</h2>
+      <div class="row" style="gap:24px;align-items:center;flex-wrap:wrap;margin-top:8px">
+        ${ring}
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:20px;font-weight:700;color:${verdict[1]}">${verdict[0]}</div>
+          <div style="margin-top:8px">${r.sims.length?`คะแนน Simulator ล่าสุด: <b style="color:${accColor(disp)}">${disp}%</b> • ดีสุด ${r.bestSimPct}%`:`ความแม่นรวม (จากทุกแบบฝึก): <b style="color:${accColor(disp)}">${disp}%</b>`}</div>
+          <div class="muted" style="margin-top:4px">เกณฑ์ผ่านโดยประมาณ ~${pm}% • ระบบที่ผ่านเกณฑ์ ${passed.length}/${covered.length}</div>
+          ${r.usedFallback?'<div class="muted" style="margin-top:6px;color:#d99700">* ยังไม่มีผล NL2 Simulator — ประเมินจากผลแบบฝึกทั่วไปไปก่อน ทำ Simulator เพื่อความแม่นยำ</div>':''}
+          <div class="row" style="margin-top:12px"><button class="btn" onclick="go('simconfig')">🧪 ทำ Simulator อีกรอบ</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="qtitle">⚠️ ระบบที่ยังไม่ผ่านเกณฑ์ (&lt; ${pm}%)</h2>
+      <div class="muted">เรียงจากอ่อนสุด • นับเฉพาะระบบที่ทำ ≥ 3 ข้อ • กด "ฝึก" เพื่อเจาะระบบนั้น</div>
+      <div style="margin-top:12px">${weakRows}</div>
+    </div>
+    <div class="card">
+      <div class="muted">📌 "ความพร้อม %" = 70% จากคะแนนเทียบเกณฑ์ผ่าน + 30% จากสัดส่วนระบบที่ผ่านเกณฑ์. เกณฑ์ผ่าน ~${pm}% เป็นค่ามาตรฐานที่ใช้กันทั่วไป (ปัจจุบัน ศรว. รายงานผลเป็น Pass/Fail จากการตั้งเกณฑ์มาตรฐาน) — เป็นการประเมินเพื่อฝึกซ้อม ไม่ใช่การรับประกันผลสอบจริง</div>
+      <div class="row" style="margin-top:12px"><button class="btn sec" onclick="go('weakness')">🎯 ดูจุดอ่อนรายหัวข้อ</button>
+        <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+    </div>
+  </div>`;
+}
 
 /* ---------- RESULT ---------- */
 function renderResult(app){
