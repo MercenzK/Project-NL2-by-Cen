@@ -310,6 +310,8 @@ const SUBJECTS = [
   {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'🔪'},
   {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'🤰'},
   {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'🧸'},
+  {id:'emergency', name:'Emergency Medicine',    th:'เวชศาสตร์ฉุกเฉิน', icon:'🚑'},
+  {id:'forensic',  name:'Forensic/Ethics/Law',  th:'นิติเวช-จริยธรรม-กฎหมาย', icon:'⚖️'},
   {id:'past',  name:'Past Exams',                 th:'ข้อสอบเก่า',     icon:'📚'},
 ];
 function quizSubject(q){ return q.subject || (String(q.id).startsWith('set')?'med':'med'); }
