@@ -296,6 +296,12 @@ async function computeAdmin(){
   try{ return (await sha256Hex(user.email.trim().toLowerCase())) === ADMIN_HASH; }catch(e){ return false; }
 }
 function isAdmin(){ return isAdminFlag; }
+/* อนุญาตเฉพาะอีเมล @up.ac.th (หรือแอดมิน) — ใช้บังคับหลังล็อกอินทุกวิธี รวมถึง Google */
+async function emailAllowed(email){
+  if(!email) return false;
+  const e=email.trim().toLowerCase();
+  return e.endsWith('@up.ac.th') || (await sha256Hex(e))===ADMIN_HASH;
+}
 
 /* palette accents per set (for file-card tab labels) */
 const SET_TAGS = {
@@ -373,7 +379,12 @@ async function bestScores(){
 
 /* ---------- auth ---------- */
 async function refreshUser(){
-  if(!CLOUD){ user=null; } else { const {data}=await supa.auth.getSession(); user=data?.session?.user||null; }
+  if(!CLOUD){ user=null; }
+  else {
+    const {data}=await supa.auth.getSession();
+    user=data?.session?.user||null;
+    if(user && !(await emailAllowed(user.email))){ await supa.auth.signOut(); user=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); }
+  }
   isAdminFlag = await computeAdmin();
   renderTopbar(); render();
 }
@@ -423,6 +434,8 @@ function openAuth(){
   function draw(){
     bg.innerHTML=`<div class="modal">
       <div class="tabs"><div class="tab ${tab==='in'?'active':''}" id="tIn">เข้าสู่ระบบ</div><div class="tab ${tab==='up'?'active':''}" id="tUp">สมัครสมาชิก</div></div>
+      <button class="btn" id="googleBtn" style="width:100%;background:#fff;color:#3c4043;border:1px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> เข้าสู่ระบบด้วย Google (@up.ac.th)</button>
+      <div class="muted" style="text-align:center;margin:12px 0 4px;font-size:12px">— หรือใช้อีเมล / รหัสผ่าน —</div>
       <label class="fld">อีเมล</label><input id="em" type="email" placeholder="you@email.com">
       <label class="fld">รหัสผ่าน</label><input id="pw" type="password" placeholder="อย่างน้อย 6 ตัว">
       <div id="msg"></div>
@@ -430,6 +443,13 @@ function openAuth(){
     </div>`;
     bg.querySelector('#tIn').onclick=()=>{tab='in';draw()};
     bg.querySelector('#tUp').onclick=()=>{tab='up';draw()};
+    bg.querySelector('#googleBtn').onclick=async()=>{
+      const msg=bg.querySelector('#msg');
+      if(!CLOUD){ msg.innerHTML='<div class="err">ยังไม่ได้ตั้งค่า Supabase (ดู README)</div>'; return; }
+      msg.innerHTML='<div class="muted">กำลังไปหน้า Google...</div>';
+      const {error}=await supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,queryParams:{hd:'up.ac.th',prompt:'select_account'}}});
+      if(error){ msg.innerHTML='<div class="err">'+error.message+'</div>'; }
+    };
     bg.querySelector('#closeBtn').onclick=()=>bg.remove();
     bg.querySelector('#goBtn').onclick=async()=>{
       const em=bg.querySelector('#em').value.trim(), pw=bg.querySelector('#pw').value; const msg=bg.querySelector('#msg');
@@ -1141,7 +1161,7 @@ function reportError(){
 }
 
 /* ---------- boot ---------- */
-if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ user=sess?.user||null; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
+if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
 refreshUser();
 </script>
 </body>
