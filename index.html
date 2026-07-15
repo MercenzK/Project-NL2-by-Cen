@@ -188,6 +188,9 @@ html[data-theme="dark"] .btn.sec:hover{background:#22303d}
 html[data-theme="dark"] .btn.outline{color:var(--navy2);border-color:var(--navy2)}
 html[data-theme="dark"] .progressbar{background:#26333f}
 html[data-theme="dark"] .modal{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .tab{background:#1b2732;color:var(--ink)}
+html[data-theme="dark"] .tab.active{background:var(--navy);color:#0e151d}
+html[data-theme="dark"] label.fld{color:var(--navy2)}
 html[data-theme="dark"] .qimg{background:#fff}
 html[data-theme="dark"] .file-card::before{background:var(--navy2)}
 html[data-theme="dark"] .file-card .tab{color:#0e151d}
@@ -218,23 +221,23 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
     </div>
     <div class="search">
       <span class="ic">🔍</span>
-      <input id="searchInput" type="search" placeholder="ค้นหาข้อสอบ, ระบบ, หรือคีย์เวิร์ด (เช่น Sepsis, ECG, Stroke, Dengue)..." onkeydown="if(event.key==='Enter')doSearch()">
+      <input id="searchInput" type="search" placeholder="Search quizzes, systems, or keywords (e.g. Sepsis, ECG, Stroke, Dengue)..." onkeydown="if(event.key==='Enter')doSearch()">
     </div>
     <div class="nav">
       <span class="pill" id="modePill"></span>
-      <button onclick="scrollToCat()">หมวดหมู่</button>
-      <button onclick="go('history')">สถิติของฉัน</button>
+      <button onclick="scrollToCat()">📚 Categories</button>
       <button onclick="go('systems')">🫀 By System</button>
-      <button onclick="go('study')">📖 สรุปสอบ</button>
-      <button onclick="go('weakness')">🎯 My Weakness</button>
       <button onclick="startMistakes()">🔁 Redo Mistakes</button>
       <button onclick="go('simconfig')">🧪 NL2 Simulator</button>
+      <button onclick="go('history')">📊 My Stats</button>
       <button onclick="go('readiness')">📈 Readiness</button>
       <button onclick="go('leaderboard')">🏆 Leaderboard</button>
-      <button onclick="openProfile()">โปรไฟล์</button>
-      <button id="installBtn" onclick="installApp()" style="display:none" title="ติดตั้งเป็นแอป">⬇️ ติดตั้งแอป</button>
-      <button id="themeBtn" onclick="toggleTheme()" title="สลับโหมดมืด/สว่าง">🌙</button>
-      <button id="authBtn" onclick="openAuth()">เข้าสู่ระบบ</button>
+      <button onclick="go('study')">📖 Summary</button>
+      <button onclick="go('weakness')">🎯 My Weakness</button>
+      <button id="installBtn" onclick="installApp()" style="display:none" title="Install app">⬇️ Install</button>
+      <button id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light">🌙</button>
+      <button onclick="openProfile()">👤 Profile</button>
+      <button id="authBtn" onclick="openAuth()">Sign in</button>
     </div>
   </div>
 </header>
@@ -395,10 +398,10 @@ function displayName(){
 }
 function renderTopbar(){
   const pill=document.getElementById('modePill');
-  pill.textContent = user ? '👤 '+displayName() : '☁️ ยังไม่ล็อกอิน';
-  pill.style.cursor='pointer'; pill.title='แก้ชื่อที่แสดง'; pill.onclick=openProfile;
+  pill.textContent = user ? '👤 '+displayName() : '☁️ Not signed in';
+  pill.style.cursor='pointer'; pill.title='Edit display name'; pill.onclick=openProfile;
   const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
-  document.getElementById('authBtn').textContent = user? 'ออกจากระบบ' : 'เข้าสู่ระบบ / สมัคร';
+  document.getElementById('authBtn').textContent = user? 'Sign out' : 'Sign in';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
 async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; renderTopbar(); go('home'); }
@@ -525,6 +528,7 @@ async function renderHome(app){
   const totalQ=qs.reduce((s,q)=>s+q.questions.length,0);
 
   app.innerHTML=`
+  ${resumeBannerHTML()}
   ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
 
   <div class="hero"><div class="wrap">
@@ -662,11 +666,36 @@ function buildSession(quiz,opt){
   const secPer=opt.secPerItem||60;
   return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,sim:!!opt.sim,items,answers:{},flags:{},submitted:false,timeLeft:((opt.mode==='exam'&&opt.timer)||opt.sim)?Math.round(items.length*secPer):null};
 }
+/* ---------- ทำต่อ (resume unfinished quiz) ---------- */
+const RESUME_KEY='resumeSession';
+function resumeOwner(){ return (user&&user.email)||'guest'; }
+function persistSession(){
+  const s=state.session;
+  if(!s || s.submitted){ try{localStorage.removeItem(RESUME_KEY);}catch(e){} return; }
+  try{ LS.set(RESUME_KEY,{owner:resumeOwner(),ts:Date.now(),s:{quizId:s.quizId,quizTitle:s.quizTitle,mode:s.mode,sim:s.sim,items:s.items,answers:s.answers,flags:s.flags,submitted:false,timeLeft:s.timeLeft}}); }catch(e){}
+}
+function clearResume(){ try{localStorage.removeItem(RESUME_KEY);}catch(e){} }
+function savedResume(){ const r=LS.get(RESUME_KEY,null); if(!r||!r.s||r.owner!==resumeOwner())return null; return r; }
+function resumeQuiz(){ const r=savedResume(); if(!r)return; state.session=r.s; go('quiz'); if(state.session.timeLeft!=null)startTimer(); }
+function exitQuiz(){ if(confirm('ออกจากข้อสอบ? ความคืบหน้าที่บันทึกไว้จะถูกลบ')){ clearResume(); go('home'); } }
+function resumeBannerHTML(){
+  const r=savedResume(); if(!r)return '';
+  const s=r.s; const answered=Object.keys(s.answers||{}).length;
+  return `<div class="wrap" style="padding-top:16px"><div class="card" style="border-left:5px solid var(--teal);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="flex:1;min-width:200px"><b style="color:var(--navy)">▶ ทำข้อสอบต่อ (Continue)</b><div class="muted">${esc(s.quizTitle||'ข้อสอบ')} — ตอบแล้ว ${answered}/${(s.items||[]).length} ข้อ${s.mode==='exam'?' • Exam':''}</div></div>
+    <button class="btn" onclick="resumeQuiz()">ทำต่อ</button>
+    <button class="btn sec" onclick="clearResume();render()">ลบทิ้ง</button>
+  </div></div>`;
+}
+window.addEventListener('beforeunload',persistSession);
+window.addEventListener('pagehide',persistSession);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden')persistSession(); });
+
 function beginQuiz(){
   const q=findQuiz(state.quiz);
   const opt={mode:val('mode'),count:val('count'),shuffleQ:chk('shuffleQ'),shuffleO:chk('shuffleO'),timer:chk('timer')};
   showLoader('กำลังสุ่มข้อสอบ...');
-  setTimeout(()=>{ state.session=buildSession(q,opt); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },550);
+  setTimeout(()=>{ state.session=buildSession(q,opt); persistSession(); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },550);
 }
 let timerInt=null;
 function startTimer(){ clearInterval(timerInt); timerInt=setInterval(()=>{ const s=state.session; if(!s||s.submitted){clearInterval(timerInt);return;}
@@ -689,7 +718,7 @@ function renderQuiz(app){
    <div class="card">
      ${s.mode==='exam'&&!s.submitted?`<button class="btn" onclick="confirmSubmit()">✅ ส่งคำตอบ</button>`:''}
      ${s.mode==='practice'?`<button class="btn" onclick="finishPractice()">📊 ดูสรุปคะแนน / บันทึก</button>`:''}
-     <button class="btn sec" onclick="if(confirm('ออกจากข้อสอบ? ความคืบหน้าจะไม่ถูกบันทึก'))go('home')">ออก</button>
+     <button class="btn sec" onclick="exitQuiz()">ออก</button>
    </div></div>`;
   const list=document.getElementById('qlist'); s.items.forEach((q,i)=>list.appendChild(qCard(q,i)));
   updateFlagCount();
@@ -697,7 +726,7 @@ function renderQuiz(app){
 function updateFlagCount(){ const s=state.session; const fc=document.getElementById('flagcnt'); if(!fc)return;
   const n=s.flags?Object.values(s.flags).filter(Boolean).length:0; fc.textContent=n?('🚩 '+n):''; }
 function toggleFlag(i){ const s=state.session; if(!s.flags)s.flags={}; s.flags[i]=!s.flags[i];
-  const list=document.getElementById('qlist'); list.replaceChild(qCard(s.items[i],i),list.children[i]); updateFlagCount(); }
+  const list=document.getElementById('qlist'); list.replaceChild(qCard(s.items[i],i),list.children[i]); updateFlagCount(); persistSession(); }
 function jumpTo(i){ __closeSubmit(); const el=document.getElementById('qc'+i); if(!el)return;
   el.scrollIntoView({behavior:'smooth',block:'center'}); const old=el.style.boxShadow; el.style.boxShadow='0 0 0 3px var(--teal)';
   setTimeout(()=>{ el.style.boxShadow=old||''; },1300); }
@@ -745,13 +774,16 @@ function selectAns(i,j){ const s=state.session;
   const cnt=document.getElementById('cnt'); if(cnt)cnt.textContent=`${answered}/${s.items.length}`;
   const pb=document.getElementById('pbar'); if(pb)pb.style.width=(answered/s.items.length*100)+'%';
   const list=document.getElementById('qlist'); list.replaceChild(qCard(state.session.items[i],i),list.children[i]);
+  persistSession();
 }
 function answerLog(s){ return s.items.map((q,i)=>({k:q.key,t:q.topic,c:s.answers[i]===q.ans,a:s.answers[i]!==undefined})); }
 async function submitExam(){ const s=state.session; if(s.submitted)return; s.submitted=true; clearInterval(timerInt);
   let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score;
+  clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
 async function finishPractice(){ const s=state.session; let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score; s.submitted=true;
+  clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
 
@@ -917,7 +949,7 @@ function startSimulator(){
   const final=shuffle(picks).slice(0,size);
   window.__sim={id:'nl2sim',title:'🧪 NL2 Simulator ('+final.length+' ข้อ)',subject:'past',questions:final};
   showLoader('กำลังจัดชุดข้อสอบตาม blueprint แพทยสภา...');
-  setTimeout(()=>{ state.session=buildSession(window.__sim,{mode:'exam',count:'all',shuffleQ:true,shuffleO:true,timer:true,sim:true,secPerItem:90}); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },650);
+  setTimeout(()=>{ state.session=buildSession(window.__sim,{mode:'exam',count:'all',shuffleQ:true,shuffleO:true,timer:true,sim:true,secPerItem:90}); persistSession(); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },650);
 }
 
 /* ---------- Practice by Organ System ---------- */
