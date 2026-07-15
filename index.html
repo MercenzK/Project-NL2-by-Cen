@@ -782,7 +782,7 @@ async function submitExam(){ const s=state.session; if(s.submitted)return; s.sub
   clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
-async function finishPractice(){ const s=state.session; let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score; s.submitted=true;
+async function finishPractice(){ const s=state.session; if(s.submitted)return; s.submitted=true; let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score;
   clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
