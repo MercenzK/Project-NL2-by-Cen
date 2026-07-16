@@ -39,6 +39,14 @@ header{position:sticky;top:0;z-index:30;background:rgba(18,57,95,.98);backdrop-f
 .nav button{background:transparent;color:#dbe7f3;border:none;font-family:inherit;font-size:15px;font-weight:400;cursor:pointer;padding:7px 12px;border-radius:8px}
 .nav button:hover{background:rgba(255,255,255,.12);color:#fff}
 .pill{background:rgba(255,255,255,.16);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:400}
+.navtoggle{display:none;background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:10px;font-size:20px;line-height:1;padding:8px 13px;cursor:pointer}
+@media(max-width:860px){
+  .navtoggle{display:inline-flex;align-items:center}
+  .nav{display:none;order:5;width:100%;flex-direction:column;align-items:stretch;gap:2px;margin-top:6px}
+  .nav.open{display:flex}
+  .nav button{width:100%;text-align:left;padding:11px 12px;font-size:16px}
+  .nav .pill{align-self:flex-start;margin-bottom:4px}
+}
 .btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-weight:500;cursor:pointer;font-size:16px;font-family:inherit;transition:.15s;box-shadow:0 2px 8px rgba(18,179,160,.25)}
 .btn:hover{background:var(--teal-d);transform:translateY(-1px)}
 .btn.outline{background:transparent;color:var(--navy);border:2px solid var(--navy);box-shadow:none}
@@ -223,6 +231,7 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
       <span class="ic">🔍</span>
       <input id="searchInput" type="search" placeholder="Search quizzes, systems, or keywords (e.g. Sepsis, ECG, Stroke, Dengue)..." onkeydown="if(event.key==='Enter')doSearch()">
     </div>
+    <button id="navToggle" class="navtoggle" onclick="toggleNav()" aria-label="เมนู">☰</button>
     <div class="nav">
       <span class="pill" id="modePill"></span>
       <button onclick="scrollToCat()">📚 Categories</button>
@@ -529,6 +538,7 @@ async function renderHome(app){
 
   app.innerHTML=`
   ${resumeBannerHTML()}
+  ${streakGoalHTML(at)}
   ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
 
   <div class="hero"><div class="wrap">
@@ -779,11 +789,11 @@ function selectAns(i,j){ const s=state.session;
 function answerLog(s){ return s.items.map((q,i)=>({k:q.key,t:q.topic,c:s.answers[i]===q.ans,a:s.answers[i]!==undefined})); }
 async function submitExam(){ const s=state.session; if(s.submitted)return; s.submitted=true; clearInterval(timerInt);
   let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score;
-  clearResume();
+  updateSRS(s); clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
 async function finishPractice(){ const s=state.session; if(s.submitted)return; s.submitted=true; let score=0; s.items.forEach((q,i)=>{if(s.answers[i]===q.ans)score++;}); s.score=score;
-  clearResume();
+  updateSRS(s); clearResume();
   await saveAttempt({quiz_id:s.quizId,quiz_title:s.quizTitle,score,total:s.items.length,answers:answerLog(s)});
   go('result'); }
 
@@ -853,12 +863,16 @@ async function analytics(){
 
 async function startMistakes(){
   if(!requireLogin()) return;
-  showLoader('กำลังรวบรวมข้อที่เคยพลาด...');
-  const {latest}=await analytics(); const idx=QIDX(); const qs=[];
-  Object.keys(latest).forEach(k=>{ if(!latest[k].c && idx[k]) qs.push(idx[k].q); });
+  showLoader('กำลังจัดคิวทบทวน (SRS)...');
+  const {latest}=await analytics(); const idx=QIDX(); const m=srsMap(); const now=Date.now();
+  const keys=new Set();
+  Object.keys(latest).forEach(k=>{ if(!latest[k].c && idx[k]) keys.add(k); });               // ข้อที่ล่าสุดยังตอบผิด
+  Object.keys(m).forEach(k=>{ if(idx[k] && (m[k].box||0)<5 && m[k].due<=now) keys.add(k); });  // ข้อที่ถึงกำหนดทบทวน
+  const arr=[...keys].filter(k=>idx[k]).sort((a,b)=>{ const A=m[a]||{box:0,due:0},B=m[b]||{box:0,due:0}; return ((A.box||0)-(B.box||0))||((A.due||0)-(B.due||0)); });
+  const qs=arr.map(k=>idx[k].q);
   hideLoader();
-  if(!qs.length){ alert('ยังไม่มีข้อที่ยังตอบผิดค้างอยู่ 🎉\nลองทำข้อสอบสักชุด แล้วข้อที่พลาดจะถูกเก็บมาให้ทบทวนที่นี่'); return; }
-  window.__mistakes={id:'mistakes',title:'🔁 Redo My Mistakes ('+qs.length+' ข้อ)',subject:'past',questions:shuffle(qs)};
+  if(!qs.length){ alert('ไม่มีข้อค้างทบทวนตอนนี้ 🎉\nทำข้อสอบเพิ่ม แล้วข้อที่พลาด/ถึงกำหนดจะถูกจัดคิวมาทบทวนแบบ spaced repetition'); return; }
+  window.__mistakes={id:'mistakes',title:'🔁 Smart Review — SRS ('+qs.length+' ข้อ)',subject:'past',questions:qs};
   go('config',{quiz:'mistakes'});
 }
 
@@ -1193,6 +1207,38 @@ function reportError(){
 }
 
 /* ---------- boot ---------- */
+/* ---------- hamburger nav (mobile) ---------- */
+function toggleNav(){ const n=document.querySelector('.nav'); if(n)n.classList.toggle('open'); }
+(function(){ const n=document.querySelector('.nav'); if(n)n.addEventListener('click',e=>{ if(e.target.closest('button')||e.target.closest('.pill'))n.classList.remove('open'); }); })();
+
+/* ---------- daily goal + streak ---------- */
+function dKey(d){ const x=new Date(d); return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); }
+function dailyGoal(){ return LS.get('dailyGoal',30); }
+function setGoal(){ const g=prompt('ตั้งเป้าจำนวนข้อต่อวัน (ข้อ)',dailyGoal()); if(g!==null&&!isNaN(g)&&+g>0){ LS.set('dailyGoal',Math.round(+g)); render(); } }
+function computeStreak(at){ const days=new Set((at||[]).map(a=>dKey(a.created_at))); let s=0,d=new Date(); if(!days.has(dKey(d)))d.setDate(d.getDate()-1); while(days.has(dKey(d))){ s++; d.setDate(d.getDate()-1); } return s; }
+function todayCount(at){ const tk=dKey(new Date()); return (at||[]).filter(a=>dKey(a.created_at)===tk).reduce((s,a)=>s+a.total,0); }
+function streakGoalHTML(at){
+  const st=computeStreak(at), done=todayCount(at), goal=dailyGoal(), pct=Math.min(100,Math.round(done/goal*100));
+  return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="font-size:30px">🔥</div>
+    <div><div style="font-size:22px;font-weight:800;color:var(--navy);line-height:1.1">${st} วัน</div><div class="muted" style="font-size:13px">streak ต่อเนื่อง</div></div>
+    <div style="flex:1;min-width:180px">
+      <div class="row" style="justify-content:space-between"><span class="muted">เป้าวันนี้</span><span style="font-weight:700;color:var(--navy)">${done}/${goal} ข้อ${done>=goal?' ✅':''}</span></div>
+      <div class="progressbar" style="margin-top:6px"><div style="width:${pct}%"></div></div>
+    </div>
+    <button class="btn sec" style="padding:6px 14px" onclick="setGoal()">ตั้งเป้า</button>
+  </div></div>`;
+}
+
+/* ---------- spaced repetition (Leitner, localStorage) ---------- */
+function srsMap(){ return LS.get('srs',{}); }
+function updateSRS(session){ const m=srsMap(), now=Date.now(), IV=[0,1,3,7,16,35];
+  (session.items||[]).forEach((it,i)=>{ const ans=session.answers[i]; if(ans===undefined||!it.key)return;
+    const cur=m[it.key]||{box:0}; const box=(ans===it.ans)?Math.min((cur.box||0)+1,5):1;
+    m[it.key]={box,due:now+IV[box]*86400000,last:now}; });
+  LS.set('srs',m);
+}
+
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
 refreshUser();
 </script>
