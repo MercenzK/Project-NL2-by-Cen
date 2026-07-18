@@ -351,6 +351,47 @@ function qkey(text){ let h=5381; const s=String(text||''); for(let i=0;i<s.lengt
 let __qidx=null;
 function QIDX(){ if(__qidx)return __qidx; __qidx={}; allQuizzes().forEach(qz=>{ (qz.questions||[]).forEach(x=>{ __qidx[qkey(x.q)]={q:x, subject:quizSubject(qz), topic:x.topic, quizTitle:qTitle(qz)}; }); }); return __qidx; }
 function resetIdx(){ __qidx=null; }
+/* ---------- โหลดคลังข้อสอบจาก Supabase (แหล่งหลัก) — ถ้าล้มเหลว/ว่าง จะ fallback ไป data.js ---------- */
+async function loadCloudQuestions(){
+  if(!CLOUD || !supa) return false;                       // ไม่มีคลาวด์ → ใช้ data.js เดิม
+  const withTimeout=(p,ms)=>Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+  try{
+    // 1) ดึงรายชื่อชุดข้อสอบ (เรียงตาม sort)
+    const setsRes = await withTimeout(supa.from('quiz_sets').select('id,title,subject,sort').order('sort',{ascending:true}), 15000);
+    if(setsRes.error) throw setsRes.error;
+    const setRows = setsRes.data||[];
+    if(!setRows.length) return false;                      // คลาวด์ยังว่าง → ใช้ data.js
+    // 2) ดึงข้อสอบทั้งหมด แบ่งหน้าครั้งละ 1000 (Supabase จำกัดต่อ query)
+    const qById={}; const PAGE=1000;
+    for(let from=0;;from+=PAGE){
+      const r = await withTimeout(
+        supa.from('questions').select('set_id,topic,q,choices,ans,exp,img,sys,sort')
+          .order('set_id',{ascending:true}).order('sort',{ascending:true}).range(from,from+PAGE-1), 20000);
+      if(r.error) throw r.error;
+      const rows=r.data||[];
+      rows.forEach(x=>{ (qById[x.set_id]||(qById[x.set_id]=[])).push(x); });
+      if(rows.length<PAGE) break;
+    }
+    // 3) ประกอบให้เป็นรูปแบบเดียวกับ data.js: [{id,title,subject,questions:[{topic,q,choices,ans,exp,img,sys}]}]
+    const built = setRows.map(s=>({
+      id:s.id, title:s.title, subject:s.subject||undefined,
+      questions:(qById[s.id]||[]).slice().sort((a,b)=>(a.sort||0)-(b.sort||0)).map(x=>({
+        topic:x.topic||undefined, q:x.q, choices:x.choices, ans:x.ans,
+        exp:x.exp||undefined, img:x.img||undefined, sys:x.sys||undefined
+      }))
+    }));
+    const total = built.reduce((n,s)=>n+s.questions.length,0);
+    if(!total) return false;                               // กันพลาด: ไม่มีข้อเลย → ใช้ data.js
+    window.QUIZ_DATA = built;                              // ✅ ใช้คลาวด์เป็นแหล่งหลัก
+    resetIdx();
+    window.__cloudQuestions = true;
+    console.log('โหลดข้อสอบจากคลาวด์สำเร็จ:', built.length, 'ชุด /', total, 'ข้อ');
+    return true;
+  }catch(e){
+    console.warn('โหลดข้อสอบจากคลาวด์ไม่สำเร็จ — ใช้ data.js แทน:', e.message||e);
+    return false;
+  }
+}
 /* map a fine topic to a broad clinical system/subject bucket */
 function sysBucket(t){ t=(t||'').toLowerCase();
   if(t.includes('pediatr')||t.includes('neonat')) return 'Pediatrics';
@@ -1240,7 +1281,13 @@ function updateSRS(session){ const m=srsMap(), now=Date.now(), IV=[0,1,3,7,16,35
 }
 
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
-refreshUser();
+/* ---------- บูต: โหลดคลังข้อสอบจากคลาวด์ก่อน (ถ้าล้มเหลวใช้ data.js) แล้วค่อย render ---------- */
+(async()=>{
+  try{ showLoader('กำลังโหลดคลังข้อสอบ...'); await loadCloudQuestions(); }
+  catch(e){ console.warn('boot: cloud questions failed', e); }
+  finally{ hideLoader(); }
+  refreshUser();
+})();
 </script>
 </body>
 </html>
