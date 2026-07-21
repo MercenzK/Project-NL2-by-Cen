@@ -203,6 +203,15 @@ html[data-theme="dark"] .qimg{background:#fff}
 html[data-theme="dark"] .file-card::before{background:var(--navy2)}
 html[data-theme="dark"] .file-card .tab{color:#0e151d}
 html[data-theme="dark"] .file-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
+/* footer: โหมดสว่าง --navy เป็นน้ำเงินเข้ม แต่โหมดมืด --navy ถูกกลับเป็นฟ้าอ่อน (#8fbde8)
+   พื้นหลังเลยสว่างขึ้นมาชนกับตัวหนังสือสีอ่อนที่ hard-code ไว้ → อ่านไม่ออก
+   จึงกำหนดพื้นหลัง/สีตัวอักษรของ footer ในโหมดมืดแยกออกมา ไม่ผูกกับ --navy */
+html[data-theme="dark"] footer{background:#111c26;color:#c6d6e6;border-top:1px solid var(--line)}
+html[data-theme="dark"] footer h4{color:#eaf2f9}
+html[data-theme="dark"] footer a,html[data-theme="dark"] footer span{color:#a9c0d6}
+html[data-theme="dark"] footer a:hover{color:#7ff0dd}
+html[data-theme="dark"] footer .muted{color:#8aa6c0!important}
+html[data-theme="dark"] footer .copy{border-top-color:rgba(255,255,255,.14)}
 </style>
 <script>
 (function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
@@ -720,7 +729,7 @@ function buildSession(quiz,opt){
   items=items.map(q=>{ let ch=q.choices.map((c,i)=>({c,orig:i})); if(opt.shuffleO)ch=shuffle(ch);
     return {id:q.id,key:qkey(q.q),topic:q.topic,q:q.q,img:q.img,choices:ch.map(x=>x.c),ans:ch.findIndex(x=>x.orig===q.ans),exp:q.exp}; });
   const secPer=opt.secPerItem||60;
-  return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,sim:!!opt.sim,items,answers:{},flags:{},submitted:false,timeLeft:((opt.mode==='exam'&&opt.timer)||opt.sim)?Math.round(items.length*secPer):null};
+  return {quizId:quiz.id,quizTitle:qTitle(quiz),mode:opt.mode,sim:!!opt.sim,items,answers:{},flags:{},times:{},__startedAt:Date.now(),submitted:false,timeLeft:((opt.mode==='exam'&&opt.timer)||opt.sim)?Math.round(items.length*secPer):null};
 }
 /* ---------- ทำต่อ (resume unfinished quiz) ---------- */
 const RESUME_KEY='resumeSession';
@@ -728,7 +737,7 @@ function resumeOwner(){ return (user&&user.email)||'guest'; }
 function persistSession(){
   const s=state.session;
   if(!s || s.submitted){ try{localStorage.removeItem(RESUME_KEY);}catch(e){} return; }
-  try{ LS.set(RESUME_KEY,{owner:resumeOwner(),ts:Date.now(),s:{quizId:s.quizId,quizTitle:s.quizTitle,mode:s.mode,sim:s.sim,items:s.items,answers:s.answers,flags:s.flags,submitted:false,timeLeft:s.timeLeft}}); }catch(e){}
+  try{ LS.set(RESUME_KEY,{owner:resumeOwner(),ts:Date.now(),s:{quizId:s.quizId,quizTitle:s.quizTitle,mode:s.mode,sim:s.sim,items:s.items,answers:s.answers,flags:s.flags,times:s.times,submitted:false,timeLeft:s.timeLeft}}); }catch(e){}
 }
 function clearResume(){ try{localStorage.removeItem(RESUME_KEY);}catch(e){} }
 function savedResume(){ const r=LS.get(RESUME_KEY,null); if(!r||!r.s||r.owner!==resumeOwner())return null; return r; }
@@ -826,11 +835,40 @@ function qCard(q,i){
 }
 function selectAns(i,j){ const s=state.session;
   if(s.mode==='practice'){ if(s.answers[i]!==undefined)return; s.answers[i]=j; } else { if(s.submitted)return; s.answers[i]=j; }
+  recordTime(s,i);
   const answered=Object.keys(s.answers).length;
   const cnt=document.getElementById('cnt'); if(cnt)cnt.textContent=`${answered}/${s.items.length}`;
   const pb=document.getElementById('pbar'); if(pb)pb.style.width=(answered/s.items.length*100)+'%';
   const list=document.getElementById('qlist'); list.replaceChild(qCard(state.session.items[i],i),list.children[i]);
   persistSession();
+}
+/* ---------- per-question timing (สัญญาณ "ไม่มั่นใจ" แบบไม่รบกวนผู้ใช้) ----------
+   หน้าทำข้อสอบเป็น list เลื่อนยาว ไม่ใช่ทีละข้อ จึงวัดเวลาแบบ "ช่วงห่างระหว่างการตอบ"
+   = เวลาที่ตอบข้อนี้ ลบเวลาที่ตอบข้อก่อนหน้า (หรือเวลาเปิดชุด ถ้าเป็นข้อแรก)
+   ตัดค่าที่เกิน AWAY_CAP ทิ้ง เพราะแปลว่าลุกไปทำอย่างอื่น ไม่ใช่ว่าคิดนาน           */
+const AWAY_CAP = 300;                       // วินาที — เกินนี้ถือว่าไม่ได้อยู่หน้าจอ
+function recordTime(s,i){
+  if(!s.times) s.times={};
+  const now=Date.now();
+  const prev=s.__lastAnsAt||s.__startedAt||now;
+  s.__lastAnsAt=now;
+  if(s.times[i]!==undefined) return;         // เก็บครั้งแรกที่ตอบเท่านั้น
+  const sec=Math.round((now-prev)/1000);
+  s.times[i] = (sec>=0 && sec<=AWAY_CAP) ? sec : null;   // null = ใช้เป็นสัญญาณไม่ได้
+}
+/* median เวลาต่อข้อของผู้ใช้เอง (rolling 200 ค่าล่าสุด) — เทียบกับตัวเอง ไม่ใช่ค่าคงที่
+   เพราะความเร็วอ่านโจทย์ของแต่ละคนต่างกันมาก                                        */
+function paceStats(){ return LS.get('pace',{samples:[]}); }
+function pushPace(times){
+  const p=paceStats();
+  const add=Object.values(times||{}).filter(v=>typeof v==='number'&&v>2);  // <2 วิ = กดรัว ไม่นับ
+  p.samples=[...add,...(p.samples||[])].slice(0,200);
+  LS.set('pace',p);
+}
+function paceMedian(){
+  const arr=(paceStats().samples||[]).slice().sort((a,b)=>a-b);
+  if(arr.length<20) return null;             // ตัวอย่างน้อยเกินไป → ยังไม่ใช้สัญญาณเวลา
+  return arr[Math.floor(arr.length/2)];
 }
 function answerLog(s){ return s.items.map((q,i)=>({k:q.key,t:q.topic,c:s.answers[i]===q.ans,a:s.answers[i]!==undefined})); }
 async function submitExam(){ const s=state.session; if(s.submitted)return; s.submitted=true; clearInterval(timerInt);
@@ -895,13 +933,18 @@ function classifyICD(t){ t=(t||'').toLowerCase();
 
 async function analytics(){
   const at = await listAttempts();
+  const idx = QIDX();
   const latest={}, topic={}, sys={};
   at.forEach(a=>{ (a.answers||[]).forEach(e=>{
     if(!e || !e.k) return;                       // skip old-format entries
     if(!(e.k in latest)) latest[e.k]={c:!!e.c, t:e.t};   // attempts are newest-first
     if(e.a){                                     // count accuracy over answered only
       const tp=e.t||'อื่นๆ'; (topic[tp]=topic[tp]||{n:0,ok:0}); topic[tp].n++; if(e.c)topic[tp].ok++;
-      const b=sysBucket(e.t); (sys[b]=sys[b]||{n:0,ok:0}); sys[b].n++; if(e.c)sys[b].ok++;
+      // bucket by ICD chapter — same taxonomy as Practice by Organ System, so
+      // every weakness row maps 1:1 onto a practice set the user can jump into
+      const rec=idx[e.k];
+      const b = rec ? (rec.q.sys||classifyICD(rec.topic)) : classifyICD(e.t);
+      (sys[b]=sys[b]||{n:0,ok:0}); sys[b].n++; if(e.c)sys[b].ok++;
     }
   }); });
   return {latest, topic, sys};
@@ -937,11 +980,13 @@ async function renderWeakness(app){
       <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
   }
   const sysRows=sysArr.map(x=>`<div style="margin:10px 0">
-      <div class="row" style="gap:10px;align-items:center"><b style="min-width:190px">${esc(x.k)}</b>
-      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span></div></div>`).join('');
+      <div class="row" style="gap:10px;align-items:center"><b style="min-width:190px">${esc(icdLabel(x.k))}</b>
+      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span>
+      <button class="btn sm" onclick="startSystemPractice('${x.k}')">ฝึกหมวดนี้</button></div></div>`).join('');
   const topicRows=weakTopics.length? weakTopics.map(x=>`<div style="margin:8px 0">
       <div class="row" style="gap:10px;align-items:center"><span style="min-width:190px">${esc(x.k)}</span>
-      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span></div></div>`).join('')
+      ${bar(x.p,accColor(x.p))}<span style="min-width:96px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span>
+      <button class="btn sm" onclick="startTopicPractice(${JSON.stringify(x.k).replace(/"/g,'&quot;')})">ฝึกหัวข้อนี้</button></div></div>`).join('')
     : '<div class="muted">ยังมีข้อมูลไม่พอต่อหัวข้อ (ต้องทำอย่างน้อย 3 ข้อต่อหัวข้อ)</div>';
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
     <div class="card">
@@ -1037,10 +1082,18 @@ function startSystemPractice(id){
   window.__sys={id:'sysquiz',title:'🫀 '+label,subject:'past',questions:shuffle(qs)};
   go('config',{quiz:'sysquiz'});
 }
+/* ฝึกเฉพาะหัวข้อย่อย (เรียกจากหน้า My Weakness) */
+function startTopicPractice(topic){
+  if(!requireLogin()) return;
+  const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if((x.topic||'อื่นๆ')===topic) qs.push(x); }));
+  if(!qs.length){ alert('ยังไม่มีข้อในหัวข้อนี้'); return; }
+  window.__sys={id:'sysquiz',title:'🔎 '+topic,subject:'past',questions:shuffle(qs)};
+  go('config',{quiz:'sysquiz'});
+}
 
 /* ---------- Readiness / Pass prediction ---------- */
 const PASS_MARK = 0.60;   // เกณฑ์ผ่านมาตรฐาน ~60% (ศรว. รายงานผล Pass/Fail; ปรับได้)
-function icdLabel(id){ if(id==='general')return 'หมวด 1 — ภาวะปกติ/ดูแลทั่วไป'; if(id==='emergency')return 'ภาวะฉุกเฉิน'; const s=NL2_SYS.find(x=>x.id===id); return s?s.label:id; }
+function icdLabel(id){ if(id==='general')return 'หมวด 1 — ภาวะปกติ/ดูแลทั่วไป'; if(id==='emergency')return 'ภาวะฉุกเฉิน'; if(id==='flex')return 'อื่นๆ / คร่อมระบบ'; const s=NL2_SYS.find(x=>x.id===id); return s?s.label:id; }
 async function readinessData(){
   const at=await listAttempts();
   const sims=at.filter(a=>a.quiz_id==='nl2sim');
@@ -1117,6 +1170,16 @@ async function renderReadiness(app){
 }
 
 /* ---------- RESULT ---------- */
+/* แจ้งจำนวน "ตอบถูกแต่ไม่มั่นใจ" — ข้อพวกนี้ถูกกันไว้ในคิวทบทวน ไม่ปล่อยหลุด */
+function shakyHTML(s){
+  const med=paceMedian(); const idxs=[];
+  (s.items||[]).forEach((it,i)=>{ if(s.answers[i]===undefined)return;
+    if(gradeAnswer(s,i,med)==='hard') idxs.push(i); });
+  if(!idxs.length) return '';
+  return `<div class="pill" style="margin-top:12px;background:var(--goldbg);color:var(--gold-d);display:inline-block">
+    ⚠️ ตอบถูกแบบไม่มั่นใจ ${idxs.length} ข้อ — ถูกกันไว้ในคิวทบทวนแล้ว
+    <span class="muted" style="font-weight:400">(${idxs.map(i=>i+1).join(', ')})</span></div>`;
+}
 function renderResult(app){
   const s=state.session; const pct=Math.round(s.score/s.items.length*100);
   const backId = (s.quizId==='combined'||s.quizId==='search')? s.quizId : s.quizId;
@@ -1126,6 +1189,7 @@ function renderResult(app){
      <div class="scorebig">${s.score}/${s.items.length}</div>
      <div class="qtitle" style="color:${pct>=60?'var(--ok)':'var(--bad)'};font-size:30px">${pct}%</div>
      <div class="muted">${pct>=80?'เยี่ยมมาก! ชีพจรความขยันแรงดี ❤️':pct>=60?'ผ่านเกณฑ์ ทบทวนข้อที่ผิดต่อ':'ทบทวนเฉลยด้านล่างแล้วลองใหม่'}</div>
+     ${shakyHTML(s)}
      <div class="row" style="justify-content:center;margin-top:16px">
        <button class="btn" onclick="go('config',{quiz:'${backId}'})">🔄 ทำใหม่</button>
        <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
@@ -1394,11 +1458,33 @@ async function setReportStatus(id,st){
 
 /* ---------- spaced repetition (Leitner, localStorage) ---------- */
 function srsMap(){ return LS.get('srs',{}); }
+/* จัดเกรดคำตอบ 1 ข้อ: 'again' | 'hard' | 'good'
+   'hard' = ตอบถูกแบบไม่มั่นใจ (ติดธง หรือใช้เวลานานผิดปกติ) — ยังถือว่าเป็นจุดอ่อน  */
+function gradeAnswer(session,i,med){
+  const it=session.items[i], ans=session.answers[i];
+  if(ans!==it.ans) return 'again';
+  if(session.flags && session.flags[i]) return 'hard';          // 🚩 ผู้ใช้บอกเองว่าไม่ชัวร์
+  const t=session.times ? session.times[i] : null;
+  if(med && typeof t==='number' && t > med*2) return 'hard';    // ช้ากว่า median ตัวเอง 2 เท่า
+  return 'good';
+}
 function updateSRS(session){ const m=srsMap(), now=Date.now(), IV=[0,1,3,7,16,35];
+  const med=paceMedian();
   (session.items||[]).forEach((it,i)=>{ const ans=session.answers[i]; if(ans===undefined||!it.key)return;
-    const cur=m[it.key]||{box:0}; const box=(ans===it.ans)?Math.min((cur.box||0)+1,5):1;
-    m[it.key]={box,due:now+IV[box]*86400000,last:now}; });
+    const cur=m[it.key]||{box:0};
+    const g=gradeAnswer(session,i,med);
+    let box, due;
+    if(g==='again'){ box=1; due=now+IV[1]*86400000; }
+    else if(g==='hard'){
+      // box ไม่โต → ข้อที่เดาถูกจะไปไม่ถึง box 5 (เกณฑ์หลุดคิวถาวร) จนกว่าจะตอบถูกแบบมั่นใจ
+      // เพดาน 4: ถ้าเคย mastered (box 5) มาก่อนแล้วมาเดาถูก ต้องดึงกลับเข้าคิวด้วย
+      box=Math.min(Math.max(cur.box||0,1),4);
+      due=now+Math.round(IV[box]*86400000/2);                   // กลับมาทบทวนเร็วขึ้นครึ่งหนึ่ง
+    } else { box=Math.min((cur.box||0)+1,5); due=now+IV[box]*86400000; }
+    m[it.key]={box,due,last:now,g,hard:(cur.hard||0)+(g==='hard'?1:0)};
+  });
   LS.set('srs',m);
+  pushPace(session.times);
 }
 
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
