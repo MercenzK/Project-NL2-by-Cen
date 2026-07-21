@@ -243,6 +243,7 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
       <button onclick="go('weakness')">🎯 My Weakness</button>
       <button onclick="go('readiness')">📈 Readiness</button>
       <button onclick="go('leaderboard')">🏆 Leaderboard</button>
+      <button id="reportsBtn" onclick="go('reports')" style="display:none" title="กล่องรายงาน (แอดมิน)">📮 Reports</button>
       <button id="installBtn" onclick="installApp()" style="display:none" title="Install app">⬇️ Install</button>
       <button id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light">🌙</button>
       <button onclick="openProfile()">👤 Profile</button>
@@ -451,6 +452,7 @@ function renderTopbar(){
   pill.textContent = user ? '👤 '+displayName() : '☁️ Not signed in';
   pill.style.cursor='pointer'; pill.title='Edit display name'; pill.onclick=openProfile;
   const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
+  const rb=document.getElementById('reportsBtn'); if(rb)rb.style.display=isAdmin()?'':'none';
   document.getElementById('authBtn').textContent = user? 'Sign out' : 'Sign in';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
@@ -554,6 +556,7 @@ async function render(){
   if(state.view==='systems') return renderSystems(app);
   if(state.view==='readiness') return renderReadiness(app);
   if(state.view==='study') return renderStudy(app);
+  if(state.view==='reports') return renderReports(app);
 }
 function renderStudy(app){
   app.innerHTML=`<div class="wrap" style="padding-top:16px">
@@ -1336,6 +1339,57 @@ async function reportQuestion(i){
     console.warn('report error',e); alert('ส่งรายงานไม่สำเร็จ: '+(e.message||e));
     if(btn){ btn.disabled=false; btn.textContent='🚩 รายงานข้อผิด'; }
   }
+}
+
+/* ---------- กล่องรายงาน (เฉพาะแอดมิน) ---------- */
+async function renderReports(app){
+  if(!isAdmin()){
+    app.innerHTML=`<div class="wrap" style="padding-top:26px"><div class="card"><b class="qtitle" style="font-size:19px">🔒 เฉพาะแอดมิน</b>
+      <div class="muted" style="margin-top:6px">หน้านี้สำหรับผู้ดูแลระบบเท่านั้น</div>
+      <div class="row" style="margin-top:14px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+  }
+  const filt = state.repFilter||'open';
+  const chip=(id,label)=>`<button class="btn sm ${filt===id?'':'sec'}" onclick="go('reports',{repFilter:'${id}'})">${label}</button>`;
+  app.innerHTML=`<div class="wrap" style="padding-top:26px"><div class="card">
+    <div class="row"><b class="qtitle" style="font-size:20px">📮 กล่องรายงานข้อผิด</b><span style="flex:1"></span>
+      ${chip('open','⏳ รอจัดการ')} ${chip('fixed','✅ แก้แล้ว')} ${chip('dismissed','🗑 ปิดแล้ว')} ${chip('all','ทั้งหมด')}
+      <button class="btn sm sec" onclick="render()" title="รีเฟรช">↻</button></div>
+    <div id="repList" style="margin-top:14px"><div class="muted">กำลังโหลด...</div></div>
+  </div></div>`;
+  const box=document.getElementById('repList');
+  try{
+    let qy=supa.from('reports').select('*').order('created_at',{ascending:false}).limit(300);
+    if(filt!=='all') qy=qy.eq('status',filt);
+    const {data,error}=await qy;
+    if(error) throw error;
+    if(!data||!data.length){ box.innerHTML='<div class="muted" style="padding:8px 0">— ไม่มีรายการ —</div>'; return; }
+    box.innerHTML=data.map(r=>{
+      const when=new Date(r.created_at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+      const badge = r.status==='open'?'<span class="badge" style="background:var(--goldbg);color:var(--gold-d)">⏳ รอจัดการ</span>'
+                  : r.status==='fixed'?'<span class="badge" style="background:#e6f7ef;color:#0a7a4a">✅ แก้แล้ว</span>'
+                  : '<span class="badge" style="background:#eee;color:#777">🗑 ปิดแล้ว</span>';
+      return `<div class="card" style="margin-bottom:10px;border-left:4px solid var(--teal)">
+        <div class="row" style="gap:8px;align-items:center">${badge}<span class="muted" style="font-size:12px">${esc(when)} • ${esc(r.user_email||'-')}</span></div>
+        <div class="stem" style="margin-top:8px;font-size:15px">${esc(r.question_text||'(ไม่มีข้อความโจทย์)')}</div>
+        <div class="muted" style="margin-top:6px;font-size:13px"><b style="color:var(--bad)">เหตุผล:</b> ${esc(r.reason||'—')}</div>
+        <div class="muted" style="margin-top:4px;font-size:12px">เฉลยปัจจุบัน: <b>${r.correct_ans!=null?LAB[r.correct_ans]:'?'}</b> • ชุด: ${esc(r.set_id||'-')} • qkey: <code>${esc(r.qkey||'-')}</code></div>
+        <div class="row" style="margin-top:10px;gap:6px">
+          ${r.status!=='fixed'?`<button class="btn sm" style="padding:4px 12px" onclick="setReportStatus('${r.id}','fixed')">✅ ทำเครื่องหมายว่าแก้แล้ว</button>`:''}
+          ${r.status!=='dismissed'?`<button class="btn sm sec" style="padding:4px 12px" onclick="setReportStatus('${r.id}','dismissed')">🗑 ปิด</button>`:''}
+          ${r.status!=='open'?`<button class="btn sm sec" style="padding:4px 12px" onclick="setReportStatus('${r.id}','open')">↩ กลับเป็นรอจัดการ</button>`:''}
+        </div></div>`;
+    }).join('');
+  }catch(e){
+    console.warn('load reports error',e);
+    box.innerHTML=`<div class="err">โหลดรายงานไม่สำเร็จ: ${esc(e.message||String(e))}<div class="muted" style="margin-top:6px">ตรวจว่ารันไฟล์ supabase_reports_schema.sql (ส่วน admin read/update) ใน Supabase แล้ว และล็อกอินด้วยบัญชีแอดมิน</div></div>`;
+  }
+}
+async function setReportStatus(id,st){
+  try{
+    const {error}=await supa.from('reports').update({status:st}).eq('id',id);
+    if(error) throw error;
+    render();
+  }catch(e){ alert('อัปเดตสถานะไม่สำเร็จ: '+(e.message||e)); }
 }
 
 /* ---------- spaced repetition (Leitner, localStorage) ---------- */
