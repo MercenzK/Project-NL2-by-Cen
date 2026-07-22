@@ -82,8 +82,8 @@ section{padding:34px 0}
 /* patient-file category cards */
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
 .file-card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:4px 12px 12px 12px;padding:20px 18px 18px;box-shadow:0 3px 10px rgba(20,50,90,.06);transition:.18s;cursor:pointer;overflow:hidden}
-.file-card::before{content:"";position:absolute;top:-1px;left:-1px;width:96px;height:26px;background:var(--navy);border-radius:4px 0 14px 0}
-.file-card .tab{position:absolute;top:3px;left:12px;color:#fff;font-size:12px;font-weight:500;letter-spacing:.5px;z-index:1}
+.file-card::before{display:none}
+.file-card .tab{position:absolute;top:-1px;left:-1px;color:#fff;background:var(--navy);font-size:12px;font-weight:500;letter-spacing:.5px;z-index:1;padding:5px 14px 7px 12px;border-radius:4px 0 14px 0;white-space:nowrap}
 .file-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(18,179,160,.22);border-color:var(--teal)}
 .file-card h3{margin:22px 0 6px;font-size:19px;color:var(--ink);line-height:1.3}
 .file-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
@@ -200,8 +200,9 @@ html[data-theme="dark"] .tab{background:#1b2732;color:var(--ink)}
 html[data-theme="dark"] .tab.active{background:var(--navy);color:#0e151d}
 html[data-theme="dark"] label.fld{color:var(--navy2)}
 html[data-theme="dark"] .qimg{background:#fff}
+html[data-theme="dark"] th{background:#20303f;color:var(--ink)}
 html[data-theme="dark"] .file-card::before{background:var(--navy2)}
-html[data-theme="dark"] .file-card .tab{color:#0e151d;background:transparent}
+html[data-theme="dark"] .file-card .tab{color:#0e151d;background:var(--navy2)}
 html[data-theme="dark"] .file-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
 /* footer: โหมดสว่าง --navy เป็นน้ำเงินเข้ม แต่โหมดมืด --navy ถูกกลับเป็นฟ้าอ่อน (#8fbde8)
    พื้นหลังเลยสว่างขึ้นมาชนกับตัวหนังสือสีอ่อนที่ hard-code ไว้ → อ่านไม่ออก
@@ -779,7 +780,7 @@ function renderQuiz(app){
    <div class="card">
      <div class="row"><b class="qtitle" style="font-size:19px">${esc(s.quizTitle)}</b><span class="badge">${s.mode==='exam'?'📝 Exam':'📖 Practice'}</span>
        <span style="flex:1"></span>
-       ${s.timeLeft!=null?`<span id="timer-disp" class="pill" style="background:var(--navy);color:#fff"></span>`:''}
+       ${s.timeLeft!=null?`<span id="timer-disp" class="pill" style="background:#12395f;color:#fff"></span>`:''}
        <span class="badge" id="flagcnt" style="background:var(--goldbg);color:var(--gold-d)"></span>
        <span class="muted" id="cnt">${answered}/${s.items.length}</span></div>
      <div class="progressbar" style="margin-top:10px"><div id="pbar" style="width:${answered/s.items.length*100}%"></div></div>
@@ -1031,7 +1032,7 @@ function renderSimConfig(app){
       <div class="tablewrap" style="margin-top:14px"><table>
         <tr><th>หมวด / ระบบอวัยวะ (ICD)</th><th style="text-align:right">ข้อ (เต็ม 300)</th></tr>
         ${rows}
-        <tr style="font-weight:700;background:#eef7f4"><td>รวม</td><td style="text-align:right">${NL2_TOTAL}</td></tr>
+        <tr style="font-weight:700;background:var(--okbg)"><td>รวม</td><td style="text-align:right">${NL2_TOTAL}</td></tr>
       </table></div>
       <div class="warn" style="margin-top:12px"><span class="muted">อ้างอิงตาม "ตารางข้อสอบฯ ขั้นตอนที่ 2" ของแพทยสภา: 300 ข้อ (One Best Response) = หมวด1 30 + หมวด2 270 (ฉุกเฉิน 50 + โรคตามระบบ 220). ระบบจะดึงข้อจากคลัง NL2 เก่าให้ตรงตามโควตาแต่ละระบบเท่าที่มี แล้วเติมส่วนที่เหลือจากข้อที่ tag เป็น Med/Ped/Surgery (คร่อมหลายระบบ). เวลา 1.5 นาที/ข้อเป็นค่าประมาณ</span></div>
       <div class="row" style="margin-top:18px">
@@ -1255,13 +1256,13 @@ async function renderLeaderboard(app){
   const nm=r=>esc(r.name||'ผู้ใช้')+(r.user_id===uid?' <span class="pill" style="font-size:11px">คุณ</span>':'');
   const accTable = byAcc.length? `<div class="tablewrap"><table>
       <tr><th style="width:64px">อันดับ</th><th>ผู้เล่น</th><th>ความแม่นยำ</th><th>ทำไปแล้ว</th></tr>
-      ${byAcc.map((r,i)=>`<tr${r.user_id===uid?' style="background:#eef7f4"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
+      ${byAcc.map((r,i)=>`<tr${r.user_id===uid?' style="background:var(--okbg)"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
         <td style="color:${r.accuracy>=60?'var(--ok)':'var(--bad)'};font-weight:700">${(+r.accuracy).toFixed(1)}%</td>
         <td class="muted">${r.total_questions} ข้อ</td></tr>`).join('')}
     </table></div>` : `<div class="muted" style="margin-top:8px">ยังไม่มีใครทำครบ ${MIN_Q} ข้อ</div>`;
   const volTable = byVol.length? `<div class="tablewrap"><table>
       <tr><th style="width:64px">อันดับ</th><th>ผู้เล่น</th><th>จำนวนข้อ</th><th>ความแม่นยำ</th></tr>
-      ${byVol.map((r,i)=>`<tr${r.user_id===uid?' style="background:#eef7f4"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
+      ${byVol.map((r,i)=>`<tr${r.user_id===uid?' style="background:var(--okbg)"':''}><td>${medal(i)}</td><td>${nm(r)}</td>
         <td style="font-weight:700">${r.total_questions} ข้อ</td>
         <td class="muted">${(+r.accuracy).toFixed(1)}%</td></tr>`).join('')}
     </table></div>` : `<div class="muted" style="margin-top:8px">ยังไม่มีข้อมูล</div>`;
