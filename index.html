@@ -201,7 +201,7 @@ html[data-theme="dark"] .tab.active{background:var(--navy);color:#0e151d}
 html[data-theme="dark"] label.fld{color:var(--navy2)}
 html[data-theme="dark"] .qimg{background:#fff}
 html[data-theme="dark"] .file-card::before{background:var(--navy2)}
-html[data-theme="dark"] .file-card .tab{color:#0e151d}
+html[data-theme="dark"] .file-card .tab{color:#0e151d;background:transparent}
 html[data-theme="dark"] .file-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
 /* footer: โหมดสว่าง --navy เป็นน้ำเงินเข้ม แต่โหมดมืด --navy ถูกกลับเป็นฟ้าอ่อน (#8fbde8)
    พื้นหลังเลยสว่างขึ้นมาชนกับตัวหนังสือสีอ่อนที่ hard-code ไว้ → อ่านไม่ออก
@@ -246,6 +246,7 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
       <button onclick="scrollToCat()">📚 Categories</button>
       <button onclick="go('systems')">🫀 By System</button>
       <button onclick="startMistakes()">🔁 Redo Mistakes</button>
+      <button onclick="go('saved')">💿 Saved Exam</button>
       <button onclick="go('simconfig')">🧪 NL2 Simulator</button>
       <button onclick="go('study')">📖 Summary</button>
       <button onclick="go('history')">📊 My Stats</button>
@@ -254,7 +255,7 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
       <button onclick="go('leaderboard')">🏆 Leaderboard</button>
       <button id="reportsBtn" onclick="go('reports')" style="display:none" title="กล่องรายงาน (แอดมิน)">📮 Reports</button>
       <button id="installBtn" onclick="installApp()" style="display:none" title="Install app">⬇️ Install</button>
-      <button id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light">🌙</button>
+      <button id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light">🌙 Theme</button>
       <button onclick="openProfile()">👤 Profile</button>
       <button id="authBtn" onclick="openAuth()">Sign in</button>
     </div>
@@ -282,7 +283,10 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
         <a onclick="alert('ติดต่อ: แก้ไข config/README ในโปรเจกต์ หรือถามผู้ดูแลเว็บ')">ติดต่อ</a>
       </div>
     </div>
-    <div class="copy">© NL2 Med Quiz • สร้างเพื่อการเตรียมสอบ National Licensing Examination Step 2</div>
+    <div class="copy">ภาพ ECG ในชุดข้อสอบ ECG มาจาก <a href="https://litfl.com/ecg-library/" target="_blank" rel="noopener" style="display:inline;margin:0">LITFL ECG Library</a> (litfl.com)
+      ใช้ภายใต้สัญญาอนุญาต <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener" style="display:inline;margin:0">CC BY-NC-SA 4.0</a>
+      — เว็บนี้ใช้เพื่อการศึกษาโดยไม่แสวงหากำไร และเผยแพร่ภายใต้สัญญาอนุญาตเดียวกัน</div>
+    <div class="copy" style="border-top:none;margin-top:6px;padding-top:0">© NL2 Med Quiz • สร้างเพื่อการเตรียมสอบ National Licensing Examination Step 2</div>
   </div>
 </footer>
 
@@ -355,7 +359,7 @@ const LS = {
 };
 function customQuizzes(){ return LS.get('customQuizzes',[]); }
 function allQuizzes(){ return [...window.QUIZ_DATA, ...customQuizzes()]; }
-function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; if(id==='mistakes'&&window.__mistakes)return window.__mistakes; if(id==='nl2sim'&&window.__sim)return window.__sim; if(id==='sysquiz'&&window.__sys)return window.__sys; return allQuizzes().find(q=>q.id===id); }
+function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; if(id==='mistakes'&&window.__mistakes)return window.__mistakes; if(id==='nl2sim'&&window.__sim)return window.__sim; if(id==='sysquiz'&&window.__sys)return window.__sys; if(id==='saved'&&window.__saved)return window.__saved; return allQuizzes().find(q=>q.id===id); }
 /* ---------- stable question key + global index (for mistakes & weakness) ---------- */
 function qkey(text){ let h=5381; const s=String(text||''); for(let i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;} return 'q'+h.toString(36); }
 let __qidx=null;
@@ -460,7 +464,7 @@ function renderTopbar(){
   const pill=document.getElementById('modePill');
   pill.textContent = user ? '👤 '+displayName() : '☁️ Not signed in';
   pill.style.cursor='pointer'; pill.title='Edit display name'; pill.onclick=openProfile;
-  const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
+  const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=(document.documentElement.dataset.theme==='dark'?'☀️':'🌙')+' Theme';
   const rb=document.getElementById('reportsBtn'); if(rb)rb.style.display=isAdmin()?'':'none';
   document.getElementById('authBtn').textContent = user? 'Sign out' : 'Sign in';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
@@ -566,6 +570,7 @@ async function render(){
   if(state.view==='readiness') return renderReadiness(app);
   if(state.view==='study') return renderStudy(app);
   if(state.view==='reports') return renderReports(app);
+  if(state.view==='saved') return renderSaved(app);
 }
 function renderStudy(app){
   app.innerHTML=`<div class="wrap" style="padding-top:16px">
@@ -823,7 +828,9 @@ function qCard(q,i){
   const flagCtl = (s.mode==='exam'&&!s.submitted)
     ? `<button class="btn sm sec" style="margin-left:auto;padding:4px 10px" onclick="toggleFlag(${i})">${flagged?'🚩 มาร์กไว้':'⚑ Mark for review'}</button>`
     : (flagged?'<span class="badge" style="margin-left:auto;background:var(--goldbg);color:var(--gold-d)">🚩 marked</span>':'');
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span class="badge">${esc(q.topic)}</span>${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
+  const saved=isSavedQ(q.key);
+  const saveBtn=`<button id="sv${i}" class="btn sm ${saved?'':'sec'}" style="padding:3px 10px;font-size:12px" onclick="toggleSavedQ('${q.key}',${i})">💿 ${saved?'Saved':'Save'}</button>`;
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${saveBtn}${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
@@ -1403,6 +1410,35 @@ async function reportQuestion(i){
     console.warn('report error',e); alert('ส่งรายงานไม่สำเร็จ: '+(e.message||e));
     if(btn){ btn.disabled=false; btn.textContent='🚩 รายงานข้อผิด'; }
   }
+}
+
+/* ---------- 💿 Saved Exam (บันทึกข้อไว้ทบทวน, localStorage) ---------- */
+function savedQ(){ return LS.get('savedQuestions',[]); }
+function isSavedQ(key){ return savedQ().includes(key); }
+function toggleSavedQ(key,i){
+  let a=savedQ(); const on=a.includes(key);
+  a=on?a.filter(k=>k!==key):[...a,key]; LS.set('savedQuestions',a);
+  const b=document.getElementById('sv'+i);
+  if(b){ if(on){ b.classList.add('sec'); b.innerHTML='💿 Save'; } else { b.classList.remove('sec'); b.innerHTML='💿 Saved'; } }
+}
+function savedQItems(){ const idx=QIDX(); return savedQ().map(k=>idx[k]&&idx[k].q).filter(Boolean); }
+function unsaveFromList(k){ LS.set('savedQuestions', savedQ().filter(x=>x!==k)); render(); }
+function startSaved(){ const qs=savedQItems(); if(!qs.length){ alert('ยังไม่มีข้อที่บันทึก'); return; }
+  window.__saved={id:'saved',title:'💿 Saved Exam',subject:'past',questions:qs}; go('config',{quiz:'saved'}); }
+function renderSaved(app){
+  const idx=QIDX(); const keys=savedQ(); const items=keys.map(k=>({k,rec:idx[k]})).filter(x=>x.rec);
+  app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+    <div class="row"><b class="qtitle" style="font-size:20px">💿 Saved Exam</b><span style="flex:1"></span>
+      ${items.length?`<button class="btn sm" onclick="startSaved()">▶ เริ่มทบทวน (${items.length})</button>`:''}</div>
+    <div class="muted" style="margin-top:6px">ข้อที่กดบันทึกไว้ อยากกลับมาทบทวน แม้ตอบถูกหรือเดาถูก</div>
+    ${items.length?`<div style="margin-top:12px">${items.map(x=>{ const r=x.rec; const t=(r.q&&r.q.q)||''; return `<div class="card" style="margin-bottom:10px;border-left:4px solid var(--gold)">
+        <div class="muted" style="font-size:12px">${esc(r.quizTitle||'-')} • ${esc(r.topic||'-')}</div>
+        <div class="stem" style="margin-top:6px;font-size:15px">${esc(t.slice(0,220))}${t.length>220?'…':''}</div>
+        <div class="row" style="margin-top:8px"><button class="btn sm sec" style="padding:3px 10px" onclick="unsaveFromList('${x.k}')">🗑 เอาออก</button></div>
+      </div>`; }).join('')}</div>`
+      :`<div class="card" style="margin-top:12px"><div class="muted">ยังไม่มีข้อที่บันทึก — ระหว่างทำข้อสอบ กดปุ่ม 💿 Save ข้างเลขข้อ</div></div>`}
+    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+  </div></div>`;
 }
 
 /* ---------- กล่องรายงาน (เฉพาะแอดมิน) ---------- */
