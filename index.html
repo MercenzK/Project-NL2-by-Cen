@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NL2 Med Quiz — คลังข้อสอบแพทย์</title>
+<meta name="description" content="คลังข้อสอบ NL2 (ศรว. ขั้นที่ 2) พร้อมเฉลยภาษาไทยละเอียด, NL2 Simulator ตาม blueprint แพทยสภา, ทบทวนข้อที่ผิดแบบ spaced repetition และวิเคราะห์จุดอ่อนรายระบบ">
+<link rel="icon" href="icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NL2 Med Quiz — คลังข้อสอบแพทย์">
+<meta property="og:description" content="คลังข้อสอบ NL2 พร้อมเฉลยไทย, NL2 Simulator, ทบทวนข้อที่ผิด และวิเคราะห์จุดอ่อน">
+<meta property="og:image" content="icon-512.png">
+<meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#12395f">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -296,7 +303,6 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
 <script src="config.js"></script>
 <!-- โหลดไลบรารี Supabase จาก jsdelivr ก่อน ถ้าโหลดไม่ได้ (โดนบล็อก) จะลองโหลดจาก unpkg แทน -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>if(window.APP_CONFIG&&APP_CONFIG.SUPABASE_URL&&!window.supabase){document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');}</script>
 <script src="data.js"></script>
 <script>
 const CFG = window.APP_CONFIG || {};
@@ -550,7 +556,7 @@ function go(v,extra={}){
   if((v==='config'||v==='quiz') && !requireLogin()) return;
   state.view=v; Object.assign(state,extra); render(); window.scrollTo(0,0);
 }
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function scrollToCat(){ if(state.view!=='home'){go('home');setTimeout(()=>document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}),80);} else document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}); }
 function showLoader(m){ const l=document.getElementById('loader'); document.getElementById('loaderMsg').textContent=m||'กำลังเตรียมข้อสอบ...'; l.style.display='flex'; }
@@ -1190,7 +1196,7 @@ function shakyHTML(s){
 }
 function renderResult(app){
   const s=state.session; const pct=Math.round(s.score/s.items.length*100);
-  const backId = (s.quizId==='combined'||s.quizId==='search')? s.quizId : s.quizId;
+  const backId = s.quizId;
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
    <div class="card" style="text-align:center">
      <div class="muted">${esc(s.quizTitle)}</div>

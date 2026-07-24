@@ -1,0 +1,15 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "เว็บทำข้อสอบ NL2 พร้อมเฉลยไทยละเอียดและบันทึกคะแนนรายคน ต้องเข้าสู่ระบบก่อนทำข้อสอบ คลังข้อสอบหลักอยู่บน Supabase โดยมี data.js เป็นตัวสำรอง",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.7"
+  }
+}
