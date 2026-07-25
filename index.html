@@ -346,6 +346,7 @@ const EST_MIN = q => Math.max(5, Math.round(q*0.9)); // ~0.9 นาที/ข้
 /* ---------- หมวดหมู่รายวิชา (ward) ---------- */
 const SUBJECTS = [
   {id:'med',   name:'Medicine',                  th:'อายุรศาสตร์',    icon:'🩺'},
+  {id:'ecg',   name:'Medicine (ECG เน้น ๆ)',      th:'อ่าน ECG จาก tracing จริง', icon:'📈'},
   {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'🔪'},
   {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'🤰'},
   {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'🧸'},
@@ -552,9 +553,22 @@ function requireLogin(){
   else { alert('ต้องเข้าสู่ระบบก่อนจึงจะทำข้อสอบได้ (ยังไม่ได้ตั้งค่า Supabase — ดูวิธีเปิดล็อกอินใน README)'); }
   return false;
 }
+/* ประวัติการเข้าหน้า (ไว้ให้ปุ่ม "ย้อนกลับ" กลับไปหน้าก่อนหน้าจริง ๆ ไม่ใช่เด้งกลับหน้าแรกเสมอ) */
+let __navStack=[];
 function go(v,extra={}){
   if((v==='config'||v==='quiz') && !requireLogin()) return;
+  if(state.view && state.view!==v){
+    __navStack.push({view:state.view, subject:state.subject, quiz:state.quiz});
+    if(__navStack.length>25) __navStack.shift();
+  }
   state.view=v; Object.assign(state,extra); render(); window.scrollTo(0,0);
+}
+/* ย้อนกลับหนึ่งหน้า — ถ้าไม่มีประวัติ (เช่นเปิดลิงก์ตรงเข้ามา) ค่อยกลับหน้าแรก */
+function goBack(){
+  const p=__navStack.pop();
+  if(!p){ state.view='home'; render(); window.scrollTo(0,0); return; }
+  state.view=p.view; state.subject=p.subject; state.quiz=p.quiz;
+  render(); window.scrollTo(0,0);
 }
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -710,6 +724,7 @@ async function renderSubject(app){
 function renderConfig(app){
   const q=findQuiz(state.quiz);
   app.innerHTML=`<div class="wrap" style="padding-top:26px">
+   <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="goBack()">← ย้อนกลับ</button></div>
    <div class="card">
      <h2 class="qtitle">${esc(qTitle(q))}</h2>
      <div class="muted">📝 ${q.questions.length} ข้อ • ⏱️ ประมาณ ${EST_MIN(q.questions.length)} นาที</div>
@@ -728,7 +743,8 @@ function renderConfig(app){
      <label class="fld"><input type="checkbox" id="timer" style="width:auto"> จับเวลา (โหมดสอบ) — 1 นาที/ข้อ</label>
      <div class="row" style="margin-top:18px">
        <button class="btn" onclick="beginQuiz()">▶ เริ่ม</button>
-       <button class="btn sec" onclick="go('home')">ย้อนกลับ</button>
+       <button class="btn sec" onclick="goBack()">← ย้อนกลับ</button>
+       <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
      </div>
    </div></div>`;
 }
