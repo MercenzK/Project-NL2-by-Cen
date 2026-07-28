@@ -894,7 +894,7 @@ function openQDash(){
   const cur=qdashCurrent(); let done=0,mk=0;
   const cells=s.items.map((q,i)=>{
     const ans=s.answers[i]!==undefined; if(ans)done++;
-    const marked=!!((s.flags&&s.flags[i])||isSavedQ(q.key)); if(marked)mk++;
+    const marked=!!(s.flags&&s.flags[i]); if(marked)mk++;   /* นับเฉพาะ 🚩 Mark for review ไม่รวม 💿 Save */
     return `<button class="qd${ans?' done':''}${i===cur?' cur':''}" onclick="qdashGo(${i})" `+
            `title="ข้อ ${i+1}${ans?' • ตอบแล้ว':' • ยังไม่ตอบ'}${marked?' • มาร์กไว้':''}">`+
            `${i+1}${marked?'<span class="fg">🚩</span>':''}</button>`;
@@ -910,7 +910,7 @@ function openQDash(){
     <div class="qdash-legend">
       <i><span class="box done"></span> ทำแล้ว (ไม่มีกรอบ)</i>
       <i><span class="box"></span> ยังไม่ทำ (มีกรอบ)</i>
-      <i>🚩 มาร์ก / Save ไว้</i>
+      <i>🚩 มาร์กไว้ทบทวน</i>
     </div>
     <div class="qdash-grid">${cells}</div>
     <div class="muted" style="border-top:1px solid var(--line);padding-top:10px;text-align:center;font-size:15px">
@@ -947,8 +947,10 @@ function qCard(q,i){
   const flagged=!!(s.flags&&s.flags[i]);
   const div=document.createElement('div'); div.className='card'; div.id='qc'+i;
   if(flagged) div.style.boxShadow='0 0 0 2px var(--gold)';
-  const flagCtl = (s.mode==='exam'&&!s.submitted)
-    ? `<button class="btn sm sec" style="margin-left:auto;padding:4px 10px" onclick="toggleFlag(${i})">${flagged?'🚩 มาร์กไว้':'⚑ Mark for review'}</button>`
+  /* ปุ่มมาร์กไว้ทบทวน: ใช้ได้ทุกโหมด (Practice / Exam) จนกว่าจะส่งคำตอบ
+     ส่งแล้วค่อยเปลี่ยนเป็นป้ายบอกสถานะเฉย ๆ */
+  const flagCtl = !s.submitted
+    ? `<button class="btn sm ${flagged?'gold':'sec'}" style="margin-left:auto;padding:4px 10px;font-size:12px" onclick="toggleFlag(${i})">${flagged?'🚩 มาร์กไว้':'⚑ Mark for review'}</button>`
     : (flagged?'<span class="badge" style="margin-left:auto;background:var(--goldbg);color:var(--gold-d)">🚩 marked</span>':'');
   const saved=isSavedQ(q.key);
   const saveBtn=`<button id="sv${i}" class="btn sm ${saved?'':'sec'}" style="padding:3px 10px;font-size:12px" onclick="toggleSavedQ('${q.key}',${i})">💿 ${saved?'Saved':'Save'}</button>`;
