@@ -220,6 +220,41 @@ html[data-theme="dark"] footer a,html[data-theme="dark"] footer span{color:#a9c0
 html[data-theme="dark"] footer a:hover{color:#7ff0dd}
 html[data-theme="dark"] footer .muted{color:#8aa6c0!important}
 html[data-theme="dark"] footer .copy{border-top-color:rgba(255,255,255,.14)}
+
+/* ---------- 🗂 Question Dashboard (ปุ่มลอยตามจอ + โมดัลผังข้อ) ---------- */
+#qdashFab{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:55;
+  width:58px;height:58px;padding:0;border:none;border-radius:16px;cursor:pointer;
+  background:var(--paper);box-shadow:0 6px 20px rgba(20,50,90,.18);
+  display:flex;align-items:center;justify-content:center;transition:.18s}
+#qdashFab:hover{transform:translateY(-50%) scale(1.07);box-shadow:0 10px 28px rgba(91,95,214,.38)}
+#qdashFab:active{transform:translateY(-50%) scale(.96)}
+#qdashFab svg{width:32px;height:32px;display:block}
+#qdashFab .sq{fill:none;stroke:#5b5fd6;stroke-width:2.8}
+#qdashFab .fabdot{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:11px;
+  background:var(--teal);color:#fff;font-size:11px;font-weight:600;line-height:20px;padding:0 5px;
+  box-shadow:0 2px 6px rgba(18,179,160,.45)}
+html[data-theme="dark"] #qdashFab{background:#16232e;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+html[data-theme="dark"] #qdashFab .sq{stroke:#8f93f0}
+/* จอแคบกว่านี้ ปุ่มซ้ายจะชนการ์ดข้อสอบ (.wrap = 1040px) → ย้ายไปมุมขวาล่างแทน */
+@media(max-width:1239px){
+  #qdashFab{left:auto;right:16px;top:auto;bottom:22px;transform:none;width:52px;height:52px}
+  #qdashFab:hover{transform:scale(1.07)} #qdashFab:active{transform:scale(.96)}
+  #qdashFab svg{width:28px;height:28px}
+}
+.qdash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:9px;
+  max-height:44vh;overflow:auto;padding:4px 2px 10px}
+.qd{position:relative;height:46px;border-radius:10px;background:transparent;
+  border:1.7px solid var(--line);color:var(--ink);font-family:inherit;font-size:16px;
+  font-weight:500;cursor:pointer;transition:.13s}
+.qd:hover{border-color:var(--teal);color:var(--teal-d);background:rgba(18,179,160,.07)}
+.qd.done{border-color:transparent;color:var(--muted);font-weight:400}
+.qd.done:hover{border-color:var(--teal)}
+.qd.cur{box-shadow:0 0 0 2.5px var(--teal)}
+.qd .fg{position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);font-size:10px;line-height:1}
+.qdash-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:2px 0 12px}
+.qdash-legend i{font-style:normal;display:inline-flex;align-items:center;gap:6px}
+.qdash-legend .box{width:16px;height:16px;border-radius:5px;border:1.7px solid var(--line);display:inline-block}
+.qdash-legend .box.done{border-color:transparent;background:rgba(18,179,160,.18)}
 </style>
 <script>
 (function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
@@ -578,6 +613,7 @@ function hideLoader(){ document.getElementById('loader').style.display='none'; }
 
 async function render(){
   const app=document.getElementById('app');
+  qdashUnmount();                                  /* ปุ่ม Dashboard โผล่เฉพาะหน้าทำข้อสอบ */
   if(state.view==='home') return renderHome(app);
   if(state.view==='subject') return renderSubject(app);
   if(state.view==='config') return renderConfig(app);
@@ -815,6 +851,7 @@ function renderQuiz(app){
    </div></div>`;
   const list=document.getElementById('qlist'); s.items.forEach((q,i)=>list.appendChild(qCard(q,i)));
   updateFlagCount();
+  qdashMount();
 }
 function updateFlagCount(){ const s=state.session; const fc=document.getElementById('flagcnt'); if(!fc)return;
   const n=s.flags?Object.values(s.flags).filter(Boolean).length:0; fc.textContent=n?('🚩 '+n):''; }
@@ -824,6 +861,68 @@ function jumpTo(i){ __closeSubmit(); const el=document.getElementById('qc'+i); i
   el.scrollIntoView({behavior:'smooth',block:'center'}); const old=el.style.boxShadow; el.style.boxShadow='0 0 0 3px var(--teal)';
   setTimeout(()=>{ el.style.boxShadow=old||''; },1300); }
 function __closeSubmit(){ if(window.__submitModal){ window.__submitModal.remove(); window.__submitModal=null; } }
+
+/* ---------- 🗂 Question Dashboard — ปุ่มลอยตามจอ + ผังสถานะทุกข้อ ----------
+   ทำแล้ว = ไม่มีกรอบ / ยังไม่ทำ = มีกรอบ / มาร์กไว้หรือ Save = ธงแดง
+   แตะเลขข้อ = เด้งไปยังข้อนั้นทันที                                        */
+function qdashMount(){
+  if(document.getElementById('qdashFab'))return;
+  const b=document.createElement('button');
+  b.id='qdashFab'; b.type='button'; b.title='Dashboard — ผังข้อสอบ'; b.setAttribute('aria-label','เปิด Dashboard ผังข้อสอบ');
+  b.onclick=openQDash;
+  b.innerHTML=`<svg viewBox="0 0 32 32" aria-hidden="true">
+      <rect class="sq" x="4"  y="4"  width="10.5" height="10.5" rx="1.6"/>
+      <rect class="sq" x="17.5" y="4"  width="10.5" height="10.5" rx="1.6"/>
+      <rect class="sq" x="4"  y="17.5" width="10.5" height="10.5" rx="1.6"/>
+      <rect class="sq" x="17.5" y="17.5" width="10.5" height="10.5" rx="1.6"/>
+    </svg><span class="fabdot" id="qdashDot"></span>`;
+  document.body.appendChild(b);
+  qdashBadge();
+}
+function qdashUnmount(){ const f=document.getElementById('qdashFab'); if(f)f.remove(); closeQDash(); }
+function qdashBadge(){ const d=document.getElementById('qdashDot'); const s=state.session; if(!d||!s)return;
+  const left=s.items.length-Object.keys(s.answers).length;
+  d.textContent=left>0?left:'✓'; d.style.background=left>0?'var(--teal)':'var(--ok)'; }
+function closeQDash(){ if(window.__qdashModal){ window.__qdashModal.remove(); window.__qdashModal=null; } }
+function qdashCurrent(){ const s=state.session; if(!s)return -1; let best=-1,bd=Infinity; const mid=window.innerHeight/2;
+  for(let i=0;i<s.items.length;i++){ const el=document.getElementById('qc'+i); if(!el)continue;
+    const r=el.getBoundingClientRect(); const d=Math.abs(r.top+r.height/2-mid); if(d<bd){bd=d;best=i;} }
+  return best; }
+function qdashGo(i){ closeQDash(); jumpTo(i); }
+function openQDash(){
+  const s=state.session; if(!s)return; closeQDash();
+  const cur=qdashCurrent(); let done=0,mk=0;
+  const cells=s.items.map((q,i)=>{
+    const ans=s.answers[i]!==undefined; if(ans)done++;
+    const marked=!!((s.flags&&s.flags[i])||isSavedQ(q.key)); if(marked)mk++;
+    return `<button class="qd${ans?' done':''}${i===cur?' cur':''}" onclick="qdashGo(${i})" `+
+           `title="ข้อ ${i+1}${ans?' • ตอบแล้ว':' • ยังไม่ตอบ'}${marked?' • มาร์กไว้':''}">`+
+           `${i+1}${marked?'<span class="fg">🚩</span>':''}</button>`;
+  }).join('');
+  const bg=document.createElement('div'); bg.className='modal-bg';
+  bg.innerHTML=`<div class="modal" style="max-width:560px">
+    <div class="row" style="align-items:center;margin-bottom:10px">
+      <b style="font-size:21px;color:var(--navy)">Dashboard</b>
+      <span class="muted" style="font-size:14px">— ตรวจสอบสถานะของข้อสอบ</span>
+      <span style="flex:1"></span>
+      <button class="btn sec" style="padding:1px 12px;font-size:19px;line-height:1.5" onclick="closeQDash()" aria-label="ปิด">✕</button>
+    </div>
+    <div class="qdash-legend">
+      <i><span class="box done"></span> ทำแล้ว (ไม่มีกรอบ)</i>
+      <i><span class="box"></span> ยังไม่ทำ (มีกรอบ)</i>
+      <i>🚩 มาร์ก / Save ไว้</i>
+    </div>
+    <div class="qdash-grid">${cells}</div>
+    <div class="muted" style="border-top:1px solid var(--line);padding-top:10px;text-align:center;font-size:15px">
+      ${s.items.length} total &nbsp;|&nbsp; ${done} completed &nbsp;|&nbsp; ${mk} bookmarked
+    </div>
+    <div class="muted" style="text-align:center;font-size:13px;margin-top:6px">แตะเลขข้อเพื่อไปยังข้อนั้นได้ทันที</div>
+  </div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg)closeQDash(); });
+  document.body.appendChild(bg); window.__qdashModal=bg;
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeQDash(); });
+
 function confirmSubmit(){ const s=state.session;
   const unanswered=[]; s.items.forEach((q,i)=>{ if(s.answers[i]===undefined)unanswered.push(i); });
   const flagged=Object.keys(s.flags||{}).filter(k=>s.flags[k]).map(Number).sort((a,b)=>a-b);
@@ -870,6 +969,7 @@ function selectAns(i,j){ const s=state.session;
   const cnt=document.getElementById('cnt'); if(cnt)cnt.textContent=`${answered}/${s.items.length}`;
   const pb=document.getElementById('pbar'); if(pb)pb.style.width=(answered/s.items.length*100)+'%';
   const list=document.getElementById('qlist'); list.replaceChild(qCard(state.session.items[i],i),list.children[i]);
+  qdashBadge();
   persistSession();
 }
 /* ---------- per-question timing (สัญญาณ "ไม่มั่นใจ" แบบไม่รบกวนผู้ใช้) ----------
