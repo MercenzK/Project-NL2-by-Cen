@@ -255,6 +255,40 @@ html[data-theme="dark"] #qdashFab .sq{stroke:#8f93f0}
 .qdash-legend i{font-style:normal;display:inline-flex;align-items:center;gap:6px}
 .qdash-legend .box{width:16px;height:16px;border-radius:5px;border:1.7px solid var(--line);display:inline-block}
 .qdash-legend .box.done{border-color:transparent;background:rgba(18,179,160,.18)}
+
+/* ---------- 🔁 Smart Review hub ---------- */
+.navdue{display:none;margin-left:7px;background:#e0533f;color:#fff;border-radius:11px;
+  font-size:11px;font-weight:600;padding:1px 7px;vertical-align:middle}
+.navdue.on{display:inline-block}
+.srs-hero{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.srs-big{font-size:52px;font-weight:700;line-height:1;color:var(--navy);font-family:"Sarabun"}
+.srs-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:14px}
+.srs-mini .m{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.srs-mini .m b{display:block;font-size:24px;color:var(--navy);font-family:"Sarabun"}
+.srs-mini .m span{font-size:13px;color:var(--muted)}
+.ladder{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.ladder .lv{display:flex;align-items:center;gap:11px;font-size:14px}
+.ladder .lv .nm{width:118px;flex:none;color:var(--muted)}
+.ladder .lv .track{flex:1;height:16px;background:#e7eef2;border-radius:8px;overflow:hidden}
+.ladder .lv .fill{height:100%;border-radius:8px}
+.ladder .lv .ct{width:52px;flex:none;text-align:right;font-weight:500;color:var(--navy)}
+html[data-theme="dark"] .ladder .lv .track{background:#26333f}
+.fcast{display:flex;align-items:flex-end;gap:8px;height:96px;margin-top:8px}
+.fcast .d{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.fcast .d .bar{width:100%;background:var(--teal);border-radius:6px 6px 0 0;min-height:3px;transition:.2s}
+.fcast .d.today .bar{background:var(--gold)}
+.fcast .d .lb{font-size:11px;color:var(--muted);white-space:nowrap}
+.fcast .d .vv{font-size:12px;font-weight:600;color:var(--navy)}
+.plan-tgl{flex:none;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);
+  background:var(--paper);color:var(--navy);font-size:15px;line-height:1;cursor:pointer;transition:.15s}
+.plan-tgl:hover{border-color:var(--teal);color:var(--teal-d);background:#f5fcfb}
+html[data-theme="dark"] .plan-tgl{background:#16232e}
+html[data-theme="dark"] .plan-tgl:hover{background:#1b2b36}
+
+/* ---------- 🔎 หน้าผลค้นหา ---------- */
+.srch mark{background:#ffe9a8;color:inherit;border-radius:3px;padding:0 2px;font-weight:500}
+html[data-theme="dark"] .srch mark{background:#6b5a1f;color:#fff5d6}
+.srch .exp{white-space:pre-line}
 </style>
 <script>
 (function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
@@ -288,7 +322,7 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
       <span class="pill" id="modePill"></span>
       <button onclick="scrollToCat()">📚 Categories</button>
       <button onclick="go('systems')">🫀 By System</button>
-      <button onclick="startMistakes()">🔁 Redo Mistakes</button>
+      <button id="reviewBtn" onclick="go('review')">🔁 Smart Review<span id="revDue" class="navdue"></span></button>
       <button onclick="go('saved')">💿 Saved Exam</button>
       <button onclick="go('simconfig')">🧪 NL2 Simulator</button>
       <button onclick="go('study')">📖 Summary</button>
@@ -473,6 +507,7 @@ async function saveAttempt(a){
   } else {
     const arr=LS.get('guestAttempts',[]); arr.unshift({...a,created_at:new Date().toISOString()}); LS.set('guestAttempts',arr.slice(0,300));
   }
+  invalidateAnalytics();                       /* คิวทบทวน/สถิติต้องคำนวณใหม่หลังบันทึกผล */
 }
 async function listAttempts(){
   if(CLOUD && user){
@@ -512,7 +547,7 @@ function renderTopbar(){
   document.getElementById('authBtn').textContent = user? 'Sign out' : 'Sign in';
   document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
 }
-async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; renderTopbar(); go('home'); }
+async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; invalidateAnalytics(); renderTopbar(); go('home'); }
 function openProfile(){
   if(CLOUD && !user){ openAuth(); return; }
   const bg=document.createElement('div'); bg.className='modal-bg';
@@ -614,6 +649,9 @@ function hideLoader(){ document.getElementById('loader').style.display='none'; }
 async function render(){
   const app=document.getElementById('app');
   qdashUnmount();                                  /* ปุ่ม Dashboard โผล่เฉพาะหน้าทำข้อสอบ */
+  updateReviewBadge();                             /* ตัวนับข้อค้างทบทวนบนแถบเมนู */
+  if(state.view==='review') return renderReview(app);
+  if(state.view==='search') return renderSearch(app);
   if(state.view==='home') return renderHome(app);
   if(state.view==='subject') return renderSubject(app);
   if(state.view==='config') return renderConfig(app);
@@ -653,7 +691,7 @@ async function renderHome(app){
 
   app.innerHTML=`
   ${resumeBannerHTML()}
-  ${examCountdownHTML()}
+  ${examPlanHTML(at)}
   ${streakGoalHTML(at)}
   ${dailyCardHTML()}
   ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
@@ -723,14 +761,60 @@ async function renderHome(app){
 }
 
 /* ---------- search ---------- */
+/* ---------- 🔎 ค้นหา — เปิดเป็นหน้าอ่านผลลัพธ์ ไม่ใช่โยนเข้าไปทำข้อสอบทันที ----------
+   เฉลย 2,699 ข้อที่เขียนไว้จึงใช้เป็นหนังสืออ้างอิงได้ พิมพ์ "Sgarbossa" แล้วอ่านได้เลย  */
+let __searchShow=40;
+function searchFields(x){ return (x.q+' '+(x.topic||'')+' '+(x.exp||'')+' '+((x.choices||[]).join(' '))).toLowerCase(); }
 function doSearch(){
-  const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+  const raw=(document.getElementById('searchInput')||{}).value||'';
+  const kw=raw.trim();
   if(!kw){ scrollToCat(); return; }
+  const low=kw.toLowerCase();
   const all=[]; allQuizzes().forEach(q=>q.questions.forEach(x=>all.push(x)));
-  const hits=all.filter(x=>(x.q+' '+(x.topic||'')+' '+(x.exp||'')).toLowerCase().includes(kw));
+  const hits=all.filter(x=>searchFields(x).includes(low));
   if(!hits.length){ alert('ไม่พบข้อสอบที่ตรงกับ "'+kw+'"'); return; }
+  __searchShow=40;
+  window.__searchKw=kw;
   window.__search={id:'search',title:'ผลค้นหา: "'+kw+'" ('+hits.length+' ข้อ)',questions:hits};
-  go('config',{quiz:'search'});
+  go('search');
+}
+function searchMore(){ __searchShow+=40; render(); }
+function startSearchQuiz(){ if(window.__search) go('config',{quiz:'search'}); }
+/* escape ก่อน แล้วค่อยครอบ <mark> — ทำสลับลำดับจะเปิดช่องให้ HTML หลุดเข้ามา */
+function hlEsc(s,kw){
+  const t=esc(s||''); if(!kw) return t;
+  const k=esc(kw).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  try{ return t.replace(new RegExp(k,'gi'), m=>'<mark>'+m+'</mark>'); }catch(e){ return t; }
+}
+function renderSearch(app){
+  const S=window.__search, kw=window.__searchKw||'';
+  if(!S){ go('home'); return; }
+  const idx=QIDX(), hits=S.questions, show=Math.min(__searchShow,hits.length);
+  const inExp=hits.filter(x=>(x.exp||'').toLowerCase().includes(kw.toLowerCase())).length;
+  const cards=hits.slice(0,show).map(x=>{
+    const rec=idx[qkey(x.q)]||{};
+    const ansTxt=(x.choices||[])[x.ans]||'';
+    return `<div class="card srch">
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        <span class="tag">${esc(rec.quizTitle||'คลังข้อสอบ')}</span>
+        ${x.topic?`<span class="tag teal">${esc(x.topic)}</span>`:''}</div>
+      <div style="font-weight:500;line-height:1.55">${hlEsc(x.q,kw)}</div>
+      <div style="margin-top:7px;color:var(--ok);font-size:15px"><b>เฉลย ${LAB[x.ans]}.</b> ${hlEsc(ansTxt,kw)}</div>
+      <div class="exp" style="margin-top:9px;font-size:15px">${hlEsc(x.exp,kw)}</div>
+    </div>`; }).join('');
+  app.innerHTML=`<div class="wrap" style="padding-top:18px">
+    <div class="row" style="margin-bottom:10px;align-items:center;flex-wrap:wrap">
+      <b class="qtitle" style="font-size:20px">🔎 ${esc(kw)}</b>
+      <span class="badge">${hits.length} ข้อ</span>
+      <span style="flex:1"></span>
+      <button class="btn sm" onclick="startSearchQuiz()">▶ ทำเป็นชุดข้อสอบ</button>
+      <button class="btn sm sec" onclick="goBack()">↩ กลับ</button></div>
+    <div class="card" style="padding:12px 18px"><span class="muted" style="font-size:14px">
+      พบในเฉลย ${inExp} ข้อ • ที่เหลือพบในโจทย์ ตัวเลือก หรือหัวข้อ — เลื่อนอ่านได้เลย หรือกดปุ่มขวาบนเพื่อเอาทั้งหมดไปทำเป็นชุดข้อสอบ</span></div>
+    ${cards}
+    ${show<hits.length?`<div class="card" style="text-align:center"><button class="btn sec" onclick="searchMore()">โหลดเพิ่ม (เหลืออีก ${hits.length-show} ข้อ)</button></div>`:''}
+  </div>`;
+  window.scrollTo({top:0,behavior:'auto'});
 }
 
 /* ---------- SUBJECT (ชุดข้อสอบในหมวด) ---------- */
@@ -1085,11 +1169,8 @@ async function analytics(){
 async function startMistakes(){
   if(!requireLogin()) return;
   showLoader('กำลังจัดคิวทบทวน (SRS)...');
-  const {latest}=await analytics(); const idx=QIDX(); const m=srsMap(); const now=Date.now();
-  const keys=new Set();
-  Object.keys(latest).forEach(k=>{ if(!latest[k].c && idx[k]) keys.add(k); });               // ข้อที่ล่าสุดยังตอบผิด
-  Object.keys(m).forEach(k=>{ if(idx[k] && (m[k].box||0)<5 && m[k].due<=now) keys.add(k); });  // ข้อที่ถึงกำหนดทบทวน
-  const arr=[...keys].filter(k=>idx[k]).sort((a,b)=>{ const A=m[a]||{box:0,due:0},B=m[b]||{box:0,due:0}; return ((A.box||0)-(B.box||0))||((A.due||0)-(B.due||0)); });
+  const idx=QIDX();
+  const arr=await srsQueueKeys();                 /* ใช้ตัวเดียวกับที่หน้า Smart Review นับให้ ตัวเลขจะได้ตรงกันเสมอ */
   const qs=arr.map(k=>idx[k].q);
   hideLoader();
   if(!qs.length){ alert('ไม่มีข้อค้างทบทวนตอนนี้ 🎉\nทำข้อสอบเพิ่ม แล้วข้อที่พลาด/ถึงกำหนดจะถูกจัดคิวมาทบทวนแบบ spaced repetition'); return; }
@@ -1475,14 +1556,82 @@ function streakGoalHTML(at){
 /* ---------- exam countdown + ข้อสอบประจำวัน + รายงานข้อผิด ---------- */
 const EXAM_DATE = new Date('2027-05-02T00:00:00');
 const EXAM_LABEL = 'NL ขั้นที่ 2 (ศรว.)';
-function examCountdownHTML(){
-  const days=Math.ceil((EXAM_DATE-Date.now())/86400000);
-  if(days<0) return '';
-  const wk=Math.floor(days/7);
-  return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-left:5px solid var(--navy)">
-    <div style="font-size:30px">🗓️</div>
-    <div style="flex:1;min-width:180px"><div style="font-size:22px;font-weight:800;color:var(--navy);line-height:1.1">อีก ${days} วัน</div>
-      <div class="muted" style="font-size:13px">ถึงวันสอบ ${EXAM_LABEL} • 2 พ.ค. 2027${wk>0?` (~${wk} สัปดาห์)`:''}</div></div>
+/* วันสอบแก้เองได้ (เก็บใน localStorage) — ถ้ายังไม่เคยตั้ง ใช้ค่าเริ่มต้นด้านบน */
+function examDate(){ const s=LS.get('examDate',''); if(!s) return EXAM_DATE;
+  const d=new Date(s+'T00:00:00'); return isNaN(d.getTime())?EXAM_DATE:d; }
+function setExamDate(){
+  const c=examDate();
+  const def=c.getFullYear()+'-'+String(c.getMonth()+1).padStart(2,'0')+'-'+String(c.getDate()).padStart(2,'0');
+  const v=prompt('วันสอบ (รูปแบบ YYYY-MM-DD)',def); if(v===null)return;
+  const d=new Date(String(v).trim()+'T00:00:00');
+  if(isNaN(d.getTime())){ alert('รูปแบบวันที่ไม่ถูกต้อง เช่น 2027-05-02'); return; }
+  LS.set('examDate',String(v).trim()); render();
+}
+/* กันช่วงท้ายไว้ทบทวนอย่างเดียว ไม่เอาข้อใหม่ — ค่าเริ่มต้น 14 วัน */
+function planBuffer(){ const n=LS.get('planBuffer',14); return (typeof n==='number'&&n>=0)?n:14; }
+function setBuffer(){ const v=prompt('กันช่วงท้ายก่อนสอบไว้ทบทวนกี่วัน? (ช่วงนี้จะไม่นับว่าต้องทำข้อใหม่)',planBuffer());
+  if(v===null||isNaN(v)||+v<0)return; LS.set('planBuffer',Math.round(+v)); render(); }
+function applyPlanGoal(n){ LS.set('dailyGoal',Math.max(1,Math.round(n))); render(); }
+function thDate(d){ try{ return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}); }
+  catch(e){ return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); } }
+
+/* ---------- 🗓 แผนอ่านสอบ: นับถอยหลัง + คำนวณเป้าต่อวันจากงานที่เหลือจริง ----------
+   เดิมการ์ดนี้บอกแค่ "อีกกี่วัน" ซึ่งไม่ได้บอกว่าต้องทำอะไร
+   ตอนนี้ผูกกับจำนวนข้อที่ยังไม่เคยเจอ (จาก srsStats) แล้วคำนวณย้อนกลับเป็นเป้าต่อวัน */
+function planOpen(){ return LS.get('planOpen',false)===true; }
+function togglePlan(){
+  const b=document.getElementById('planBody'), t=document.getElementById('planTgl');
+  if(!b)return; const on=(b.style.display==='none');
+  b.style.display=on?'':'none'; if(t)t.textContent=on?'▴':'▾';
+  LS.set('planOpen',on);
+}
+function examPlanHTML(at){
+  const ex=examDate(), days=Math.ceil((ex-Date.now())/86400000);
+  if(days<0) return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="font-size:26px">🗓️</div><div style="flex:1;min-width:180px"><b style="color:var(--navy)">เลยวันสอบที่ตั้งไว้แล้ว</b>
+    <div class="muted" style="font-size:13px">${EXAM_LABEL} • ${thDate(ex)}</div></div></div></div>`;
+
+  const st=srsStats();
+  const buf=planBuffer(), studyDays=Math.max(days-buf,1);
+  const fresh=st.fresh;                                  /* ข้อที่ยังไม่เคยเจอเลย */
+  const need=fresh?Math.ceil(fresh/studyDays):0;
+  const week=(at||[]).filter(a=>Date.now()-new Date(a.created_at).getTime()<7*864e5)
+                     .reduce((s,a)=>s+a.total,0);
+  const pace=Math.round(week/7*10)/10;                   /* ข้อ/วัน จริงใน 7 วันล่าสุด */
+  const finish=pace>0&&fresh?new Date(Date.now()+Math.ceil(fresh/pace)*86400000):null;
+  const inBuffer=days<=buf;
+
+  let msg,mcol;
+  if(!fresh){ msg='ทำครบทุกข้อในคลังแล้ว 🎉 จากนี้โฟกัสที่การเคลียร์คิว Smart Review ให้หมดทุกวัน'; mcol='var(--ok)'; }
+  else if(inBuffer){ msg=`เหลือ ${days} วัน — เข้าโหมดทบทวนแล้ว ไม่ควรเปิดข้อใหม่ ให้เคลียร์คิวทบทวนและทำ NL2 Simulator จับเวลา`; mcol='var(--gold-d)'; }
+  else if(pace<=0){ msg=`ยังไม่มีข้อมูลจังหวะ — เริ่มทำวันละ ${need} ข้อ แล้วระบบจะเทียบให้เองว่าตามแผนหรือไม่`; mcol='var(--muted)'; }
+  else if(pace>=need){ msg=`ตามแผนอยู่ ✅ จังหวะปัจจุบัน ${pace} ข้อ/วัน มากกว่าที่ต้องการ (${need} ข้อ/วัน)`; mcol='var(--ok)'; }
+  else { const gap=Math.ceil(need-pace);
+         msg=`ช้ากว่าแผน — ต้องเพิ่มอีกวันละ ${gap} ข้อ ถ้ายังทำ ${pace} ข้อ/วันเท่าเดิม จะจบคลัง${finish?' '+thDate(finish):''} ซึ่งช้ากว่ากำหนด`; mcol='var(--bad)'; }
+
+  const op=planOpen();
+  return `<div class="wrap" style="padding-top:16px"><div class="card" style="border-left:5px solid var(--navy)">
+    <div class="row" style="align-items:center;gap:14px;flex-wrap:nowrap;cursor:pointer" onclick="togglePlan()">
+      <div style="font-size:30px">🗓️</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:22px;font-weight:800;color:var(--navy);line-height:1.1">อีก ${days} วัน</div>
+        <div class="muted" style="font-size:13px">ถึงวันสอบ ${EXAM_LABEL} • ${thDate(ex)}${days>=7?` (~${Math.floor(days/7)} สัปดาห์)`:''}</div>
+      </div>
+      <button class="plan-tgl" id="planTgl" title="ดูแผนอ่านสอบ" aria-label="ขยาย/ย่อแผนอ่านสอบ">${op?'▴':'▾'}</button>
+    </div>
+    <div id="planBody" style="display:${op?'':'none'}">
+    <div class="srs-mini">
+      <div class="m"><b>${fresh}</b><span>ข้อที่ยังไม่เคยทำ</span></div>
+      <div class="m"><b style="color:${inBuffer?'var(--muted)':'var(--gold-d)'}">${inBuffer?'—':need}</b><span>ต้องทำ/วัน (เหลือ ${studyDays} วันอ่าน)</span></div>
+      <div class="m"><b style="color:${pace>=need&&need?'var(--ok)':'var(--navy)'}">${pace}</b><span>จังหวะจริง (7 วันล่าสุด)</span></div>
+      <div class="m"><b style="font-size:17px;padding-top:5px">${finish?thDate(finish):'—'}</b><span>คาดว่าจบคลัง</span></div>
+    </div>
+    <div class="muted" style="margin-top:12px;font-size:14px;color:${mcol}">${msg}</div>
+    <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap">
+      ${(!inBuffer&&need)?`<button class="btn sm" style="padding:6px 14px" onclick="applyPlanGoal(${need})">ตั้งเป้าวันละ ${need} ข้อ</button>`:''}
+      <button class="btn sm sec" style="padding:6px 14px" onclick="setBuffer()">กันเวลาทบทวน ${buf} วัน</button>
+    </div>
+    </div>
   </div></div>`;
 }
 
@@ -1646,6 +1795,134 @@ function updateSRS(session){ const m=srsMap(), now=Date.now(), IV=[0,1,3,7,16,35
   });
   LS.set('srs',m);
   pushPace(session.times);
+  invalidateAnalytics();
+}
+
+/* ---------- 🔁 Smart Review hub — ทำให้ SRS "มองเห็นได้" ----------
+   เดิมมีเครื่องยนต์ Leitner อยู่แล้ว แต่ผู้ใช้ไม่มีทางรู้ว่าวันนี้ค้างกี่ข้อ
+   ถ้าไม่กดเข้าไปเดา ส่วนนี้จึงเป็นชั้นแสดงผล + ตัวนับบนแถบเมนู          */
+let __ana=null, __dueCache=null;
+function invalidateAnalytics(){ __ana=null; __dueCache=null; }
+function analyticsCached(){ if(!__ana) __ana=analytics(); return __ana; }
+const DAY=86400000, SRS_IV=[0,1,3,7,16,35];
+function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x.getTime(); }
+
+/* สถิติจาก srsMap อย่างเดียว (ไม่แตะเน็ต) — ใช้กับ ladder / forecast / mastery */
+function srsStats(){
+  const m=srsMap(), idx=QIDX(), now=Date.now();
+  const t0=startOfDay(now), endToday=t0+DAY-1;
+  const st={total:Object.keys(idx).length,seen:0,mastered:0,overdue:0,dueToday:0,
+            boxes:[0,0,0,0,0,0],fc:[0,0,0,0,0,0,0]};
+  Object.keys(m).forEach(k=>{
+    if(!idx[k]) return;                                  /* ข้อที่ถูกถอดออกจากคลังแล้ว */
+    const e=m[k], box=Math.min(e.box||0,5); st.seen++; st.boxes[box]++;
+    if(box>=5){ st.mastered++; return; }                 /* box 5 = หลุดคิวถาวร */
+    const due=e.due||0;
+    if(due<t0) st.overdue++;
+    else if(due<=endToday) st.dueToday++;
+    const dayOff=Math.floor((startOfDay(due)-t0)/DAY);
+    if(dayOff>=0 && dayOff<7) st.fc[dayOff]++;
+  });
+  st.fc[0]+=st.overdue;                                  /* ตกค้างต้องเคลียร์วันนี้ */
+  st.due=st.overdue+st.dueToday;
+  st.fresh=Math.max(st.total-st.seen,0);                 /* ยังไม่เคยเจอเลย */
+  return st;
+}
+/* คิวจริงที่จะได้เมื่อกดเริ่ม = ข้อที่ถึงกำหนด + ข้อที่ครั้งล่าสุดยังตอบผิด */
+async function srsQueueKeys(){
+  const {latest}=await analyticsCached(); const idx=QIDX(), m=srsMap(), now=Date.now();
+  const keys=new Set();
+  Object.keys(latest).forEach(k=>{ if(!latest[k].c && idx[k]) keys.add(k); });
+  Object.keys(m).forEach(k=>{ if(idx[k] && (m[k].box||0)<5 && (m[k].due||0)<=now) keys.add(k); });
+  return [...keys].filter(k=>idx[k]).sort((a,b)=>{
+    const A=m[a]||{box:0,due:0}, B=m[b]||{box:0,due:0};
+    return ((A.box||0)-(B.box||0))||((A.due||0)-(B.due||0)); });
+}
+async function updateReviewBadge(){
+  const el=document.getElementById('revDue'); if(!el)return;
+  try{
+    if(__dueCache===null) __dueCache=(await srsQueueKeys()).length;
+    el.textContent=__dueCache>99?'99+':__dueCache;
+    el.classList.toggle('on', __dueCache>0);
+  }catch(e){ el.classList.remove('on'); }
+}
+async function renderReview(app){
+  const st=srsStats();
+  app.innerHTML=`<div class="wrap" style="padding-top:18px">
+    <div class="row" style="margin-bottom:10px;align-items:center">
+      <b class="qtitle" style="font-size:20px">🔁 Smart Review</b>
+      <span class="badge">spaced repetition</span><span style="flex:1"></span>
+      <button class="btn sec" onclick="goBack()">↩ กลับ</button></div>
+    <div class="card"><div class="muted">กำลังคำนวณคิวทบทวน...</div></div></div>`;
+  let queue=[];
+  try{ queue=await srsQueueKeys(); }catch(e){}
+  __dueCache=queue.length; updateReviewBadge();
+  const wrongOnly=Math.max(queue.length-st.due,0);
+  const pctMaster=st.total?Math.round(st.mastered/st.total*100):0;
+  const fcMax=Math.max(1,...st.fc);
+  const names=['กล่อง 1 · ทบทวนพรุ่งนี้','กล่อง 2 · อีก 3 วัน','กล่อง 3 · อีก 7 วัน',
+               'กล่อง 4 · อีก 16 วัน','กล่อง 5 · แม่นแล้ว'];
+  const cols=['#e0533f','#e08a2e','#e0c22e','#5fb85f','#12b3a0'];
+  const maxBox=Math.max(1,...st.boxes.slice(1));
+  const ladder=names.map((nm,i)=>{ const c=st.boxes[i+1]||0;
+    return `<div class="lv"><span class="nm">${nm}</span>
+      <span class="track"><span class="fill" style="width:${c/maxBox*100}%;background:${cols[i]}"></span></span>
+      <span class="ct">${c}</span></div>`; }).join('');
+  const dn=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const today=new Date();
+  const fcast=st.fc.map((v,i)=>{ const d=new Date(today.getTime()+i*DAY);
+    return `<div class="d${i===0?' today':''}"><span class="vv">${v||''}</span>
+      <span class="bar" style="height:${Math.max(v/fcMax*100,v?4:1)}%"></span>
+      <span class="lb">${i===0?'วันนี้':dn[d.getDay()]+' '+d.getDate()}</span></div>`; }).join('');
+  app.innerHTML=`<div class="wrap" style="padding-top:18px">
+   <div class="row" style="margin-bottom:10px;align-items:center">
+     <b class="qtitle" style="font-size:20px">🔁 Smart Review</b>
+     <span class="badge">spaced repetition</span><span style="flex:1"></span>
+     <button class="btn sec" onclick="goBack()">↩ กลับ</button></div>
+
+   <div class="card">
+     <div class="srs-hero">
+       <div><div class="srs-big">${queue.length}</div>
+         <div class="muted" style="font-size:15px">ข้อที่ควรทบทวนตอนนี้</div></div>
+       <div style="flex:1;min-width:220px">
+         ${queue.length
+           ? `<button class="btn" style="font-size:17px;padding:12px 22px" onclick="startMistakes()">▶ เริ่มทบทวน ${queue.length} ข้อ</button>
+              <div class="muted" style="margin-top:8px;font-size:14px">เรียงข้อที่อ่อนที่สุดขึ้นก่อน (กล่องต่ำ → ค้างนานสุด)</div>`
+           : `<div class="warn" style="margin:0">🎉 เคลียร์คิวหมดแล้ว — ไปทำชุดใหม่เพื่อเติมข้อเข้าระบบทบทวนได้เลย</div>`}
+       </div>
+     </div>
+     <div class="srs-mini">
+       <div class="m"><b style="color:var(--bad)">${st.overdue}</b><span>ค้างจากวันก่อน</span></div>
+       <div class="m"><b style="color:var(--gold-d)">${st.dueToday}</b><span>ครบกำหนดวันนี้</span></div>
+       <div class="m"><b>${wrongOnly}</b><span>ตอบผิดครั้งล่าสุด</span></div>
+       <div class="m"><b style="color:var(--ok)">${st.mastered}</b><span>แม่นแล้ว (กล่อง 5)</span></div>
+     </div>
+   </div>
+
+   <div class="card">
+     <b style="color:var(--navy)">ความคืบหน้าทั้งคลัง</b>
+     <div class="row" style="margin-top:10px;align-items:center;gap:12px">
+       ${bar(pctMaster,'var(--teal)')}<span style="font-weight:600;color:var(--navy)">${pctMaster}%</span></div>
+     <div class="muted" style="margin-top:8px;font-size:14px">
+       แม่นแล้ว ${st.mastered} • กำลังทบทวน ${st.seen-st.mastered} • ยังไม่เคยเจอ ${st.fresh} • รวม ${st.total} ข้อ</div>
+   </div>
+
+   <div class="card">
+     <b style="color:var(--navy)">ขั้นความจำ (Leitner)</b>
+     <div class="muted" style="font-size:14px;margin:4px 0 10px">ตอบถูกแบบมั่นใจ = เลื่อนขึ้นกล่อง • ตอบผิด = ตกกลับกล่อง 1 • ถูกแบบไม่มั่นใจ (ติดธง 🚩 หรือใช้เวลานานผิดปกติ) = ค้างที่เดิมและกลับมาเร็วขึ้น</div>
+     <div class="ladder">${ladder}</div>
+   </div>
+
+   <div class="card">
+     <b style="color:var(--navy)">ภาระ 7 วันข้างหน้า</b>
+     <div class="muted" style="font-size:14px;margin:4px 0 2px">วางแผนล่วงหน้าได้ว่าวันไหนจะหนัก (แท่งวันนี้รวมข้อที่ค้างมาแล้ว)</div>
+     <div class="fcast">${fcast}</div>
+   </div>
+
+   <div class="card">
+     <span class="muted" style="font-size:14px">ระบบจะจัดคิวเองจากผลการทำข้อสอบทุกชุด ไม่ต้องมาเลือกเอง — ยิ่งทำข้อสอบมาก คิวยิ่งแม่นขึ้น ข้อที่ถึงกล่อง 5 จะหลุดออกจากคิวถาวร ส่วนข้อที่เดาถูกจะถูกกันไว้ไม่ให้ขึ้นเกินกล่อง 4 จนกว่าจะตอบถูกแบบมั่นใจจริง</span>
+   </div>
+  </div>`;
 }
 
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
