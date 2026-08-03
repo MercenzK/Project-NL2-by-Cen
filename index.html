@@ -279,8 +279,8 @@ html[data-theme="dark"] .ladder .lv .track{background:#26333f}
 .fcast .d.today .bar{background:var(--gold)}
 .fcast .d .lb{font-size:11px;color:var(--muted);white-space:nowrap}
 .fcast .d .vv{font-size:12px;font-weight:600;color:var(--navy)}
-.plan-tgl{flex:none;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);
-  background:var(--paper);color:var(--navy);font-size:15px;line-height:1;cursor:pointer;transition:.15s}
+.plan-tgl{flex:none;width:52px;height:52px;border-radius:13px;border:1.5px solid var(--line);
+  background:var(--paper);color:var(--navy);font-size:24px;line-height:1;cursor:pointer;transition:.15s}
 .plan-tgl:hover{border-color:var(--teal);color:var(--teal-d);background:#f5fcfb}
 html[data-theme="dark"] .plan-tgl{background:#16232e}
 html[data-theme="dark"] .plan-tgl:hover{background:#1b2b36}
@@ -289,6 +289,11 @@ html[data-theme="dark"] .plan-tgl:hover{background:#1b2b36}
 .srch mark{background:#ffe9a8;color:inherit;border-radius:3px;padding:0 2px;font-weight:500}
 html[data-theme="dark"] .srch mark{background:#6b5a1f;color:#fff5d6}
 .srch .exp{white-space:pre-line}
+tr.hrow:hover td{background:#f0f7fd}
+html[data-theme="dark"] tr.hrow:hover td{background:#1b2b36}
+.imgfail{background:var(--badbg);border:1px dashed #e0a9a5;border-radius:10px;
+  padding:14px 16px;margin:2px 0 14px;font-size:15px;color:var(--ink)}
+html[data-theme="dark"] .imgfail{border-color:#7a4a46}
 </style>
 <script>
 (function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
@@ -432,8 +437,97 @@ function qTitle(q){ return /^ชุดที่/.test(q.title) ? ('Med '+q.title
 /* ---------- storage ---------- */
 const LS = {
   get:(k,d)=>{ try{return JSON.parse(localStorage.getItem(k)) ?? d}catch(e){return d} },
-  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  set:(k,v)=>{ localStorage.setItem(k,JSON.stringify(v)); markSynced(k); },
 };
+
+/* ============================================================================
+   ☁️ sync ความคืบหน้าข้ามเครื่อง
+   ----------------------------------------------------------------------------
+   ปัญหาเดิม: ประวัติการทำข้อสอบ sync ขึ้นคลาวด์ แต่ "ความคืบหน้า" ทั้งหมด
+   (กล่อง Leitner, ข้อที่ Save, เป้าประจำวัน, วันสอบ) อยู่ใน localStorage ล้วน
+   สลับจากคอมไปมือถือแล้วคิวทบทวนหาย streak รีเซ็ต
+
+   วิธี merge (สำคัญกว่าการ sync เอง — ถ้าใช้ last-write-wins ทั้งก้อนจะทำข้อมูลหาย):
+     • srs  → รวมทีละคีย์ เลือกฝั่งที่ทบทวนล่าสุด (last มากกว่า) ชนะ
+     • pace → ต่อ array กันแล้วตัดเหลือ 200 ค่าล่าสุด
+     • คีย์อื่น → เทียบ timestamp รายคีย์ ฝั่งที่แก้ทีหลังชนะ
+   ========================================================================== */
+const SYNC_KEYS=['srs','savedQuestions','bookmarks','dailyGoal','examDate','planBuffer','pace','dailyDone'];
+let __syncTimer=null, __syncState='idle', __syncAt=0, __syncReady=false;
+function syncMeta(){ try{ return JSON.parse(localStorage.getItem('syncMeta'))||{}; }catch(e){ return {}; } }
+function markSynced(k){
+  if(!SYNC_KEYS.includes(k)) return;
+  const m=syncMeta(); m[k]=Date.now();
+  try{ localStorage.setItem('syncMeta',JSON.stringify(m)); }catch(e){}
+  schedulePush();
+}
+function localState(){
+  const o={v:1,meta:syncMeta()};
+  SYNC_KEYS.forEach(k=>{ const raw=localStorage.getItem(k); if(raw!=null){ try{ o[k]=JSON.parse(raw); }catch(e){} } });
+  return o;
+}
+function mergeState(a,b){                     /* a = ในเครื่อง, b = บนคลาวด์ */
+  if(!b||typeof b!=='object') return a;
+  const out={v:1,meta:{}}, ma=a.meta||{}, mb=b.meta||{};
+  SYNC_KEYS.forEach(k=>{
+    const A=a[k], B=b[k], ta=ma[k]||0, tb=mb[k]||0;
+    if(k==='srs'){
+      const m={...(B&&typeof B==='object'?B:{})};
+      Object.keys(A||{}).forEach(q=>{ const l=A[q], c=m[q];
+        if(!c || (l&&(l.last||0)>=(c.last||0))) m[q]=l; });   /* ทบทวนล่าสุดชนะ */
+      out[k]=m; out.meta[k]=Math.max(ta,tb);
+    } else if(k==='pace'){
+      const sa=(A&&A.samples)||[], sb=(B&&B.samples)||[];
+      out[k]={samples:[...sa,...sb].slice(0,200)}; out.meta[k]=Math.max(ta,tb);
+    } else {
+      const useLocal = A!==undefined && (B===undefined || ta>=tb);
+      if(useLocal){ if(A!==undefined) out[k]=A; out.meta[k]=ta; }
+      else if(B!==undefined){ out[k]=B; out.meta[k]=tb; }
+    }
+  });
+  return out;
+}
+function applyState(s){
+  if(!s) return;
+  SYNC_KEYS.forEach(k=>{ if(s[k]!==undefined){ try{ localStorage.setItem(k,JSON.stringify(s[k])); }catch(e){} } });
+  try{ localStorage.setItem('syncMeta',JSON.stringify(s.meta||{})); }catch(e){}
+}
+async function pullState(){
+  if(!CLOUD||!user||!supa) { __syncReady=true; return; }
+  try{
+    __syncState='syncing';
+    const {data,error}=await supa.from('user_state').select('data').eq('user_id',user.id).maybeSingle();
+    if(error) throw error;
+    const merged=mergeState(localState(), data?data.data:null);
+    applyState(merged);
+    await pushState(merged);                  /* เขียนผลรวมกลับ ให้ทุกเครื่องตรงกัน */
+    __syncState='ok'; __syncAt=Date.now(); __syncReady=true;
+    invalidateAnalytics(); __dueCache=null;
+  }catch(e){ console.warn('sync pull failed',e); __syncState='error'; __syncReady=true; }
+}
+async function pushState(st){
+  if(!CLOUD||!user||!supa) return;
+  try{
+    const payload=st||localState();
+    const {error}=await supa.from('user_state')
+      .upsert({user_id:user.id,data:payload,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+    if(error) throw error;
+    __syncState='ok'; __syncAt=Date.now();
+  }catch(e){ console.warn('sync push failed',e); __syncState='error'; }
+}
+function schedulePush(){
+  if(!CLOUD||!user||!__syncReady) return;     /* ยังไม่ดึงของคลาวด์มา merge ห้ามเขียนทับ */
+  clearTimeout(__syncTimer);
+  __syncTimer=setTimeout(()=>pushState(),3000);
+}
+function syncLabel(){
+  if(!CLOUD||!user) return 'ไม่ได้เข้าสู่ระบบ — ความคืบหน้าเก็บในเครื่องนี้เท่านั้น';
+  if(__syncState==='error') return '⚠️ ซิงก์ไม่สำเร็จ — ข้อมูลยังอยู่ในเครื่อง จะลองใหม่อัตโนมัติ';
+  if(__syncState==='syncing') return '⏳ กำลังซิงก์...';
+  if(__syncAt) return '☁️ ซิงก์แล้ว '+new Date(__syncAt).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  return '☁️ พร้อมซิงก์ข้ามเครื่อง';
+}
+window.addEventListener('beforeunload',()=>{ if(__syncTimer){ clearTimeout(__syncTimer); pushState(); } });
 function customQuizzes(){ return LS.get('customQuizzes',[]); }
 function allQuizzes(){ return [...window.QUIZ_DATA, ...customQuizzes()]; }
 function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; if(id==='mistakes'&&window.__mistakes)return window.__mistakes; if(id==='nl2sim'&&window.__sim)return window.__sim; if(id==='sysquiz'&&window.__sys)return window.__sys; if(id==='saved'&&window.__saved)return window.__saved; return allQuizzes().find(q=>q.id===id); }
@@ -531,6 +625,7 @@ async function refreshUser(){
     if(user && !(await emailAllowed(user.email))){ await supa.auth.signOut(); user=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); }
   }
   isAdminFlag = await computeAdmin();
+  await pullState();                          /* ดึง+merge ความคืบหน้าก่อน render ครั้งแรก */
   renderTopbar(); render();
 }
 function displayName(){
@@ -641,6 +736,20 @@ function goBack(){
   render(); window.scrollTo(0,0);
 }
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+/* รูปโหลดไม่ขึ้น (ไม่มีเน็ต / เว็บต้นทางบล็อก hotlink) — แสดงกล่องบอกเหตุผลแทนไอคอนรูปแตก
+   สร้างด้วย DOM ไม่ใช่ innerHTML เพราะ src มาจากภายนอก ไม่ควรเอาไปต่อสตริง HTML */
+function imgFail(el){
+  if(!el || el.dataset.failed) return; el.dataset.failed='1';
+  const src=el.getAttribute('src')||'';
+  const d=document.createElement('div'); d.className='imgfail';
+  const t=document.createElement('span'); t.textContent='🖼️ โหลดรูปประกอบไม่สำเร็จ — ';
+  const a=document.createElement('a'); a.href=src; a.target='_blank'; a.rel='noopener noreferrer';
+  a.textContent='เปิดรูปต้นฉบับ'; a.style.textDecoration='underline';
+  const n=document.createElement('div'); n.className='muted'; n.style.fontSize='13px'; n.style.marginTop='4px';
+  n.textContent='ถ้าอยู่โหมดออฟไลน์ ให้เปิดข้อนี้ตอนมีเน็ตสักครั้ง ระบบจะเก็บรูปไว้ให้ใช้ออฟไลน์รอบหน้า';
+  d.appendChild(t); d.appendChild(a); d.appendChild(n);
+  el.replaceWith(d);
+}
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function scrollToCat(){ if(state.view!=='home'){go('home');setTimeout(()=>document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}),80);} else document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}); }
 function showLoader(m){ const l=document.getElementById('loader'); document.getElementById('loaderMsg').textContent=m||'กำลังเตรียมข้อสอบ...'; l.style.display='flex'; }
@@ -652,6 +761,7 @@ async function render(){
   updateReviewBadge();                             /* ตัวนับข้อค้างทบทวนบนแถบเมนู */
   if(state.view==='review') return renderReview(app);
   if(state.view==='search') return renderSearch(app);
+  if(state.view==='attempt') return renderAttempt(app);
   if(state.view==='home') return renderHome(app);
   if(state.view==='subject') return renderSubject(app);
   if(state.view==='config') return renderConfig(app);
@@ -1038,7 +1148,7 @@ function qCard(q,i){
     : (flagged?'<span class="badge" style="margin-left:auto;background:var(--goldbg);color:var(--gold-d)">🚩 marked</span>':'');
   const saved=isSavedQ(q.key);
   const saveBtn=`<button id="sv${i}" class="btn sm ${saved?'':'sec'}" style="padding:3px 10px;font-size:12px" onclick="toggleSavedQ('${q.key}',${i})">💿 ${saved?'Saved':'Save'}</button>`;
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${saveBtn}${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy">`:''}`;
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${saveBtn}${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
@@ -1418,18 +1528,85 @@ function renderResult(app){
 async function renderHistory(app){
   app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังโหลดประวัติ...</b></div></div>`;
   const at=await listAttempts();
+  window.__attempts=at;                       /* เก็บไว้ให้หน้า "ดูรายข้อ" ใช้ต่อโดยไม่ต้องยิงซ้ำ */
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
    <div class="card">
      <h2 class="qtitle">📊 ประวัติการทำข้อสอบ</h2>
      <div class="muted">${CLOUD&&user?esc(displayName())+' • '+esc(user.email):'เก็บในเครื่องนี้ (Guest)'}</div>
      ${at.length===0?'<div class="muted" style="margin-top:12px">ยังไม่มีประวัติ ลองทำข้อสอบสักชุด</div>':`
      <div class="tablewrap" style="margin-top:12px"><table>
-       <tr><th>วันที่</th><th>ชุด</th><th>คะแนน</th><th>%</th></tr>
-       ${at.map(a=>`<tr><td>${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(a.quiz_title||a.quiz_id)}</td><td>${a.score}/${a.total}</td><td style="color:${a.score/a.total>=.6?'var(--ok)':'var(--bad)'}">${Math.round(a.score/a.total*100)}%</td></tr>`).join('')}
-     </table></div>`}
+       <tr><th>วันที่</th><th>ชุด</th><th>คะแนน</th><th>%</th><th></th></tr>
+       ${at.map((a,i)=>`<tr class="hrow" onclick="go('attempt',{attemptIx:${i}})" style="cursor:pointer"><td>${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(a.quiz_title||a.quiz_id)}</td><td>${a.score}/${a.total}</td><td style="color:${a.score/a.total>=.6?'var(--ok)':'var(--bad)'}">${Math.round(a.score/a.total*100)}%</td><td style="color:var(--teal-d);white-space:nowrap">ดูรายข้อ →</td></tr>`).join('')}
+     </table></div>
+     <div class="muted" style="margin-top:8px;font-size:14px">คลิกแถวเพื่อดูว่าครั้งนั้นข้อไหนผิด พร้อมอ่านเฉลย</div>`}
      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
      ${!CLOUD&&at.length?`<button class="btn danger" onclick="if(confirm('ลบประวัติในเครื่องนี้?')){localStorage.removeItem('guestAttempts');go('history')}">ล้างประวัติ</button>`:''}</div>
    </div></div>`;
+}
+
+/* ---------- 🔍 ดูย้อนหลังรายข้อของการทำข้อสอบครั้งหนึ่ง ----------
+   ข้อมูลรายข้อ (answers: [{k,t,c,a}]) ถูกบันทึกอยู่แล้วทุกครั้งที่ส่งคำตอบ
+   แต่เดิมหน้าประวัติแสดงแค่คะแนนรวม กดต่อไม่ได้ — ตรงนี้คือการเปิดข้อมูลที่มีอยู่ให้ใช้  */
+let __atWrongOnly=true;
+function toggleAtFilter(){ __atWrongOnly=!__atWrongOnly; render(); }
+function redoAttemptWrong(){
+  const a=(window.__attempts||[])[state.attemptIx]; if(!a)return;
+  const idx=QIDX();
+  const qs=(a.answers||[]).filter(e=>e&&e.k&&!e.c&&idx[e.k]).map(e=>idx[e.k].q);
+  if(!qs.length){ alert('ครั้งนั้นไม่มีข้อที่ผิด 🎉'); return; }
+  window.__mistakes={id:'mistakes',title:'🔁 แก้ตัว: '+(a.quiz_title||a.quiz_id)+' ('+qs.length+' ข้อ)',subject:'past',questions:qs};
+  go('config',{quiz:'mistakes'});
+}
+async function renderAttempt(app){
+  app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังโหลด...</b></div></div>`;
+  let list=window.__attempts;
+  if(!list){ list=await listAttempts(); window.__attempts=list; }
+  const a=list[state.attemptIx];
+  if(!a){ go('history'); return; }
+  const idx=QIDX();
+  const rows=(a.answers||[]).filter(e=>e&&e.k);
+  const wrong=rows.filter(e=>!e.c), skipped=rows.filter(e=>!e.a);
+  const show=__atWrongOnly?wrong:rows;
+  const pct=Math.round(a.score/a.total*100);
+  const cards=show.map((e,n)=>{
+    const rec=idx[e.k];
+    if(!rec) return `<div class="card"><div class="muted">ข้อนี้ถูกถอดออกจากคลังแล้ว (${e.t?esc(e.t):'ไม่ทราบหัวข้อ'})</div></div>`;
+    const q=rec.q, ansTxt=(q.choices||[])[q.ans]||'';
+    return `<div class="card">
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center">
+        <span class="badge" style="background:${e.c?'var(--okbg)':'var(--badbg)'};color:${e.c?'var(--ok)':'var(--bad)'}">${e.c?'✔ ถูก':(e.a?'✘ ผิด':'— ไม่ได้ตอบ')}</span>
+        <span class="tag">${esc(rec.quizTitle||'')}</span>
+        ${q.topic?`<span class="tag teal">${esc(q.topic)}</span>`:''}</div>
+      <div style="font-weight:500;line-height:1.55">${esc(q.q)}</div>
+      ${q.img?`<img class="qimg" style="margin-top:10px" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}
+      <div style="margin-top:7px;color:var(--ok);font-size:15px"><b>เฉลย ${LAB[q.ans]}.</b> ${esc(ansTxt)}</div>
+      <div class="exp" style="margin-top:9px;font-size:15px;white-space:pre-line">${esc(q.exp)}</div>
+    </div>`; }).join('');
+  app.innerHTML=`<div class="wrap" style="padding-top:22px">
+   <div class="card">
+     <div class="row" style="align-items:center;flex-wrap:wrap;gap:10px">
+       <div style="flex:1;min-width:200px">
+         <b class="qtitle" style="font-size:19px">${esc(a.quiz_title||a.quiz_id)}</b>
+         <div class="muted" style="font-size:14px">${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'long',timeStyle:'short'})}</div>
+       </div>
+       <div style="text-align:right"><div style="font-size:26px;font-weight:800;color:${pct>=60?'var(--ok)':'var(--bad)'};line-height:1.1">${a.score}/${a.total}</div>
+         <div class="muted" style="font-size:13px">${pct}%</div></div>
+     </div>
+     <div class="srs-mini">
+       <div class="m"><b style="color:var(--ok)">${rows.filter(e=>e.c).length}</b><span>ตอบถูก</span></div>
+       <div class="m"><b style="color:var(--bad)">${wrong.filter(e=>e.a).length}</b><span>ตอบผิด</span></div>
+       <div class="m"><b>${skipped.length}</b><span>ไม่ได้ตอบ</span></div>
+     </div>
+     <div class="row" style="margin-top:14px;gap:8px;flex-wrap:wrap">
+       ${wrong.length?`<button class="btn sm" onclick="redoAttemptWrong()">🔁 ทำข้อที่พลาดซ้ำ (${wrong.length})</button>`:''}
+       <button class="btn sm sec" onclick="toggleAtFilter()">${__atWrongOnly?'แสดงทุกข้อ':'แสดงเฉพาะที่พลาด'}</button>
+       <button class="btn sm sec" onclick="go('history')">↩ กลับประวัติ</button>
+     </div>
+   </div>
+   ${rows.length?(show.length?cards:'<div class="card"><div class="muted">ครั้งนี้ตอบถูกหมด 🎉 กด "แสดงทุกข้อ" เพื่อทบทวนทั้งชุด</div></div>')
+     :'<div class="card"><div class="muted">ครั้งนี้บันทึกไว้ก่อนระบบเก็บข้อมูลรายข้อ จึงดูย้อนหลังไม่ได้</div></div>'}
+  </div>`;
+  window.scrollTo({top:0,behavior:'auto'});
 }
 
 /* ---------- LEADERBOARD ---------- */
@@ -1920,12 +2097,13 @@ async function renderReview(app){
    </div>
 
    <div class="card">
+     <div class="muted" style="font-size:13px;margin-bottom:8px">${syncLabel()}</div>
      <span class="muted" style="font-size:14px">ระบบจะจัดคิวเองจากผลการทำข้อสอบทุกชุด ไม่ต้องมาเลือกเอง — ยิ่งทำข้อสอบมาก คิวยิ่งแม่นขึ้น ข้อที่ถึงกล่อง 5 จะหลุดออกจากคิวถาวร ส่วนข้อที่เดาถูกจะถูกกันไว้ไม่ให้ขึ้นเกินกล่อง 4 จนกว่าจะตอบถูกแบบมั่นใจจริง</span>
    </div>
   </div>`;
 }
 
-if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); renderTopbar(); if(state.view==='home')render(); }); }
+if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); __syncReady=false; await pullState(); renderTopbar(); render(); }); }
 /* ---------- บูต: โหลดคลังข้อสอบจากคลาวด์ก่อน (ถ้าล้มเหลวใช้ data.js) แล้วค่อย render ---------- */
 (async()=>{
   try{ showLoader('กำลังโหลดคลังข้อสอบ...'); await loadCloudQuestions(); }
