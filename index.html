@@ -12,292 +12,489 @@
 <meta property="og:image" content="icon-512.png">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#12395f">
+<meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NL2 Quiz">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ============================================================================
+   DESIGN TOKENS — แหล่งความจริงเดียวของสี ระยะ มุมโค้ง เงา
+   แก้ที่นี่ที่เดียวแล้วเปลี่ยนทั้งเว็บ ไม่ต้องไล่แก้ค่าดิบตามแต่ละ rule
+   ========================================================================== */
 :root{
-  --navy:#12395f; --navy2:#1c4e7a; --ink:#1e2a38; --muted:#6b7a8d;
-  --teal:#12b3a0; --teal-d:#0e9384; --gold:#e0a82e; --gold-d:#c68a12;
-  --bg:#eef3f8; --paper:#ffffff; --line:#e2e9f1;
-  --ok:#137a45; --okbg:#e5f4ec; --bad:#c02626; --badbg:#fdeceb; --goldbg:#fdf5e2;
+  color-scheme:light;
+  /* แบรนด์ — ลดความจัดของ teal/gold ลงเล็กน้อยให้เข้ากับพื้นขาวสะอาด */
+  --navy:#12395f; --navy2:#1c4e7a;
+  --teal:#0fa899; --teal-d:#0b8578; --teal-soft:#e6f6f4;
+  --gold:#d9a326; --gold-d:#a8790c;
+  /* พื้นผิว */
+  --bg:#f7f9fb; --paper:#ffffff; --paper2:#f1f5f9;
+  --ink:#16202b; --ink2:#3d4c5c; --muted:#75879a;
+  --line:#e7edf3; --line2:#d5dfe9;
+  /* สถานะ */
+  --ok:#0f7a45; --okbg:#ecf8f2; --okline:#b4e0c7;
+  --bad:#c0392b; --badbg:#fdefed; --badline:#f3c5be;
+  --goldbg:#fdf7e8; --goldline:#eddfb4;
+  /* มุมโค้ง — มีแค่ 5 ค่านี้ ห้ามใช้ค่าดิบอื่น */
+  --r-xs:6px; --r-sm:10px; --r-md:14px; --r-lg:18px; --r-full:999px;
+  /* เงา — ไล่ระดับ 4 ขั้น */
+  --sh-1:0 1px 2px rgba(16,32,52,.05);
+  --sh-2:0 2px 10px rgba(16,32,52,.06);
+  --sh-3:0 10px 30px rgba(16,32,52,.10);
+  --sh-4:0 24px 60px rgba(16,32,52,.22);
+  /* จังหวะระยะห่าง */
+  --sp-1:6px; --sp-2:10px; --sp-3:16px; --sp-4:24px; --sp-5:36px; --sp-6:52px;
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Kanit","Prompt","Segoe UI",system-ui,sans-serif;font-size:17px;line-height:1.6;font-weight:300}
-h1,h2,h3,.serif{font-family:"Sarabun","Kanit",serif;font-weight:700}
-a{color:var(--navy2);text-decoration:none}
-.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+/* ฟอนต์: Inter รับตัวอักษรละติน (โจทย์ส่วนใหญ่เป็นอังกฤษ) + Sarabun รับตัวไทย (เฉลย)
+   เบราว์เซอร์เลือกให้เองทีละตัวอักษร จึงได้ทั้งความคมของ Inter และความอ่านง่ายของ Sarabun */
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Inter","Sarabun","Segoe UI",system-ui,sans-serif;
+  font-size:16.5px;line-height:1.62;font-weight:400;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3,.serif{font-family:"Inter","Sarabun",sans-serif;font-weight:700;letter-spacing:-.012em}
+a{color:var(--teal-d);text-decoration:none}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+::selection{background:var(--teal-soft);color:var(--ink)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 
-/* ---------- header ---------- */
-header{position:sticky;top:0;z-index:30;background:rgba(18,57,95,.98);backdrop-filter:blur(6px);color:#fff;box-shadow:0 2px 14px rgba(10,30,60,.18)}
-.hbar{max-width:1040px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer;font-family:"Sarabun";font-weight:800;font-size:21px;letter-spacing:.3px}
-.logo svg{width:34px;height:34px;flex:none}
-.search{flex:1;min-width:200px;position:relative}
-.search input{width:100%;padding:9px 14px 9px 40px;border-radius:999px;border:none;background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:15px}
-.search input::placeholder{color:rgba(255,255,255,.7)}
-.search input:focus{outline:2px solid var(--teal);background:rgba(255,255,255,.2)}
-.search .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.8}
-.nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.nav button{background:transparent;color:#dbe7f3;border:none;font-family:inherit;font-size:15px;font-weight:400;cursor:pointer;padding:7px 12px;border-radius:8px}
-.nav button:hover{background:rgba(255,255,255,.12);color:#fff}
-.pill{background:rgba(255,255,255,.16);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:400}
-.navtoggle{display:none;background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:10px;font-size:20px;line-height:1;padding:8px 13px;cursor:pointer}
-@media(max-width:860px){
-  .navtoggle{display:inline-flex;align-items:center}
-  .nav{display:none;order:5;width:100%;flex-direction:column;align-items:stretch;gap:2px;margin-top:6px}
-  .nav.open{display:flex}
-  .nav button{width:100%;text-align:left;padding:11px 12px;font-size:16px}
-  .nav .pill{align-self:flex-start;margin-bottom:4px}
+/* ---------- header — พื้นอ่อน เส้นคั่นบาง ๆ แทนแถบน้ำเงินทึบ ---------- */
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(14px);color:var(--ink);border-bottom:1px solid var(--line)}
+html[data-theme="dark"] header{background:rgba(13,20,28,.86)}
+.hbar{max-width:1040px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:700;font-size:16.5px;
+  letter-spacing:-.02em;color:var(--ink);flex:none}
+.logo svg{width:28px;height:28px;flex:none}
+
+.search{flex:1;min-width:120px;max-width:380px;position:relative}
+.search input{width:100%;padding:8px 13px 8px 36px;border-radius:var(--r-sm);border:1px solid var(--line);
+  background:var(--paper2);color:var(--ink);font-family:inherit;font-size:14px;transition:.15s}
+.search input::placeholder{color:var(--muted)}
+.search input:focus{border-color:var(--teal);background:var(--paper);box-shadow:0 0 0 3px var(--teal-soft)}
+.search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);
+  pointer-events:none;display:flex}
+
+.nav{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav button{background:transparent;color:var(--ink2);border:none;font-family:inherit;font-size:14px;
+  font-weight:500;cursor:pointer;padding:7px 10px;border-radius:var(--r-xs);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;transition:.13s var(--ease)}
+.nav button:hover{background:var(--paper2);color:var(--ink)}
+.nav button.on{background:var(--teal-soft);color:var(--teal-d)}
+.nav .iconbtn{padding:8px;color:var(--muted)}
+.nav .iconbtn:hover{color:var(--ink)}
+.pill{background:var(--paper2);border:1px solid var(--line);border-radius:var(--r-full);
+  padding:4px 11px;font-size:12.5px;font-weight:500;color:var(--ink2);white-space:nowrap}
+.navtoggle{display:none;background:transparent;color:var(--ink2);border:none;
+  border-radius:var(--r-xs);padding:8px;cursor:pointer;align-items:center}
+.navtoggle:hover{background:var(--paper2)}
+.hsep{width:1px;height:20px;background:var(--line);margin:0 4px;flex:none}
+
+/* เมนู "เพิ่มเติม" — รวมหน้าที่ใช้ไม่บ่อยไว้ในดรอปดาวน์เดียว */
+.moremenu{position:relative}
+.moremenu .drop{position:absolute;right:0;top:calc(100% + 8px);min-width:220px;background:var(--paper);
+  border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:var(--sh-3);padding:6px;
+  display:none;flex-direction:column;z-index:40;animation:popIn .15s var(--ease)}
+.moremenu.open .drop{display:flex}
+.moremenu .drop button{width:100%;justify-content:flex-start;padding:9px 11px;font-size:14px;gap:10px}
+.moremenu .drop .sep{height:1px;background:var(--line);margin:5px 6px}
+.moremenu .drop .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);padding:8px 11px 4px}
+
+/* ---------- แถบล่างบนมือถือ — เข้าถึงหน้าหลัก 5 หน้าด้วยนิ้วโป้ง ---------- */
+#tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(14px);
+  border-top:1px solid var(--line);padding:5px 4px calc(5px + env(safe-area-inset-bottom))}
+html[data-theme="dark"] #tabbar{background:rgba(13,20,28,.94)}
+#tabbar .tb{display:flex;max-width:560px;margin:0 auto}
+#tabbar button{flex:1;background:none;border:none;font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px 4px;
+  color:var(--muted);font-size:10.5px;font-weight:600;position:relative;border-radius:var(--r-xs)}
+#tabbar button .i{width:21px;height:21px;stroke-width:1.8}
+#tabbar button.on{color:var(--teal-d)}
+#tabbar button .dot{position:absolute;top:3px;right:calc(50% - 17px);min-width:16px;height:16px;
+  border-radius:var(--r-full);background:var(--bad);color:#fff;font-size:9.5px;font-weight:700;
+  line-height:16px;padding:0 4px}
+
+@media(max-width:900px){
+  .nav .navtxt{display:none}
+  .nav button{padding:8px}
 }
-.btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-weight:500;cursor:pointer;font-size:16px;font-family:inherit;transition:.15s;box-shadow:0 2px 8px rgba(18,179,160,.25)}
-.btn:hover{background:var(--teal-d);transform:translateY(-1px)}
-.btn.outline{background:transparent;color:var(--navy);border:2px solid var(--navy);box-shadow:none}
-.btn.outline:hover{background:var(--navy);color:#fff}
-.btn.gold{background:var(--gold);box-shadow:0 2px 8px rgba(224,168,46,.3)}
-.btn.gold:hover{background:var(--gold-d)}
-.btn.sec{background:#fff;color:var(--navy2);border:1.5px solid #cfe0f0;box-shadow:none}
-.btn.sec:hover{background:#f2f7fc}
-.btn.danger{background:var(--bad);box-shadow:none}
-.btn.sm{padding:6px 12px;font-size:14px}
-.btn:disabled{opacity:.5;cursor:default;transform:none}
+@media(max-width:760px){
+  .navtoggle{display:inline-flex}
+  .nav{display:none;order:5;width:100%;flex-direction:column;align-items:stretch;gap:2px;
+    margin:8px 0 4px;padding-top:8px;border-top:1px solid var(--line)}
+  .nav.open{display:flex}
+  .nav .navtxt{display:inline}
+  .nav button{width:100%;justify-content:flex-start;padding:11px 12px;font-size:15px}
+  .nav .pill{align-self:flex-start;margin-bottom:4px}
+  .nav .hsep{display:none}
+  .moremenu{width:100%}
+  .moremenu .drop{position:static;box-shadow:none;border:none;padding:0;min-width:0;
+    background:transparent;animation:none}
+  .hbar{flex-wrap:wrap}
+  #tabbar{display:block}
+  body{padding-bottom:64px}
+}
+/* ปุ่ม: ตัดเงาสีทิ้ง ใช้พื้นทึบ + ขอบบางแทน ให้ดูสะอาดและน้ำหนักเท่ากันทุกตัว */
+.btn{background:var(--teal);color:#fff;border:1px solid transparent;border-radius:var(--r-sm);
+  padding:10px 18px;font-weight:600;cursor:pointer;font-size:15.5px;font-family:inherit;
+  line-height:1.35;transition:background .15s var(--ease),border-color .15s var(--ease),opacity .15s;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn:hover{background:var(--teal-d)}
+.btn:active{transform:translateY(.5px)}
+.btn.outline{background:transparent;color:var(--navy);border-color:var(--line2)}
+.btn.outline:hover{background:var(--paper2);border-color:var(--navy2);color:var(--navy2)}
+.btn.gold{background:var(--gold);color:#25201a}
+.btn.gold:hover{background:var(--gold-d);color:#fff}
+.btn.sec{background:var(--paper);color:var(--ink2);border-color:var(--line2)}
+.btn.sec:hover{background:var(--paper2);border-color:var(--muted);color:var(--ink)}
+.btn.danger{background:var(--bad)}
+.btn.danger:hover{background:#a52f22}
+.btn.sm{padding:6px 12px;font-size:13.5px;border-radius:var(--r-xs)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn:disabled:hover{background:var(--teal)}
+.btn.sec:disabled:hover{background:var(--paper)}
 
-/* ---------- hero ---------- */
+/* ---------- hero — เรียบลง: ไล่สีเดียว ไม่มีลายจุด ตัวอักษรไม่มีเงา ---------- */
 .hero{position:relative;color:#fff;overflow:hidden;
-  background:linear-gradient(135deg,#0f3355 0%,#1c4e7a 55%,#12b3a0 140%)}
-.hero::after{content:"";position:absolute;inset:0;opacity:.13;background-image:radial-gradient(circle at 85% 20%,#fff 0 2px,transparent 2px),radial-gradient(circle at 15% 75%,#fff 0 2px,transparent 2px);background-size:44px 44px}
-.hero .wrap{position:relative;z-index:1;padding:52px 18px 60px}
-.hero h1{font-size:clamp(30px,5vw,50px);margin:0 0 8px;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.2)}
-.hero p{font-size:clamp(17px,2.4vw,22px);opacity:.95;margin:0 0 26px;font-weight:300}
-.hero .cta{display:flex;gap:14px;flex-wrap:wrap}
-.hero .btn{padding:13px 26px;font-size:18px}
-.ecgline{position:absolute;left:0;right:0;bottom:0;height:60px;z-index:0;opacity:.5}
-.ecgline path{fill:none;stroke:#8ff0e2;stroke-width:2.5;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 4s ease-in-out infinite}
+  background:linear-gradient(160deg,#0f3355 0%,#17456b 60%,#0b6b73 130%)}
+.hero .wrap{position:relative;z-index:1;padding:64px 20px 72px}
+.hero h1{font-size:clamp(30px,5vw,46px);margin:0 0 10px;line-height:1.14;letter-spacing:-.025em;font-weight:700}
+.hero p{font-size:clamp(16px,2.2vw,19px);opacity:.82;margin:0 0 30px;font-weight:400;max-width:56ch;line-height:1.6}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero .btn{padding:13px 24px;font-size:16px}
+.hero .btn.outline{color:#fff;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.04)}
+.hero .btn.outline:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.6);color:#fff}
+.ecgline{position:absolute;left:0;right:0;bottom:0;height:56px;z-index:0;opacity:.28}
+.ecgline path{fill:none;stroke:#8ff0e2;stroke-width:2;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 4s ease-in-out infinite}
 @keyframes draw{0%{stroke-dashoffset:1400}55%{stroke-dashoffset:0}100%{stroke-dashoffset:-1400}}
 
 /* ---------- sections ---------- */
-section{padding:34px 0}
-.sechead{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.sechead h2{font-size:26px;margin:0;color:var(--navy)}
-.sechead .bar{width:5px;height:26px;background:var(--gold);border-radius:3px}
-.sechead .more{margin-left:auto;font-size:15px;color:var(--teal-d);cursor:pointer;font-weight:400}
+section{padding:var(--sp-5) 0}
+.sechead{display:flex;align-items:center;gap:10px;margin-bottom:var(--sp-3)}
+.sechead h2{font-size:21px;margin:0;color:var(--ink);letter-spacing:-.015em;font-weight:700}
+.sechead .bar{display:none}
+.sechead .more{margin-left:auto;font-size:14px;color:var(--teal-d);cursor:pointer;font-weight:600}
+.sechead .more:hover{text-decoration:underline}
 
-/* patient-file category cards */
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-.file-card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:4px 12px 12px 12px;padding:20px 18px 18px;box-shadow:0 3px 10px rgba(20,50,90,.06);transition:.18s;cursor:pointer;overflow:hidden}
+/* การ์ดหมวด — เลิกใช้ทรงแฟ้มผู้ป่วย (มุมเบี้ยว + แท็บทับหัวข้อ) เป็นการ์ดเรียบมุมเท่ากัน */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+.file-card{position:relative;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:18px;box-shadow:var(--sh-1);cursor:pointer;overflow:hidden;
+  transition:border-color .16s var(--ease),box-shadow .16s var(--ease),transform .16s var(--ease)}
 .file-card::before{display:none}
-.file-card .tab{position:absolute;top:-1px;left:-1px;color:#fff;background:var(--navy);font-size:12px;font-weight:500;letter-spacing:.5px;z-index:1;padding:5px 14px 7px 12px;border-radius:4px 0 14px 0;white-space:nowrap}
-.file-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(18,179,160,.22);border-color:var(--teal)}
-.file-card h3{margin:22px 0 6px;font-size:19px;color:var(--ink);line-height:1.3}
-.file-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.tag{font-size:12px;background:#e9f0f8;color:var(--navy2);border-radius:20px;padding:2px 10px;font-weight:400}
-.tag.teal{background:#e0f6f2;color:var(--teal-d)}
-.file-card .meta{color:var(--muted);font-size:14px;margin:6px 0 12px;display:flex;gap:14px;flex-wrap:wrap}
-.file-card .best{color:var(--ok);font-size:14px;font-weight:500}
-.bk{position:absolute;top:10px;right:12px;font-size:20px;cursor:pointer;color:#cbd6e2;z-index:2;user-select:none}
+.file-card .tab{position:static;display:inline-block;color:var(--teal-d);background:var(--teal-soft);
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;
+  border-radius:var(--r-xs);white-space:nowrap;margin-bottom:10px}
+.file-card:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:var(--line2)}
+.file-card h3{margin:0 0 6px;font-size:17px;color:var(--ink);line-height:1.34;font-weight:600}
+.file-card .tags{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.tag{font-size:11.5px;background:var(--paper2);color:var(--ink2);border-radius:var(--r-xs);
+  padding:2px 8px;font-weight:500}
+.tag.teal{background:var(--teal-soft);color:var(--teal-d)}
+.file-card .meta{color:var(--muted);font-size:13px;margin:6px 0 12px;display:flex;gap:12px;flex-wrap:wrap}
+.file-card .best{color:var(--ok);font-size:13px;font-weight:600}
+.bk{position:absolute;top:12px;right:12px;font-size:18px;cursor:pointer;color:var(--line2);
+  z-index:2;user-select:none;transition:color .13s}
+.bk:hover{color:var(--gold)}
 .bk.on{color:var(--gold)}
-.file-card.subj{text-align:center;cursor:pointer}
-.file-card.subj h3{margin-top:2px}
+.file-card.subj{text-align:center;cursor:pointer;padding:22px 18px}
+.file-card.subj h3{margin-top:2px;font-size:16px}
+.file-card.subj .meta{font-size:12.5px}
+.file-card.subj .best{display:flex;align-items:center;justify-content:center;gap:5px;font-size:12.5px}
+/* ไอคอนหมวด: วงกลมอ่อน ๆ ให้ดูเป็นชุดเดียวกันแทนอีโมจิที่สีมั่ว */
+.subjico{width:46px;height:46px;margin:2px auto 12px;border-radius:var(--r-md);
+  background:var(--teal-soft);color:var(--teal-d);display:flex;align-items:center;justify-content:center}
+.subjico .i{width:24px;height:24px;stroke-width:1.7}
+/* ไอคอนนำหน้าการ์ดแนวนอน (streak / นับถอยหลัง / ชุดประจำวัน) */
+.cardico{width:40px;height:40px;flex:none;border-radius:var(--r-sm);background:var(--paper2);
+  color:var(--ink2);display:flex;align-items:center;justify-content:center}
+.cardico .i{width:21px;height:21px}
 
 /* trending horizontal cards */
-.trend-scroll{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory}
-.trend-card{scroll-snap-align:start;flex:0 0 300px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 3px 10px rgba(20,50,90,.06);transition:.18s;position:relative}
-.trend-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(18,179,160,.2);border-color:var(--teal)}
-.trend-card h3{font-size:18px;margin:8px 0 8px;color:var(--navy)}
-.trend-card .meta{color:var(--muted);font-size:14px;display:flex;gap:14px;margin-bottom:12px}
+.trend-scroll{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;
+  scrollbar-width:thin}
+.trend-card{scroll-snap-align:start;flex:0 0 292px;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:16px 18px;box-shadow:var(--sh-1);position:relative;
+  transition:border-color .16s var(--ease),box-shadow .16s var(--ease),transform .16s var(--ease)}
+.trend-card:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:var(--line2)}
+.trend-card h3{font-size:16.5px;margin:8px 0;color:var(--ink);font-weight:600;line-height:1.35}
+.trend-card .meta{color:var(--muted);font-size:13px;display:flex;gap:12px;margin-bottom:12px}
 .trend-card .foot{display:flex;align-items:center;gap:10px}
 
 /* progress / ECG monitor */
-.monitor{background:linear-gradient(135deg,#0e2c49,#123a5f);color:#dff6f0;border-radius:16px;padding:22px 24px;position:relative;overflow:hidden;box-shadow:0 6px 20px rgba(10,30,60,.25)}
-.monitor h3{color:#fff;margin:0 0 4px;font-size:22px}
-.monitor .stats{display:flex;gap:26px;flex-wrap:wrap;margin:14px 0 6px}
-.monitor .stat .n{font-size:34px;font-weight:700;font-family:"Sarabun";color:#7ff0dd;line-height:1}
-.monitor .stat .l{font-size:13px;opacity:.85}
-.monitor .msg{background:rgba(127,240,221,.12);border-left:3px solid var(--teal);padding:8px 14px;border-radius:8px;margin-top:14px;font-size:15px}
-.monitor .ecg{position:absolute;right:-10px;bottom:8px;width:280px;height:80px;opacity:.5}
-.monitor .ecg path{fill:none;stroke:#7ff0dd;stroke-width:2.5;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3.2s linear infinite}
+.monitor{background:linear-gradient(150deg,#10293f,#15374f);color:#d6e6ec;
+  border-radius:var(--r-md);padding:22px 24px;position:relative;overflow:hidden}
+.monitor h3{color:#fff;margin:0 0 4px;font-size:19px;font-weight:600}
+.monitor .stats{display:flex;gap:28px;flex-wrap:wrap;margin:16px 0 6px}
+.monitor .stat .n{font-size:31px;font-weight:700;color:#67e3d0;line-height:1;letter-spacing:-.02em}
+.monitor .stat .l{font-size:12.5px;opacity:.72;margin-top:2px}
+.monitor .msg{background:rgba(103,227,208,.09);border-left:2px solid var(--teal);padding:9px 14px;
+  border-radius:var(--r-xs);margin-top:16px;font-size:14.5px}
+.monitor .ecg{position:absolute;right:-10px;bottom:8px;width:280px;height:80px;opacity:.3}
+.monitor .ecg path{fill:none;stroke:#67e3d0;stroke-width:2;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3.2s linear infinite}
 
 /* generic cards for quiz/result/history */
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(20,50,90,.05)}
-.qtitle{font-size:22px;font-weight:700;color:var(--navy);margin:0 0 4px;font-family:"Sarabun"}
-.muted{color:var(--muted);font-size:15px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:20px 22px;margin-bottom:var(--sp-3);box-shadow:var(--sh-1)}
+.qtitle{font-size:20px;font-weight:700;color:var(--ink);margin:0 0 4px;letter-spacing:-.012em}
+.muted{color:var(--muted);font-size:14.5px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.badge{display:inline-block;font-size:13px;background:#e9f0f8;color:var(--navy2);border-radius:12px;padding:2px 10px;font-weight:400}
-label.fld{display:block;margin:12px 0 5px;font-weight:500;font-size:15px;color:var(--navy)}
-input,select{font-family:inherit;font-size:16px;padding:9px 11px;border-radius:9px;border:1.5px solid var(--line);width:100%;background:#fff;color:var(--ink)}
-select:focus,input:focus{outline:2px solid var(--teal)}
-.opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:11px 15px;margin:8px 0;cursor:pointer;font-size:16px;font-family:inherit;transition:.12s}
-.opt:hover{border-color:var(--teal);background:#f5fcfb}
-.opt.sel{border-color:var(--navy2);background:#eef5fc}
-.opt.correct{background:var(--okbg);border-color:var(--ok)}
-.opt.wrong{background:var(--badbg);border-color:var(--bad)}
-.opt .lab{font-weight:700;color:var(--teal-d);margin-right:8px}
-.exp{margin-top:11px;border-radius:10px;padding:12px 15px;background:var(--goldbg);border:1px solid #efdca6}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;background:var(--paper2);
+  color:var(--ink2);border-radius:var(--r-xs);padding:3px 9px;font-weight:500;letter-spacing:.01em}
+label.fld{display:block;margin:14px 0 6px;font-weight:600;font-size:14px;color:var(--ink2);letter-spacing:.01em}
+/* ช่องติ๊ก: ให้กล่องกับข้อความอยู่บรรทัดเดียวกันและกดได้ทั้งแถว */
+label.fld.chk{display:flex;align-items:center;gap:9px;font-weight:400;font-size:15px;
+  color:var(--ink);cursor:pointer;margin:10px 0;padding:9px 12px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--paper2);transition:.13s}
+label.fld.chk:hover{border-color:var(--line2)}
+label.fld.chk input{width:17px;height:17px;flex:none;accent-color:var(--teal);cursor:pointer}
+input,select{font-family:inherit;font-size:15.5px;padding:10px 12px;border-radius:var(--r-sm);
+  border:1px solid var(--line2);width:100%;background:var(--paper);color:var(--ink);transition:border-color .15s}
+select:focus,input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+
+/* ตัวเลือกคำตอบ — วงกลม A–E แยกออกจากข้อความ อ่านง่ายและกดง่ายขึ้น */
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:var(--paper);
+  border:1px solid var(--line2);border-radius:var(--r-sm);padding:13px 15px;margin:9px 0;cursor:pointer;
+  font-size:15.5px;line-height:1.5;font-family:inherit;color:var(--ink);
+  transition:border-color .13s var(--ease),background .13s var(--ease)}
+.opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-soft)}
+.opt.sel{border-color:var(--navy2);background:#eff5fb;box-shadow:inset 0 0 0 1px var(--navy2)}
+.opt.correct{background:var(--okbg);border-color:var(--okline);box-shadow:inset 0 0 0 1px var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--badline);box-shadow:inset 0 0 0 1px var(--bad)}
+.opt:disabled{cursor:default}
+.opt .lab{flex:none;width:26px;height:26px;border-radius:var(--r-full);background:var(--paper2);
+  color:var(--ink2);font-weight:700;font-size:13px;display:inline-flex;align-items:center;
+  justify-content:center;margin:0;line-height:1;transition:.13s}
+.opt:hover:not(:disabled) .lab{background:#fff;color:var(--teal-d)}
+.opt.sel .lab{background:var(--navy2);color:#fff}
+.opt.correct .lab{background:var(--ok);color:#fff}
+.opt.wrong .lab{background:var(--bad);color:#fff}
+.opt .otxt{flex:1;min-width:0;padding-top:1px}
+
+.exp{margin-top:14px;border-radius:var(--r-sm);padding:14px 16px;background:var(--goldbg);
+  border:1px solid var(--goldline);font-size:15px;line-height:1.72}
 .exp .tag2{font-weight:700;color:var(--gold-d)}
 .res{font-weight:700} .res.ok{color:var(--ok)} .res.bad{color:var(--bad)}
-.stem{font-weight:400;margin:6px 0 12px;font-size:17px}
-.qimg{display:block;max-width:100%;max-height:380px;border-radius:10px;border:1px solid var(--line,#e3e8f0);margin:2px 0 14px;background:#fff}
-.qhead{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
-.qnum{font-weight:700;color:var(--navy);font-family:"Sarabun"}
-.progressbar{height:9px;background:#dde7f0;border-radius:6px;overflow:hidden}
-.progressbar>div{height:100%;background:linear-gradient(90deg,var(--teal),var(--navy2));transition:width .25s}
-.scorebig{font-size:52px;font-weight:800;color:var(--navy);font-family:"Sarabun"}
-.tablewrap{overflow:auto}
-table{border-collapse:collapse;width:100%;font-size:15px}
-th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
-th{background:#e9f0f8;color:var(--navy)}
+.stem{font-weight:400;margin:8px 0 14px;font-size:16.5px;line-height:1.62;color:var(--ink)}
+.qimg{display:block;max-width:100%;max-height:380px;border-radius:var(--r-sm);
+  border:1px solid var(--line);margin:2px 0 14px;background:#fff}
+.qhead{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.qnum{font-weight:700;color:var(--ink2);font-size:14px;letter-spacing:.02em;text-transform:uppercase}
+.progressbar{height:6px;background:var(--line);border-radius:var(--r-full);overflow:hidden}
+.progressbar>div{height:100%;background:var(--teal);border-radius:var(--r-full);transition:width .3s var(--ease)}
+.scorebig{font-size:52px;font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r-sm)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left}
+tr:last-child td{border-bottom:none}
+th{background:var(--paper2);color:var(--ink2);font-weight:600;font-size:13px;
+  letter-spacing:.02em;text-transform:uppercase;border-bottom:1px solid var(--line2)}
 .err{color:var(--bad);font-size:14px;margin-top:6px}
 .ok-msg{color:var(--ok);font-size:14px;margin-top:6px}
-.warn{background:var(--badbg);border:1px solid #f2b8b5;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.warn{background:var(--badbg);border:1px solid var(--badline);border-radius:var(--r-sm);
+  padding:14px 16px;margin-bottom:var(--sp-3)}
 
 /* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(15,30,50,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
-.modal{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-.tab{padding:8px 16px;border-radius:10px;background:#eef3f8;cursor:pointer;font-weight:500}
+.modal-bg{position:fixed;inset:0;background:rgba(12,24,40,.5);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;z-index:60;padding:16px;
+  animation:fadeIn .16s var(--ease)}
+.modal{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;
+  max-width:420px;width:100%;box-shadow:var(--sh-4);animation:popIn .18s var(--ease)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tab{padding:8px 16px;border-radius:var(--r-xs);background:var(--paper2);cursor:pointer;
+  font-weight:600;font-size:14.5px;color:var(--ink2);transition:.13s}
+.tab:hover{background:var(--line)}
 .tab.active{background:var(--navy);color:#fff}
 
-/* footer */
-footer{background:var(--navy);color:#c6d6e6;margin-top:40px;padding:34px 0 26px}
-footer .cols{display:flex;gap:40px;flex-wrap:wrap}
-footer h4{color:#fff;font-family:"Sarabun";margin:0 0 10px;font-size:17px}
-footer a,footer span{display:block;color:#a9c0d6;font-size:14px;margin:5px 0;cursor:pointer}
-footer a:hover{color:#7ff0dd}
-footer .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:22px;padding-top:16px;font-size:13px;opacity:.7}
+/* footer — พื้นอ่อน ไม่ใช่บล็อกน้ำเงินทึบ ให้จบหน้าแบบเบา ๆ */
+footer{background:var(--paper);border-top:1px solid var(--line);color:var(--muted);
+  margin-top:var(--sp-6);padding:var(--sp-5) 0 var(--sp-4)}
+footer .cols{display:flex;gap:48px;flex-wrap:wrap}
+footer h4{color:var(--ink);margin:0 0 10px;font-size:14px;font-weight:600;
+  letter-spacing:.03em;text-transform:uppercase}
+footer a,footer span{display:block;color:var(--muted);font-size:13.5px;margin:6px 0;cursor:pointer}
+footer a:hover{color:var(--teal-d)}
+footer .copy{border-top:1px solid var(--line);margin-top:var(--sp-4);padding-top:var(--sp-3);
+  font-size:12.5px;line-height:1.7;color:var(--muted)}
 
-/* heartbeat loader */
-.loader-bg{position:fixed;inset:0;background:rgba(15,35,60,.72);z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:14px}
-.heart{font-size:60px;animation:beat 1s infinite}
-@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
-.loader-bg .lbl{font-size:18px;letter-spacing:.5px}
+/* loader — แถบไม่มีจุดจบแทนหัวใจเต้น ดูสงบกว่าและไม่กระตุก */
+.loader-bg{position:fixed;inset:0;background:rgba(12,24,40,.62);backdrop-filter:blur(3px);
+  z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;gap:18px;animation:fadeIn .15s var(--ease)}
+.heart{width:180px;height:3px;border-radius:var(--r-full);background:rgba(255,255,255,.16);
+  overflow:hidden;position:relative;font-size:0}
+.heart::after{content:"";position:absolute;inset:0;width:40%;border-radius:var(--r-full);
+  background:var(--teal);animation:slide 1.1s var(--ease) infinite}
+@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+.loader-bg .lbl{font-size:15px;letter-spacing:.02em;opacity:.9}
 
 @media(max-width:640px){
   body{font-size:16px}
+  .wrap{padding:0 16px}
   .hbar{gap:8px}
   .search{order:3;flex-basis:100%}
-  .hero .wrap{padding:40px 18px}
+  .hero .wrap{padding:44px 16px 52px}
   .monitor .ecg{display:none}
+  .card{padding:16px 16px;border-radius:var(--r-sm)}
+  section{padding:var(--sp-4) 0}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important}
 }
 
-/* ---------- dark mode ---------- */
+/* ---------- dark mode ----------
+   กลับค่า token ชุดเดียวกัน component ส่วนใหญ่จึงไม่ต้องเขียน override เพิ่ม
+   ที่ยังต้อง override คือจุดที่ hard-code สีขาว/ดำไว้ หรือใช้ --navy เป็นพื้นหลัง */
 html[data-theme="dark"]{
-  --navy:#8fbde8; --navy2:#a9cef0; --ink:#e6edf3; --muted:#9db0c2;
-  --bg:#0e151d; --paper:#182430; --line:#26333f;
-  --ok:#4cc27e; --okbg:#14301f; --bad:#ef6a63; --badbg:#3a1c1b; --gold:#e8bf5a; --gold-d:#e0a82e; --goldbg:#2c2513;
+  color-scheme:dark;
+  --navy:#8fbde8; --navy2:#a9cef0;
+  --teal:#2fc0ae; --teal-d:#48d4c2; --teal-soft:#12312f;
+  --gold:#e8bf5a; --gold-d:#f0cf7d;
+  --bg:#0d141c; --paper:#161f2a; --paper2:#1e2934;
+  --ink:#e7edf4; --ink2:#b8c6d4; --muted:#8ba0b4;
+  --line:#26313d; --line2:#33414f;
+  --ok:#4cc27e; --okbg:#12291d; --okline:#245c3d;
+  --bad:#ef6a63; --badbg:#2e1a19; --badline:#6b3833;
+  --goldbg:#2a2413; --goldline:#5a4c22;
+  --sh-1:0 1px 2px rgba(0,0,0,.3);
+  --sh-2:0 2px 10px rgba(0,0,0,.35);
+  --sh-3:0 10px 30px rgba(0,0,0,.45);
+  --sh-4:0 24px 60px rgba(0,0,0,.6);
 }
 html[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
-html[data-theme="dark"] input,html[data-theme="dark"] select{background:#111c26;color:var(--ink);border-color:var(--line)}
-html[data-theme="dark"] .opt{background:#111c26;color:var(--ink);border-color:var(--line)}
-html[data-theme="dark"] .opt:hover{background:#16242f;border-color:var(--teal)}
-html[data-theme="dark"] .opt.sel{background:#12303a;border-color:var(--navy2)}
-html[data-theme="dark"] .opt.correct{background:var(--okbg);border-color:var(--ok)}
-html[data-theme="dark"] .opt.wrong{background:var(--badbg);border-color:var(--bad)}
-html[data-theme="dark"] .tag,html[data-theme="dark"] .badge{background:#20303f;color:var(--navy2)}
-html[data-theme="dark"] .tag.teal{background:#123230;color:#5fd6c6}
-html[data-theme="dark"] .btn.sec{background:#1b2732;color:var(--navy2);border-color:#2c3d4c}
-html[data-theme="dark"] .btn.sec:hover{background:#22303d}
-html[data-theme="dark"] .btn.outline{color:var(--navy2);border-color:var(--navy2)}
-html[data-theme="dark"] .progressbar{background:#26333f}
-html[data-theme="dark"] .modal{background:var(--paper);color:var(--ink)}
-html[data-theme="dark"] .tab{background:#1b2732;color:var(--ink)}
-html[data-theme="dark"] .tab.active{background:var(--navy);color:#0e151d}
-html[data-theme="dark"] label.fld{color:var(--navy2)}
+html[data-theme="dark"] .opt.sel{background:#16303c}
+html[data-theme="dark"] .opt:hover:not(:disabled) .lab{background:var(--paper2);color:var(--teal-d)}
+html[data-theme="dark"] .tag{background:var(--paper2);color:var(--navy2)}
+html[data-theme="dark"] .tag.teal{background:#12312f;color:#5fd6c6}
+html[data-theme="dark"] .btn.gold{color:#1a1710}
+html[data-theme="dark"] .tab.active{background:var(--navy);color:#0d141c}
 html[data-theme="dark"] .qimg{background:#fff}
-html[data-theme="dark"] th{background:#20303f;color:var(--ink)}
-html[data-theme="dark"] .file-card::before{background:var(--navy2)}
-html[data-theme="dark"] .file-card .tab{color:#0e151d;background:var(--navy2)}
-html[data-theme="dark"] .file-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
-/* footer: โหมดสว่าง --navy เป็นน้ำเงินเข้ม แต่โหมดมืด --navy ถูกกลับเป็นฟ้าอ่อน (#8fbde8)
-   พื้นหลังเลยสว่างขึ้นมาชนกับตัวหนังสือสีอ่อนที่ hard-code ไว้ → อ่านไม่ออก
-   จึงกำหนดพื้นหลัง/สีตัวอักษรของ footer ในโหมดมืดแยกออกมา ไม่ผูกกับ --navy */
-html[data-theme="dark"] footer{background:#111c26;color:#c6d6e6;border-top:1px solid var(--line)}
-html[data-theme="dark"] footer h4{color:#eaf2f9}
-html[data-theme="dark"] footer a,html[data-theme="dark"] footer span{color:#a9c0d6}
-html[data-theme="dark"] footer a:hover{color:#7ff0dd}
-html[data-theme="dark"] footer .muted{color:#8aa6c0!important}
-html[data-theme="dark"] footer .copy{border-top-color:rgba(255,255,255,.14)}
+/* footer ตอนนี้ผูกกับ --paper/--line แล้ว จึงกลับสีเองในโหมดมืด ไม่ต้อง override
+   เหลือแค่ .muted ที่มี inline style สีตายตัวติดมาจาก HTML เดิม */
+html[data-theme="dark"] footer .muted{color:var(--muted)!important}
 
-/* ---------- 🗂 Question Dashboard (ปุ่มลอยตามจอ + โมดัลผังข้อ) ---------- */
+/* ---------- Question Dashboard (ปุ่มลอยตามจอ + โมดัลผังข้อ) ---------- */
 #qdashFab{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:55;
-  width:58px;height:58px;padding:0;border:none;border-radius:16px;cursor:pointer;
-  background:var(--paper);box-shadow:0 6px 20px rgba(20,50,90,.18);
-  display:flex;align-items:center;justify-content:center;transition:.18s}
-#qdashFab:hover{transform:translateY(-50%) scale(1.07);box-shadow:0 10px 28px rgba(91,95,214,.38)}
-#qdashFab:active{transform:translateY(-50%) scale(.96)}
-#qdashFab svg{width:32px;height:32px;display:block}
-#qdashFab .sq{fill:none;stroke:#5b5fd6;stroke-width:2.8}
-#qdashFab .fabdot{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:11px;
-  background:var(--teal);color:#fff;font-size:11px;font-weight:600;line-height:20px;padding:0 5px;
-  box-shadow:0 2px 6px rgba(18,179,160,.45)}
-html[data-theme="dark"] #qdashFab{background:#16232e;box-shadow:0 6px 20px rgba(0,0,0,.5)}
-html[data-theme="dark"] #qdashFab .sq{stroke:#8f93f0}
+  width:48px;height:48px;padding:0;border:1px solid var(--line2);border-radius:var(--r-md);
+  cursor:pointer;background:var(--paper);box-shadow:var(--sh-2);
+  display:flex;align-items:center;justify-content:center;transition:.16s var(--ease)}
+#qdashFab:hover{border-color:var(--teal);box-shadow:var(--sh-3)}
+#qdashFab svg{width:22px;height:22px;display:block}
+#qdashFab .sq{fill:none;stroke:var(--ink2);stroke-width:2.4}
+#qdashFab:hover .sq{stroke:var(--teal-d)}
+#qdashFab .fabdot{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;
+  border-radius:var(--r-full);background:var(--teal);color:#fff;font-size:11px;font-weight:700;
+  line-height:19px;padding:0 5px;border:2px solid var(--bg)}
 /* จอแคบกว่านี้ ปุ่มซ้ายจะชนการ์ดข้อสอบ (.wrap = 1040px) → ย้ายไปมุมขวาล่างแทน */
 @media(max-width:1239px){
-  #qdashFab{left:auto;right:16px;top:auto;bottom:22px;transform:none;width:52px;height:52px}
-  #qdashFab:hover{transform:scale(1.07)} #qdashFab:active{transform:scale(.96)}
-  #qdashFab svg{width:28px;height:28px}
+  #qdashFab{left:auto;right:16px;top:auto;bottom:22px;transform:none}
 }
-.qdash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:9px;
+/* ต้องอยู่หลังกฎ 1239px ไม่งั้นโดนทับ แล้วปุ่มจะไปซ้อนกับแถบเมนูล่างบนมือถือ */
+@media(max-width:760px){ #qdashFab{bottom:78px} }
+.qdash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:8px;
   max-height:44vh;overflow:auto;padding:4px 2px 10px}
-.qd{position:relative;height:46px;border-radius:10px;background:transparent;
-  border:1.7px solid var(--line);color:var(--ink);font-family:inherit;font-size:16px;
-  font-weight:500;cursor:pointer;transition:.13s}
-.qd:hover{border-color:var(--teal);color:var(--teal-d);background:rgba(18,179,160,.07)}
-.qd.done{border-color:transparent;color:var(--muted);font-weight:400}
-.qd.done:hover{border-color:var(--teal)}
-.qd.cur{box-shadow:0 0 0 2.5px var(--teal)}
-.qd .fg{position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);font-size:10px;line-height:1}
-.qdash-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:2px 0 12px}
+.qd{position:relative;height:44px;border-radius:var(--r-xs);background:var(--paper);
+  border:1px solid var(--line2);color:var(--ink);font-family:inherit;font-size:14.5px;
+  font-weight:600;cursor:pointer;transition:.12s var(--ease)}
+.qd:hover{border-color:var(--teal);color:var(--teal-d);background:var(--teal-soft)}
+.qd.done{border-color:transparent;background:var(--paper2);color:var(--muted);font-weight:500}
+.qd.done:hover{border-color:var(--teal);color:var(--teal-d)}
+.qd.cur{box-shadow:0 0 0 2px var(--teal);border-color:var(--teal)}
+.qd .fg{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);font-size:9px;line-height:1}
+.qdash-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin:2px 0 14px}
 .qdash-legend i{font-style:normal;display:inline-flex;align-items:center;gap:6px}
-.qdash-legend .box{width:16px;height:16px;border-radius:5px;border:1.7px solid var(--line);display:inline-block}
-.qdash-legend .box.done{border-color:transparent;background:rgba(18,179,160,.18)}
+.qdash-legend .box{width:15px;height:15px;border-radius:var(--r-xs);border:1px solid var(--line2);display:inline-block}
+.qdash-legend .box.done{border-color:transparent;background:var(--paper2)}
 
-/* ---------- 🔁 Smart Review hub ---------- */
-.navdue{display:none;margin-left:7px;background:#e0533f;color:#fff;border-radius:11px;
-  font-size:11px;font-weight:600;padding:1px 7px;vertical-align:middle}
+/* ---------- Smart Review hub ---------- */
+.navdue{display:none;margin-left:6px;background:var(--bad);color:#fff;border-radius:var(--r-full);
+  font-size:10.5px;font-weight:700;padding:1px 6px;vertical-align:middle}
 .navdue.on{display:inline-block}
 .srs-hero{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.srs-big{font-size:52px;font-weight:700;line-height:1;color:var(--navy);font-family:"Sarabun"}
-.srs-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:14px}
-.srs-mini .m{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
-.srs-mini .m b{display:block;font-size:24px;color:var(--navy);font-family:"Sarabun"}
-.srs-mini .m span{font-size:13px;color:var(--muted)}
-.ladder{display:flex;flex-direction:column;gap:7px;margin-top:6px}
-.ladder .lv{display:flex;align-items:center;gap:11px;font-size:14px}
+.srs-big{font-size:48px;font-weight:700;line-height:1;color:var(--ink);letter-spacing:-.03em}
+.srs-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:16px}
+.srs-mini .m{background:var(--paper2);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px}
+.srs-mini .m b{display:block;font-size:22px;color:var(--ink);letter-spacing:-.02em;font-weight:700}
+.srs-mini .m span{font-size:12.5px;color:var(--muted)}
+.ladder{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.ladder .lv{display:flex;align-items:center;gap:12px;font-size:13.5px}
 .ladder .lv .nm{width:118px;flex:none;color:var(--muted)}
-.ladder .lv .track{flex:1;height:16px;background:#e7eef2;border-radius:8px;overflow:hidden}
-.ladder .lv .fill{height:100%;border-radius:8px}
-.ladder .lv .ct{width:52px;flex:none;text-align:right;font-weight:500;color:var(--navy)}
-html[data-theme="dark"] .ladder .lv .track{background:#26333f}
+.ladder .lv .track{flex:1;height:10px;background:var(--line);border-radius:var(--r-full);overflow:hidden}
+.ladder .lv .fill{height:100%;border-radius:var(--r-full)}
+.ladder .lv .ct{width:52px;flex:none;text-align:right;font-weight:600;color:var(--ink2)}
 .fcast{display:flex;align-items:flex-end;gap:8px;height:96px;margin-top:8px}
 .fcast .d{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
-.fcast .d .bar{width:100%;background:var(--teal);border-radius:6px 6px 0 0;min-height:3px;transition:.2s}
+.fcast .d .bar{width:100%;background:var(--teal);border-radius:var(--r-xs) var(--r-xs) 0 0;min-height:3px;transition:.2s}
 .fcast .d.today .bar{background:var(--gold)}
 .fcast .d .lb{font-size:11px;color:var(--muted);white-space:nowrap}
-.fcast .d .vv{font-size:12px;font-weight:600;color:var(--navy)}
-.plan-tgl{flex:none;width:52px;height:52px;border-radius:13px;border:1.5px solid var(--line);
-  background:var(--paper);color:var(--navy);font-size:24px;line-height:1;cursor:pointer;transition:.15s}
-.plan-tgl:hover{border-color:var(--teal);color:var(--teal-d);background:#f5fcfb}
-html[data-theme="dark"] .plan-tgl{background:#16232e}
-html[data-theme="dark"] .plan-tgl:hover{background:#1b2b36}
+.fcast .d .vv{font-size:11.5px;font-weight:700;color:var(--ink2)}
+.plan-tgl{flex:none;width:44px;height:44px;border-radius:var(--r-sm);border:1px solid var(--line2);
+  background:var(--paper);color:var(--ink2);font-size:19px;line-height:1;cursor:pointer;transition:.15s var(--ease)}
+.plan-tgl:hover{border-color:var(--teal);color:var(--teal-d);background:var(--teal-soft)}
 
-/* ---------- 🔎 หน้าผลค้นหา ---------- */
-.srch mark{background:#ffe9a8;color:inherit;border-radius:3px;padding:0 2px;font-weight:500}
+/* ---------- หน้าผลค้นหา ---------- */
+.srch mark{background:#ffeeb8;color:inherit;border-radius:3px;padding:0 2px;font-weight:600}
 html[data-theme="dark"] .srch mark{background:#6b5a1f;color:#fff5d6}
 .srch .exp{white-space:pre-line}
-tr.hrow:hover td{background:#f0f7fd}
-html[data-theme="dark"] tr.hrow:hover td{background:#1b2b36}
-.imgfail{background:var(--badbg);border:1px dashed #e0a9a5;border-radius:10px;
-  padding:14px 16px;margin:2px 0 14px;font-size:15px;color:var(--ink)}
-html[data-theme="dark"] .imgfail{border-color:#7a4a46}
+tr.hrow:hover td{background:var(--paper2)}
+.imgfail{background:var(--badbg);border:1px dashed var(--badline);border-radius:var(--r-sm);
+  padding:14px 16px;margin:2px 0 14px;font-size:14.5px;color:var(--ink)}
+
+/* ---------- หน้าทำข้อสอบ ---------- */
+/* แถบหัวเรื่องเกาะบนสุด: เห็นเวลา/ความคืบหน้าตลอดโดยไม่ต้องเลื่อนขึ้น */
+.qbar{position:sticky;top:53px;z-index:20;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:12px 16px;margin-bottom:var(--sp-3);box-shadow:var(--sh-1)}
+.qbar .line1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qbar .ttl{font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(46vw,340px)}
+.qbar .progressbar{margin-top:10px}
+.timer{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;
+  font-weight:700;font-size:14px;color:var(--ink);background:var(--paper2);
+  border:1px solid var(--line);border-radius:var(--r-xs);padding:4px 10px}
+.timer.warn{background:var(--badbg);border-color:var(--badline);color:var(--bad)}
+.qcount{font-variant-numeric:tabular-nums;font-size:13.5px;color:var(--muted);font-weight:600}
+
+/* โหมดทีละข้อ: การ์ดคำถามเดียว + แถบเดินหน้าถอยหลังติดขอบล่าง */
+.qnavbar{position:sticky;bottom:0;z-index:22;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:10px 12px;margin-top:var(--sp-3);box-shadow:var(--sh-2);
+  display:flex;align-items:center;gap:10px}
+.qnavbar .mid{flex:1;text-align:center;font-size:13.5px;color:var(--muted);font-weight:600;
+  font-variant-numeric:tabular-nums}
+.qnavbar .btn{min-width:44px}
+.kbd{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1;
+  padding:3px 5px;border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;
+  background:var(--paper2);color:var(--muted);margin-left:4px}
+.kbdhint{font-size:12.5px;color:var(--muted);margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+@media(max-width:760px){
+  .qbar{top:0} .kbdhint{display:none}
+  .qnavbar{bottom:64px}
+}
+
+/* ---------- ระบบไอคอน ----------
+   ใช้ <svg class="i"><use href="#i-ชื่อ"></use></svg> เรียกจาก sprite ที่ซ่อนไว้บนสุดของ body
+   ข้อดีเทียบกับอีโมจิ: สีตามข้อความ (currentColor) จึงเข้าธีมเสมอ,
+   ขนาดคงที่ทุกเครื่อง, และไม่เพี้ยนข้ามระบบปฏิบัติการ                        */
+.i{width:1.15em;height:1.15em;flex:none;vertical-align:-.18em;
+   fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.i.lg{width:1.5em;height:1.5em}
+.i.xl{width:2em;height:2em;stroke-width:1.6}
+#icons{display:none}
 </style>
 <script>
-(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}})();
-function toggleTheme(){var d=document.documentElement;var t=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=t;try{localStorage.setItem('theme',t);}catch(e){}var b=document.getElementById('themeBtn');if(b)b.textContent=(t==='dark'?'☀️':'🌙')+' Theme';}
+(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0d141c':'#ffffff');}catch(e){}})();
+function toggleTheme(){var d=document.documentElement;var t=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=t;try{localStorage.setItem('theme',t);}catch(e){}
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0d141c':'#ffffff');
+  if(window.setThemeIcon)setThemeIcon();}
 /* ---- PWA: service worker + install prompt ---- */
 if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
 var __deferredPrompt=null;
@@ -307,42 +504,117 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
 </script>
 </head>
 <body>
+
+<!-- ============ SVG icon sprite — เส้น 24x24 ชุดเดียวกันทั้งเว็บ ============ -->
+<svg id="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l1.7 1.7L12 21.4l7.1-7.1 1.7-1.7a5 5 0 0 0 0-7z"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2 12h4l2.5-7 4 15L15 12h7"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M3 11a9 9 0 0 1 15-6.7L21 7"/><path d="M21 5v4h-4"/><path d="M21 13a9 9 0 0 1-15 6.7L3 17"/><path d="M3 19v-4h4"/></symbol>
+<symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 2h6"/><path d="M10 2v6.4a2 2 0 0 1-.3 1L4.4 19a2 2 0 0 0 1.7 3h11.8a2 2 0 0 0 1.7-3l-5.3-9.6a2 2 0 0 1-.3-1V2"/><path d="M7 15h10"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5S10 4.5 4 4.5v13c6 0 8 2 8 2s2-2 8-2v-13c-6 0-8 2-8 2z"/><path d="M12 6.5v15"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 21h18"/><rect x="4" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="16" y="3" width="4" height="17" rx="1"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5H5v2a3 3 0 0 0 3 3"/><path d="M16 5h3v2a3 3 0 0 1-3 3"/><path d="M12 13v4"/><path d="M9 21h6"/><path d="M10 17h4l1 4H9z"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M4.7 5.6 3 13v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5l-1.7-7.4A2 2 0 0 0 17.4 4H6.6a2 2 0 0 0-1.9 1.6z"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2 12h2M20 12h2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 5h11l-1.6 3.5L16 12H5z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5.2 5.2L20 7"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.4 2"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.8v14.4a1 1 0 0 0 1.5.9l11-7.2a1 1 0 0 0 0-1.7l-11-7.2a1 1 0 0 0-1.5.8z"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M5 9l7 7 7-7"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M5 3v5a4 4 0 0 0 8 0V3"/><path d="M4 3h2M12 3h2"/><path d="M9 12v3a5 5 0 0 0 10 0v-1"/><circle cx="19" cy="12" r="2"/></symbol>
+<symbol id="i-scalpel" viewBox="0 0 24 24"><path d="M4 20l6-6"/><path d="M10 14 20 4v6l-6 6z"/></symbol>
+<symbol id="i-baby" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 15c1.5 1.2 3.5 1.2 5 0"/></symbol>
+<symbol id="i-mother" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="2.5"/><path d="M12 9c-3 0-4.5 2-4.5 5.5S9 22 12 22s4.5-4 4.5-7.5S15 9 12 9z"/><circle cx="12" cy="15" r="1.6"/></symbol>
+<symbol id="i-ambulance" viewBox="0 0 24 24"><path d="M3 16V7a1 1 0 0 1 1-1h9v10"/><path d="M13 9h4l3 3.5V16"/><circle cx="7" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/><path d="M7 9.5h3M8.5 8v3"/></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 7h16"/><path d="M7 7l-3 6h6zM17 7l-3 6h6z"/></symbol>
+<symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></symbol>
+<symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M17 4l3 3-3 3"/><path d="M20 7H16l-8 10H4"/><path d="M4 7h4l2 2.5"/><path d="M14 14.5 16 17h4"/><path d="M17 14l3 3-3 3"/></symbol>
+<symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 2s5 4.5 5 9a5 5 0 0 1-10 0c0-1.6.7-3 1.5-4 .3 1.3 1 2 1.8 2C12 9 10.5 5.5 12 2z"/><path d="M8.5 14a3.5 3.5 0 0 0 7 0"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.8 19.5a1 1 0 0 0 .9 1.5h16.6a1 1 0 0 0 .9-1.5z"/><path d="M12 9.5v4.5M12 17.5h.01"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6h.01"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></symbol>
+</defs></svg>
+
 <header>
   <div class="hbar">
     <div class="logo" onclick="go('home')">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M7 8h13a6 6 0 016 6v26a5 5 0 00-5-5H7V8z" fill="#7ff0dd"/>
-        <path d="M41 8H28a6 6 0 00-6 6v26a5 5 0 015-5h14V8z" fill="#ffffff"/>
-        <path d="M13 33v3a7 7 0 0014 0v-2" stroke="#e0a82e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        <circle cx="27" cy="35" r="3.2" fill="#e0a82e"/>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="9" fill="#12395f"/>
+        <path d="M6 16.5h3.6l2-5.6 3 11.2 2.4-5.6H26" stroke="#5fe3cf" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span>NL2 Med Quiz</span>
     </div>
+
     <div class="search">
-      <span class="ic">🔍</span>
-      <input id="searchInput" type="search" placeholder="Search quizzes, systems, or keywords (e.g. Sepsis, ECG, Stroke, Dengue)..." onkeydown="if(event.key==='Enter')doSearch()">
+      <span class="ic"><svg class="i"><use href="#i-search"/></svg></span>
+      <input id="searchInput" type="search" placeholder="ค้นหาข้อสอบ ระบบ หรือคีย์เวิร์ด…" onkeydown="if(event.key==='Enter')doSearch()">
     </div>
-    <button id="navToggle" class="navtoggle" onclick="toggleNav()" aria-label="เมนู">☰</button>
+
+    <button id="navToggle" class="navtoggle" onclick="toggleNav()" aria-label="เมนู">
+      <svg class="i lg"><use href="#i-menu"/></svg></button>
+
+    <!-- เมนูหลักเหลือ 4 ปุ่มที่ใช้บ่อยจริง ที่เหลือย้ายไปดรอปดาวน์ "เพิ่มเติม" -->
     <div class="nav">
-      <span class="pill" id="modePill"></span>
-      <button onclick="scrollToCat()">📚 Categories</button>
-      <button onclick="go('systems')">🫀 By System</button>
-      <button id="reviewBtn" onclick="go('review')">🔁 Smart Review<span id="revDue" class="navdue"></span></button>
-      <button onclick="go('saved')">💿 Saved Exam</button>
-      <button onclick="go('simconfig')">🧪 NL2 Simulator</button>
-      <button onclick="go('study')">📖 Summary</button>
-      <button onclick="go('history')">📊 My Stats</button>
-      <button onclick="go('weakness')">🎯 My Weakness</button>
-      <button onclick="go('readiness')">📈 Readiness</button>
-      <button onclick="go('leaderboard')">🏆 Leaderboard</button>
-      <button id="reportsBtn" onclick="go('reports')" style="display:none" title="กล่องรายงาน (แอดมิน)">📮 Reports</button>
-      <button id="installBtn" onclick="installApp()" style="display:none" title="Install app">⬇️ Install</button>
-      <button id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light">🌙 Theme</button>
-      <button onclick="openProfile()">👤 Profile</button>
-      <button id="authBtn" onclick="openAuth()">Sign in</button>
+      <button data-view="cat" onclick="scrollToCat()">
+        <svg class="i"><use href="#i-grid"/></svg><span class="navtxt">คลังข้อสอบ</span></button>
+      <button data-view="systems" onclick="go('systems')">
+        <svg class="i"><use href="#i-pulse"/></svg><span class="navtxt">ตามระบบ</span></button>
+      <button id="reviewBtn" data-view="review" onclick="go('review')">
+        <svg class="i"><use href="#i-repeat"/></svg><span class="navtxt">ทบทวน</span><span id="revDue" class="navdue"></span></button>
+      <button data-view="simconfig" onclick="go('simconfig')">
+        <svg class="i"><use href="#i-flask"/></svg><span class="navtxt">จำลองสอบ</span></button>
+
+      <div class="moremenu" id="moreMenu">
+        <button onclick="toggleMore(event)">
+          <span class="navtxt">เพิ่มเติม</span><svg class="i"><use href="#i-down"/></svg></button>
+        <div class="drop">
+          <span class="pill" id="modePill" style="margin:4px 6px 8px"></span>
+          <div class="lbl">ความคืบหน้า</div>
+          <button data-view="history" onclick="go('history')"><svg class="i"><use href="#i-chart"/></svg>สถิติของฉัน</button>
+          <button data-view="weakness" onclick="go('weakness')"><svg class="i"><use href="#i-target"/></svg>จุดอ่อนของฉัน</button>
+          <button data-view="readiness" onclick="go('readiness')"><svg class="i"><use href="#i-trend"/></svg>ความพร้อมสอบ</button>
+          <button data-view="leaderboard" onclick="go('leaderboard')"><svg class="i"><use href="#i-trophy"/></svg>อันดับ</button>
+          <div class="sep"></div>
+          <div class="lbl">คลัง</div>
+          <button data-view="saved" onclick="go('saved')"><svg class="i"><use href="#i-bookmark"/></svg>ข้อที่บันทึกไว้</button>
+          <button data-view="study" onclick="go('study')"><svg class="i"><use href="#i-book"/></svg>สรุปเนื้อหา</button>
+          <div class="sep"></div>
+          <button onclick="openProfile()"><svg class="i"><use href="#i-user"/></svg>โปรไฟล์</button>
+          <button id="reportsBtn" onclick="go('reports')" style="display:none"><svg class="i"><use href="#i-inbox"/></svg>กล่องรายงาน</button>
+          <button id="installBtn" onclick="installApp()" style="display:none"><svg class="i"><use href="#i-download"/></svg>ติดตั้งแอป</button>
+          <button id="authBtn" onclick="openAuth()"><svg class="i"><use href="#i-logout"/></svg><span>เข้าสู่ระบบ</span></button>
+        </div>
+      </div>
+
+      <span class="hsep"></span>
+      <button id="themeBtn" class="iconbtn" onclick="toggleTheme()" title="สลับโหมดสว่าง/มืด" aria-label="สลับธีม">
+        <svg class="i lg"><use href="#i-moon"/></svg></button>
     </div>
   </div>
 </header>
+
+<!-- แถบล่างสำหรับมือถือ: 5 ปลายทางหลัก แตะถึงด้วยนิ้วโป้ง -->
+<nav id="tabbar" aria-label="เมนูหลัก"><div class="tb">
+  <button data-view="home" onclick="go('home')"><svg class="i"><use href="#i-heart"/></svg>หน้าแรก</button>
+  <button data-view="cat" onclick="scrollToCat()"><svg class="i"><use href="#i-grid"/></svg>คลังข้อสอบ</button>
+  <button data-view="review" onclick="go('review')"><svg class="i"><use href="#i-repeat"/></svg>ทบทวน<span id="tbDue" class="dot" style="display:none"></span></button>
+  <button data-view="history" onclick="go('history')"><svg class="i"><use href="#i-chart"/></svg>สถิติ</button>
+  <button onclick="toggleNav()"><svg class="i"><use href="#i-menu"/></svg>เมนู</button>
+</div></nav>
 
 <div id="app"></div>
 
@@ -350,13 +622,13 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
   <div class="wrap">
     <div class="cols">
       <div style="flex:2;min-width:220px">
-        <h4>🩺 NL2 Med Quiz</h4>
-        <span class="muted" style="color:#8aa6c0">ใช้ทบทวนก่อนสอบ — ตอนสอบจริงยึดแนวทางไทยเป็นหลัก</span>
+        <h4>NL2 Med Quiz</h4>
+        <span class="muted">ใช้ทบทวนก่อนสอบ — ตอนสอบจริงยึดแนวทางไทยเป็นหลัก</span>
       </div>
       <div>
         <h4>เกี่ยวกับ</h4>
         <a onclick="alert('เอกสารนี้ใช้เพื่อการศึกษา ไม่เก็บข้อมูลส่วนตัวนอกจากอีเมล/คะแนนของคุณเองใน Supabase')">นโยบายความเป็นส่วนตัว</a>
-        <a onclick="reportError()">🚩 รายงานข้อสอบผิดพลาด</a>
+        <a onclick="reportError()">รายงานข้อสอบผิดพลาด</a>
       </div>
       <div>
         <h4>อ้างอิง</h4>
@@ -419,15 +691,17 @@ const EST_MIN = q => Math.max(5, Math.round(q*0.9)); // ~0.9 นาที/ข้
 
 /* ---------- หมวดหมู่รายวิชา (ward) ---------- */
 const SUBJECTS = [
-  {id:'med',   name:'Medicine',                  th:'อายุรศาสตร์',    icon:'🩺'},
-  {id:'ecg',   name:'Medicine (ECG เน้น ๆ)',      th:'อ่าน ECG จาก tracing จริง', icon:'📈'},
-  {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'🔪'},
-  {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'🤰'},
-  {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'🧸'},
-  {id:'emergency', name:'Emergency Medicine',    th:'เวชศาสตร์ฉุกเฉิน', icon:'🚑'},
-  {id:'forensic',  name:'Forensic/Ethics/Law',  th:'นิติเวช-จริยธรรม-กฎหมาย', icon:'⚖️'},
-  {id:'past',  name:'Past Exams',                 th:'ข้อสอบเก่า',     icon:'📚'},
+  {id:'med',   name:'Medicine',                  th:'อายุรศาสตร์',    icon:'stethoscope'},
+  {id:'ecg',   name:'Medicine (ECG เน้น ๆ)',      th:'อ่าน ECG จาก tracing จริง', icon:'pulse'},
+  {id:'surg',  name:'Surgery',                   th:'ศัลยศาสตร์',     icon:'scalpel'},
+  {id:'obgyn', name:'Obstetrics & Gynecology',   th:'สูติ-นรีเวช',    icon:'mother'},
+  {id:'ped',   name:'Pediatrics',                th:'กุมารเวชศาสตร์', icon:'baby'},
+  {id:'emergency', name:'Emergency Medicine',    th:'เวชศาสตร์ฉุกเฉิน', icon:'ambulance'},
+  {id:'forensic',  name:'Forensic/Ethics/Law',  th:'นิติเวช-จริยธรรม-กฎหมาย', icon:'scale'},
+  {id:'past',  name:'Past Exams',                 th:'ข้อสอบเก่า',     icon:'archive'},
 ];
+/* ตัวช่วยฝังไอคอนจาก sprite — ic('flag') → <svg class="i"><use href="#i-flag"/></svg> */
+function ic(name,cls){ return `<svg class="i${cls?' '+cls:''}" aria-hidden="true"><use href="#i-${name}"/></svg>`; }
 function quizSubject(q){ return q.subject || (String(q.id).startsWith('set')?'med':'med'); }
 function subjectQuizzes(sid){ return allQuizzes().filter(q=>quizSubject(q)===sid); }
 function curSubject(){ return state.view==='subject' ? state.subject : 'med'; }
@@ -441,7 +715,7 @@ const LS = {
 };
 
 /* ============================================================================
-   ☁️ sync ความคืบหน้าข้ามเครื่อง
+   sync ความคืบหน้าข้ามเครื่อง
    ----------------------------------------------------------------------------
    ปัญหาเดิม: ประวัติการทำข้อสอบ sync ขึ้นคลาวด์ แต่ "ความคืบหน้า" ทั้งหมด
    (กล่อง Leitner, ข้อที่ Save, เป้าประจำวัน, วันสอบ) อยู่ใน localStorage ล้วน
@@ -522,10 +796,10 @@ function schedulePush(){
 }
 function syncLabel(){
   if(!CLOUD||!user) return 'ไม่ได้เข้าสู่ระบบ — ความคืบหน้าเก็บในเครื่องนี้เท่านั้น';
-  if(__syncState==='error') return '⚠️ ซิงก์ไม่สำเร็จ — ข้อมูลยังอยู่ในเครื่อง จะลองใหม่อัตโนมัติ';
+  if(__syncState==='error') return 'ซิงก์ไม่สำเร็จ — ข้อมูลยังอยู่ในเครื่อง จะลองใหม่อัตโนมัติ';
   if(__syncState==='syncing') return '⏳ กำลังซิงก์...';
-  if(__syncAt) return '☁️ ซิงก์แล้ว '+new Date(__syncAt).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-  return '☁️ พร้อมซิงก์ข้ามเครื่อง';
+  if(__syncAt) return 'ซิงก์แล้ว '+new Date(__syncAt).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  return 'พร้อมซิงก์ข้ามเครื่อง';
 }
 window.addEventListener('beforeunload',()=>{ if(__syncTimer){ clearTimeout(__syncTimer); pushState(); } });
 function customQuizzes(){ return LS.get('customQuizzes',[]); }
@@ -567,7 +841,7 @@ async function loadCloudQuestions(){
     }));
     const total = built.reduce((n,s)=>n+s.questions.length,0);
     if(!total) return false;                               // กันพลาด: ไม่มีข้อเลย → ใช้ data.js
-    window.QUIZ_DATA = built;                              // ✅ ใช้คลาวด์เป็นแหล่งหลัก
+    window.QUIZ_DATA = built;                              // ใช้คลาวด์เป็นแหล่งหลัก
     resetIdx();
     window.__cloudQuestions = true;
     console.log('โหลดข้อสอบจากคลาวด์สำเร็จ:', built.length, 'ชุด /', total, 'ข้อ');
@@ -635,12 +909,26 @@ function displayName(){
 }
 function renderTopbar(){
   const pill=document.getElementById('modePill');
-  pill.textContent = user ? '👤 '+displayName() : '☁️ Not signed in';
-  pill.style.cursor='pointer'; pill.title='Edit display name'; pill.onclick=openProfile;
-  const tb=document.getElementById('themeBtn'); if(tb)tb.textContent=(document.documentElement.dataset.theme==='dark'?'☀️':'🌙')+' Theme';
+  pill.textContent = user ? displayName() : 'ยังไม่ได้เข้าสู่ระบบ';
+  pill.style.cursor='pointer'; pill.title='แก้ชื่อที่แสดง'; pill.onclick=openProfile;
+  setThemeIcon();
   const rb=document.getElementById('reportsBtn'); if(rb)rb.style.display=isAdmin()?'':'none';
-  document.getElementById('authBtn').textContent = user? 'Sign out' : 'Sign in';
-  document.getElementById('authBtn').onclick = user? doSignOut : openAuth;
+  const ab=document.getElementById('authBtn');
+  ab.querySelector('span').textContent = user? 'ออกจากระบบ' : 'เข้าสู่ระบบ';
+  ab.onclick = user? doSignOut : openAuth;
+  markActiveNav();
+}
+/* ไอคอนธีมสลับดวงจันทร์/ดวงอาทิตย์ตามโหมดปัจจุบัน (เดิมใช้อีโมจิในข้อความปุ่ม) */
+function setThemeIcon(){
+  const u=document.querySelector('#themeBtn use'); if(!u)return;
+  u.setAttribute('href', document.documentElement.dataset.theme==='dark' ? '#i-sun' : '#i-moon');
+}
+/* ไฮไลต์ปุ่มของหน้าที่กำลังเปิดอยู่ ทั้งเมนูบนและแถบล่าง */
+function markActiveNav(){
+  const v=state.view;
+  document.querySelectorAll('.nav [data-view],#tabbar [data-view]').forEach(b=>{
+    b.classList.toggle('on', b.dataset.view===v || (b.dataset.view==='cat' && v==='home'));
+  });
 }
 async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; invalidateAnalytics(); renderTopbar(); go('home'); }
 function openProfile(){
@@ -726,7 +1014,8 @@ function go(v,extra={}){
     __navStack.push({view:state.view, subject:state.subject, quiz:state.quiz});
     if(__navStack.length>25) __navStack.shift();
   }
-  state.view=v; Object.assign(state,extra); render(); window.scrollTo(0,0);
+  state.view=v; Object.assign(state,extra); closeMenus(); render(); window.scrollTo(0,0);
+  markActiveNav();
 }
 /* ย้อนกลับหนึ่งหน้า — ถ้าไม่มีประวัติ (เช่นเปิดลิงก์ตรงเข้ามา) ค่อยกลับหน้าแรก */
 function goBack(){
@@ -742,7 +1031,7 @@ function imgFail(el){
   if(!el || el.dataset.failed) return; el.dataset.failed='1';
   const src=el.getAttribute('src')||'';
   const d=document.createElement('div'); d.className='imgfail';
-  const t=document.createElement('span'); t.textContent='🖼️ โหลดรูปประกอบไม่สำเร็จ — ';
+  const t=document.createElement('span'); t.textContent='โหลดรูปประกอบไม่สำเร็จ — ';
   const a=document.createElement('a'); a.href=src; a.target='_blank'; a.rel='noopener noreferrer';
   a.textContent='เปิดรูปต้นฉบับ'; a.style.textDecoration='underline';
   const n=document.createElement('div'); n.className='muted'; n.style.fontSize='13px'; n.style.marginTop='4px';
@@ -759,6 +1048,7 @@ async function render(){
   const app=document.getElementById('app');
   qdashUnmount();                                  /* ปุ่ม Dashboard โผล่เฉพาะหน้าทำข้อสอบ */
   updateReviewBadge();                             /* ตัวนับข้อค้างทบทวนบนแถบเมนู */
+  markActiveNav();                                 /* ไฮไลต์เมนูของหน้าปัจจุบัน */
   if(state.view==='review') return renderReview(app);
   if(state.view==='search') return renderSearch(app);
   if(state.view==='attempt') return renderAttempt(app);
@@ -780,10 +1070,10 @@ async function render(){
 function renderStudy(app){
   app.innerHTML=`<div class="wrap" style="padding-top:16px">
     <div class="row" style="margin-bottom:10px;align-items:center">
-      <b class="qtitle" style="font-size:19px">📖 สรุปอ่านสอบ High-Yield แยก Ward</b>
+      <b class="qtitle" style="font-size:19px">สรุปอ่านสอบ High-Yield แยก Ward</b>
       <span style="flex:1"></span>
-      <button class="btn sm sec" onclick="window.open('study.html','_blank')">↗ เปิดแท็บใหม่</button>
-      <button class="btn sm sec" onclick="go('home')">🏠 หน้าแรก</button>
+      <button class="btn sm sec" onclick="window.open('study.html','_blank')">เปิดแท็บใหม่</button>
+      <button class="btn sm sec" onclick="go('home')">หน้าแรก</button>
     </div>
     <iframe src="study.html" title="สรุปอ่านสอบ" style="width:100%;height:82vh;border:1px solid var(--line);border-radius:12px;background:var(--paper)"></iframe>
   </div>`;
@@ -804,15 +1094,15 @@ async function renderHome(app){
   ${examPlanHTML(at)}
   ${streakGoalHTML(at)}
   ${dailyCardHTML()}
-  ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">⚠ โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
+  ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
 
   <div class="hero"><div class="wrap">
-    <h1>NL 2 Pass 100% 🎯</h1>
-    <p>You can do it — คลังข้อสอบ ${totalQ} ข้อ แนว NLE2 พร้อมเฉลยละเอียด</p>
+    <h1>NL2 Pass 100%</h1>
+    <p>คลังข้อสอบ ${totalQ.toLocaleString()} ข้อ แนว NLE2 พร้อมเฉลยภาษาไทยละเอียด อ้างอิงไกด์ไลน์ล่าสุด</p>
     <div class="cta">
-      <button class="btn" onclick="startCombined()">📝 เริ่มทำข้อสอบเลย</button>
-      <button class="btn gold" onclick="go('study')">📖 อ่านสรุป High-Yield</button>
-      <button class="btn outline" style="color:#fff;border-color:#fff" onclick="scrollToCat()">📖 เลือกดูตามรายวิชา</button>
+      <button class="btn" onclick="startCombined()">${ic('play')}เริ่มทำข้อสอบเลย</button>
+      <button class="btn outline" onclick="go('study')">${ic('book')}อ่านสรุป High-Yield</button>
+      <button class="btn outline" onclick="scrollToCat()">${ic('grid')}เลือกตามรายวิชา</button>
     </div>
   </div>
   <svg class="ecgline" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 L280,30 L300,30 L312,8 L326,52 L340,20 L354,30 L560,30 L580,30 L592,8 L606,52 L620,20 L634,30 L900,30 L920,30 L932,8 L946,52 L960,20 L974,30 L1200,30"/></svg>
@@ -824,30 +1114,29 @@ async function renderHome(app){
       <div class="cat-grid">
         ${SUBJECTS.map(sub=>{ const list=subjectQuizzes(sub.id); const tq=list.reduce((s,q)=>s+q.questions.length,0);
           return `<div class="file-card subj" onclick="go('subject',{subject:'${sub.id}'})">
-            <div class="tab">📋 WARD</div>
-            <div style="font-size:44px;margin:14px 0 2px">${sub.icon}</div>
+            <div class="subjico">${ic(sub.icon)}</div>
             <h3 style="margin-top:2px">${sub.name}</h3>
-            <div class="muted">${sub.th}</div>
-            <div class="meta" style="justify-content:center"><span>🗂️ ${list.length} ชุด</span><span>📝 ${tq} ข้อ</span></div>
-            ${list.length?'<div class="best">พร้อมทำ ✓</div>':'<div class="muted">เร็ว ๆ นี้</div>'}
+            <div class="muted" style="font-size:13px">${sub.th}</div>
+            <div class="meta" style="justify-content:center;margin-top:10px"><span>${list.length} ชุด</span><span>${tq} ข้อ</span></div>
+            ${list.length?`<div class="best">${ic('check')} พร้อมทำ</div>`:'<div class="muted" style="font-size:13px">เร็ว ๆ นี้</div>'}
           </div>`;
         }).join('')}
       </div>
     </section>
 
     <section>
-      <div class="sechead"><span class="bar"></span><h2>ข้อสอบแนะนำ 🔥</h2>
-        <span class="more" onclick="startCombined()">สุ่มรวมทุกชุด →</span></div>
+      <div class="sechead"><span class="bar"></span><h2>ข้อสอบแนะนำ</h2>
+        <span class="more" onclick="startCombined()">สุ่มรวมทุกชุด ${ic('right')}</span></div>
       <div class="trend-scroll">
         ${qs.map(q=>{ const tags=SET_TAGS[q.id]||['Custom']; const on=bk.includes(q.id);
           return `<div class="trend-card">
             <div class="row" style="justify-content:space-between">
-              <span class="tag teal">🏷️ ${esc(tags[0])}</span>
-              <span class="bk ${on?'on':''}" onclick="toggleBookmark('${q.id}',event)">${on?'🔖':'🏷️'}</span>
+              <span class="tag teal">${esc(tags[0])}</span>
+              <span class="bk ${on?'on':''}" style="position:static" onclick="toggleBookmark('${q.id}',event)">${ic('bookmark')}</span>
             </div>
             <h3>${esc(qTitle(q))}</h3>
-            <div class="meta"><span>⏱️ ~${EST_MIN(q.questions.length)} นาที</span><span>📝 ${q.questions.length} ข้อ</span></div>
-            <div class="foot"><button class="btn sm" onclick="go('config',{quiz:'${q.id}'})">ทำข้อสอบ</button></div>
+            <div class="meta"><span>${ic('clock')} ~${EST_MIN(q.questions.length)} นาที</span><span>${q.questions.length} ข้อ</span></div>
+            <div class="foot"><button class="btn sm" onclick="go('config',{quiz:'${q.id}'})">${ic('play')}ทำข้อสอบ</button></div>
           </div>`;
         }).join('')}
       </div>
@@ -855,8 +1144,8 @@ async function renderHome(app){
 
     <section>
       <div class="monitor">
-        <h3>📈 ความคืบหน้าของคุณ</h3>
-        <div class="muted" style="color:#bfe6de">${CLOUD&&user?'สวัสดี '+esc(displayName())+' 👋':'เก็บในเครื่องนี้ (Guest)'}</div>
+        <h3>ความคืบหน้าของคุณ</h3>
+        <div class="muted" style="color:rgba(255,255,255,.62)">${CLOUD&&user?'สวัสดี '+esc(displayName())+' 👋':'เก็บในเครื่องนี้ (Guest)'}</div>
         <div class="stats">
           <div class="stat"><div class="n">${weekDone}</div><div class="l">ข้อ (7 วันล่าสุด)</div></div>
           <div class="stat"><div class="n">${totalDone}</div><div class="l">ข้อทั้งหมด</div></div>
@@ -871,7 +1160,7 @@ async function renderHome(app){
 }
 
 /* ---------- search ---------- */
-/* ---------- 🔎 ค้นหา — เปิดเป็นหน้าอ่านผลลัพธ์ ไม่ใช่โยนเข้าไปทำข้อสอบทันที ----------
+/* ---------- ค้นหา — เปิดเป็นหน้าอ่านผลลัพธ์ ไม่ใช่โยนเข้าไปทำข้อสอบทันที ----------
    เฉลย 2,699 ข้อที่เขียนไว้จึงใช้เป็นหนังสืออ้างอิงได้ พิมพ์ "Sgarbossa" แล้วอ่านได้เลย  */
 let __searchShow=40;
 function searchFields(x){ return (x.q+' '+(x.topic||'')+' '+(x.exp||'')+' '+((x.choices||[]).join(' '))).toLowerCase(); }
@@ -914,7 +1203,7 @@ function renderSearch(app){
     </div>`; }).join('');
   app.innerHTML=`<div class="wrap" style="padding-top:18px">
     <div class="row" style="margin-bottom:10px;align-items:center;flex-wrap:wrap">
-      <b class="qtitle" style="font-size:20px">🔎 ${esc(kw)}</b>
+      <b class="qtitle" style="font-size:20px">${esc(kw)}</b>
       <span class="badge">${hits.length} ข้อ</span>
       <span style="flex:1"></span>
       <button class="btn sm" onclick="startSearchQuiz()">▶ ทำเป็นชุดข้อสอบ</button>
@@ -932,19 +1221,18 @@ async function renderSubject(app){
   const sub=SUBJECTS.find(s=>s.id===state.subject)||SUBJECTS[0];
   const list=subjectQuizzes(sub.id); const best=await bestScores(); const bk=bookmarks();
   app.innerHTML=`<div class="wrap" style="padding-top:22px">
-    <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="go('home')">← หมวดหมู่ทั้งหมด</button></div>
-    <div class="sechead"><span class="bar"></span><h2>${sub.icon} ${esc(sub.name)}</h2>
-      ${isAdmin()?`<span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">⬆️ อัปโหลดชุด (แอดมิน)</span>
+    <div class="row" style="margin-bottom:12px"><button class="btn sec sm" onclick="go('home')">${ic('left')} หมวดหมู่ทั้งหมด</button></div>
+    <div class="sechead"><span class="subjico" style="width:34px;height:34px;margin:0 10px 0 0;border-radius:var(--r-sm)">${ic(sub.icon)}</span><h2>${esc(sub.name)}</h2>
+      ${isAdmin()?`<span class="more" style="margin-left:auto" onclick="document.getElementById('upl').click()">อัปโหลดชุด (แอดมิน)</span>
       <input id="upl" type="file" accept=".json,.csv" style="display:none" onchange="handleUpload(event)">`:''}</div>
     ${list.length? `<div class="cat-grid">${list.map(q=>{ const b=best[q.id]; const tags=SET_TAGS[q.id]||[q.questions[0]?.topic||'Custom']; const on=bk.includes(q.id);
       return `<div class="file-card" onclick="go('config',{quiz:'${q.id}'})">
-        <div class="tab">📋 CASE FILE</div>
-        <span class="bk ${on?'on':''}" title="บันทึกไว้ทำทีหลัง" onclick="toggleBookmark('${q.id}',event)">${on?'🔖':'🏷️'}</span>
+        <span class="bk ${on?'on':''}" title="บันทึกไว้ทำทีหลัง" onclick="toggleBookmark('${q.id}',event)">${ic('bookmark')}</span>
         <h3>${esc(qTitle(q))}</h3>
         <div class="tags">${tags.map(t=>`<span class="tag teal">${esc(t)}</span>`).join('')} ${q.custom?'<span class="tag">อัปโหลดเอง</span>':''}</div>
-        <div class="meta"><span>📝 ${q.questions.length} ข้อ</span><span>⏱️ ~${EST_MIN(q.questions.length)} นาที</span></div>
+        <div class="meta"><span>${q.questions.length} ข้อ</span><span>~${EST_MIN(q.questions.length)} นาที</span></div>
         ${b?`<div class="best">✓ คะแนนดีสุด ${b.score}/${b.total} (${Math.round(b.pct*100)}%)</div>`:'<div class="muted">ยังไม่เคยทำ</div>'}
-        ${q.custom?`<div style="margin-top:8px"><span class="tag" style="cursor:pointer;background:#fdeceb;color:#c02626" onclick="event.stopPropagation();delCustom('${q.id}')">🗑 ลบชุดนี้</span></div>`:''}
+        ${q.custom?`<div style="margin-top:8px"><span class="tag" style="cursor:pointer;background:var(--badbg);color:var(--bad)" onclick="event.stopPropagation();delCustom('${q.id}')">ลบชุดนี้</span></div>`:''}
       </div>`; }).join('')}</div>`
     : `<div class="card"><b class="qtitle" style="font-size:19px">ยังไม่มีข้อสอบในหมวด ${esc(sub.name)}</b><div class="muted" style="margin-top:6px">เร็ว ๆ นี้ 🚧${isAdmin()?' — หรือกดปุ่ม “อัปโหลดชุด (แอดมิน)” ด้านบนเพื่อเพิ่มชุดข้อสอบในหมวดนี้':''}</div></div>`}
   </div>`;
@@ -954,27 +1242,27 @@ async function renderSubject(app){
 function renderConfig(app){
   const q=findQuiz(state.quiz);
   app.innerHTML=`<div class="wrap" style="padding-top:26px">
-   <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="goBack()">← ย้อนกลับ</button></div>
+   <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="goBack()">${ic('left')} ย้อนกลับ</button></div>
    <div class="card">
      <h2 class="qtitle">${esc(qTitle(q))}</h2>
-     <div class="muted">📝 ${q.questions.length} ข้อ • ⏱️ ประมาณ ${EST_MIN(q.questions.length)} นาที</div>
+     <div class="muted">${q.questions.length} ข้อ • ประมาณ ${EST_MIN(q.questions.length)} นาที</div>
      <label class="fld">โหมด</label>
      <select id="mode">
-       <option value="practice">📖 ฝึก (Practice) — คลิกตอบแล้วเฉลยทันที</option>
-       <option value="exam">📝 สอบ (Exam) — ตอบครบแล้วกดส่ง</option>
+       <option value="practice">ฝึก (Practice) — คลิกตอบแล้วเฉลยทันที</option>
+       <option value="exam">สอบ (Exam) — ตอบครบแล้วกดส่ง</option>
      </select>
      <label class="fld">จำนวนข้อ</label>
      <select id="count">
        <option value="10">10 ข้อ</option><option value="20">20 ข้อ</option>
        <option value="50">50 ข้อ</option><option value="all" selected>ทั้งหมด (${q.questions.length})</option>
      </select>
-     <label class="fld"><input type="checkbox" id="shuffleQ" checked style="width:auto"> สลับลำดับข้อ</label>
-     <label class="fld"><input type="checkbox" id="shuffleO" style="width:auto"> สลับลำดับตัวเลือก</label>
-     <label class="fld"><input type="checkbox" id="timer" style="width:auto"> จับเวลา (โหมดสอบ) — 1 นาที/ข้อ</label>
+     <label class="fld chk"><input type="checkbox" id="shuffleQ" checked> สลับลำดับข้อ</label>
+     <label class="fld chk"><input type="checkbox" id="shuffleO"> สลับลำดับตัวเลือก</label>
+     <label class="fld chk"><input type="checkbox" id="timer"> จับเวลา (โหมดสอบ) — 1 นาที/ข้อ</label>
      <div class="row" style="margin-top:18px">
-       <button class="btn" onclick="beginQuiz()">▶ เริ่ม</button>
-       <button class="btn sec" onclick="goBack()">← ย้อนกลับ</button>
-       <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
+       <button class="btn" onclick="beginQuiz()">${ic('play')}เริ่มทำ</button>
+       <button class="btn sec" onclick="goBack()">${ic('left')} ย้อนกลับ</button>
+       <button class="btn sec" onclick="go('home')">หน้าแรก</button>
      </div>
    </div></div>`;
 }
@@ -1022,41 +1310,113 @@ function beginQuiz(){
 }
 let timerInt=null;
 function startTimer(){ clearInterval(timerInt); timerInt=setInterval(()=>{ const s=state.session; if(!s||s.submitted){clearInterval(timerInt);return;}
-  s.timeLeft--; const el=document.getElementById('timer-disp'); if(el){const m=Math.floor(s.timeLeft/60),ss=s.timeLeft%60; el.textContent=`⏱ ${m}:${String(ss).padStart(2,'0')}`;}
+  s.timeLeft--; paintTimer();
   if(s.timeLeft<=0){clearInterval(timerInt);submitExam();} },1000); }
+function paintTimer(){ const s=state.session; const el=document.getElementById('timer-disp');
+  if(!el||!s||s.timeLeft==null)return;
+  const m=Math.floor(s.timeLeft/60), ss=s.timeLeft%60;
+  el.querySelector('b').textContent=`${m}:${String(ss).padStart(2,'0')}`;
+  el.classList.toggle('warn', s.timeLeft<=300);            // 5 นาทีสุดท้ายเปลี่ยนเป็นสีแดง
+}
 
-/* ---------- QUIZ ---------- */
+/* ---------- QUIZ ----------
+   มีสองมุมมอง เก็บค่าที่เลือกไว้ใน localStorage:
+     focus  = ทีละข้อ (ค่าเริ่มต้น) — จอโล่ง เดินหน้าด้วยปุ่มหรือคีย์บอร์ด
+     scroll = เลื่อนยาวเห็นทุกข้อ (แบบเดิม) — เหมาะกับตอนไล่ตรวจก่อนส่ง            */
+function quizView(){ try{ return localStorage.getItem('quizView')||'focus'; }catch(e){ return 'focus'; } }
+function setQuizView(v){ try{ localStorage.setItem('quizView',v); }catch(e){}
+  const s=state.session; if(s && s.cur==null) s.cur=0; render(); }
+function toggleQuizView(){ setQuizView(quizView()==='focus'?'scroll':'focus'); }
+
 function renderQuiz(app){
-  const s=state.session; const answered=Object.keys(s.answers).length;
-  app.innerHTML=`<div class="wrap" style="padding-top:22px">
-   <div class="card">
-     <div class="row"><b class="qtitle" style="font-size:19px">${esc(s.quizTitle)}</b><span class="badge">${s.mode==='exam'?'📝 Exam':'📖 Practice'}</span>
+  const s=state.session; if(s.cur==null||s.cur>=s.items.length) s.cur=0;
+  const answered=Object.keys(s.answers).length;
+  const focus=quizView()==='focus' && !s.submitted;
+  app.innerHTML=`<div class="wrap" style="padding-top:18px">
+   <div class="qbar">
+     <div class="line1">
+       <b class="ttl">${esc(s.quizTitle)}</b>
+       <span class="badge">${s.mode==='exam'?'สอบจริง':'ฝึกทำ'}</span>
        <span style="flex:1"></span>
-       ${s.timeLeft!=null?`<span id="timer-disp" class="pill" style="background:#12395f;color:#fff"></span>`:''}
+       ${s.timeLeft!=null?`<span id="timer-disp" class="timer"><svg class="i"><use href="#i-clock"/></svg><b>--:--</b></span>`:''}
        <span class="badge" id="flagcnt" style="background:var(--goldbg);color:var(--gold-d)"></span>
-       <span class="muted" id="cnt">${answered}/${s.items.length}</span></div>
-     <div class="progressbar" style="margin-top:10px"><div id="pbar" style="width:${answered/s.items.length*100}%"></div></div>
+       <span class="qcount" id="cnt">${answered}/${s.items.length}</span>
+       <button class="btn sec sm" onclick="toggleQuizView()" title="สลับมุมมอง">
+         <svg class="i"><use href="#i-${focus?'menu':'play'}"/></svg>${focus?'ดูทุกข้อ':'ทีละข้อ'}</button>
+     </div>
+     <div class="progressbar"><div id="pbar" style="width:${answered/s.items.length*100}%"></div></div>
    </div>
    <div id="qlist"></div>
-   <div class="card">
-     ${s.mode==='exam'&&!s.submitted?`<button class="btn" onclick="confirmSubmit()">✅ ส่งคำตอบ</button>`:''}
-     ${s.mode==='practice'?`<button class="btn" onclick="finishPractice()">📊 ดูสรุปคะแนน / บันทึก</button>`:''}
-     <button class="btn sec" onclick="exitQuiz()">ออก</button>
+   ${focus?`<div class="qnavbar">
+       <button class="btn sec" onclick="stepQ(-1)" ${s.cur===0?'disabled':''} aria-label="ข้อก่อนหน้า">
+         <svg class="i"><use href="#i-left"/></svg></button>
+       <span class="mid">ข้อ ${s.cur+1} / ${s.items.length}</span>
+       ${s.cur===s.items.length-1
+          ? (s.mode==='exam'
+              ? `<button class="btn" onclick="confirmSubmit()"><svg class="i"><use href="#i-check"/></svg>ส่งคำตอบ</button>`
+              : `<button class="btn" onclick="finishPractice()"><svg class="i"><use href="#i-chart"/></svg>ดูสรุป</button>`)
+          : `<button class="btn" onclick="stepQ(1)" aria-label="ข้อถัดไป"><svg class="i"><use href="#i-right"/></svg></button>`}
+     </div>
+     <div class="kbdhint">
+       <span>เลือกคำตอบ <span class="kbd">A</span><span class="kbd">B</span><span class="kbd">C</span><span class="kbd">D</span><span class="kbd">E</span></span>
+       <span>เปลี่ยนข้อ <span class="kbd">←</span><span class="kbd">→</span></span>
+       <span>มาร์กไว้ <span class="kbd">F</span></span>
+     </div>`:''}
+   <div class="card" style="margin-top:var(--sp-3)">
+     ${!focus&&s.mode==='exam'&&!s.submitted?`<button class="btn" onclick="confirmSubmit()"><svg class="i"><use href="#i-check"/></svg>ส่งคำตอบ</button>`:''}
+     ${!focus&&s.mode==='practice'?`<button class="btn" onclick="finishPractice()"><svg class="i"><use href="#i-chart"/></svg>ดูสรุปคะแนน / บันทึก</button>`:''}
+     <button class="btn sec" onclick="exitQuiz()">ออกจากชุดนี้</button>
    </div></div>`;
-  const list=document.getElementById('qlist'); s.items.forEach((q,i)=>list.appendChild(qCard(q,i)));
-  updateFlagCount();
+  const list=document.getElementById('qlist');
+  if(focus) list.appendChild(qCard(s.items[s.cur],s.cur));
+  else s.items.forEach((q,i)=>list.appendChild(qCard(q,i)));
+  updateFlagCount(); paintTimer();
   qdashMount();
 }
+/* เลื่อนไปข้อถัดไป/ก่อนหน้าในโหมดทีละข้อ */
+function stepQ(d){ const s=state.session; if(!s)return;
+  const n=Math.min(s.items.length-1, Math.max(0, s.cur+d));
+  if(n===s.cur)return; s.cur=n; render(); window.scrollTo({top:0,behavior:'instant'}); }
+
+/* คีย์ลัด — ทำงานเฉพาะตอนอยู่หน้าข้อสอบ ไม่มีโมดัลเปิด และไม่ได้พิมพ์ในช่องกรอก */
+document.addEventListener('keydown',e=>{
+  if(state.view!=='quiz'||!state.session)return;
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const t=e.target.tagName; if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT')return;
+  if(window.__qdashModal||window.__submitModal)return;
+  const s=state.session, focus=quizView()==='focus'&&!s.submitted;
+  const i=focus?s.cur:null;
+  const k=e.key.toLowerCase();
+  if(focus&&(e.key==='ArrowRight'||k==='j')){ e.preventDefault(); stepQ(1); return; }
+  if(focus&&(e.key==='ArrowLeft'||k==='k')){ e.preventDefault(); stepQ(-1); return; }
+  if(i===null)return;
+  const letters='abcde';
+  let j=letters.indexOf(k);
+  if(j<0 && k>='1' && k<='5') j=+k-1;
+  if(j>=0 && j<s.items[i].choices.length){ e.preventDefault(); selectAns(i,j); return; }
+  if(k==='f'){ e.preventDefault(); toggleFlag(i); }
+});
 function updateFlagCount(){ const s=state.session; const fc=document.getElementById('flagcnt'); if(!fc)return;
-  const n=s.flags?Object.values(s.flags).filter(Boolean).length:0; fc.textContent=n?('🚩 '+n):''; }
+  const n=s.flags?Object.values(s.flags).filter(Boolean).length:0; fc.textContent=n?(''+n):''; }
+/* วาดการ์ดข้อเดียวใหม่ — โหมดทีละข้อมีลูกแค่ตัวเดียวใน #qlist ส่วนโหมดเลื่อนยาวอิงตามลำดับข้อ */
+function refreshQCard(i){
+  const list=document.getElementById('qlist'); if(!list)return;
+  const pos=(quizView()==='focus'&&!state.session.submitted)?0:i;
+  const node=list.children[pos]; if(!node)return;
+  list.replaceChild(qCard(state.session.items[i],i),node);
+}
 function toggleFlag(i){ const s=state.session; if(!s.flags)s.flags={}; s.flags[i]=!s.flags[i];
-  const list=document.getElementById('qlist'); list.replaceChild(qCard(s.items[i],i),list.children[i]); updateFlagCount(); persistSession(); }
-function jumpTo(i){ __closeSubmit(); const el=document.getElementById('qc'+i); if(!el)return;
+  refreshQCard(i); updateFlagCount(); persistSession(); }
+function jumpTo(i){ __closeSubmit();
+  const s=state.session;
+  /* โหมดทีละข้อ: ไม่มีอะไรให้เลื่อนหา ต้องสลับไปข้อนั้นแล้ววาดใหม่ */
+  if(quizView()==='focus'&&!s.submitted){ s.cur=i; render(); window.scrollTo(0,0); return; }
+  const el=document.getElementById('qc'+i); if(!el)return;
   el.scrollIntoView({behavior:'smooth',block:'center'}); const old=el.style.boxShadow; el.style.boxShadow='0 0 0 3px var(--teal)';
   setTimeout(()=>{ el.style.boxShadow=old||''; },1300); }
 function __closeSubmit(){ if(window.__submitModal){ window.__submitModal.remove(); window.__submitModal=null; } }
 
-/* ---------- 🗂 Question Dashboard — ปุ่มลอยตามจอ + ผังสถานะทุกข้อ ----------
+/* ---------- Question Dashboard — ปุ่มลอยตามจอ + ผังสถานะทุกข้อ ----------
    ทำแล้ว = ไม่มีกรอบ / ยังไม่ทำ = มีกรอบ / มาร์กไว้หรือ Save = ธงแดง
    แตะเลขข้อ = เด้งไปยังข้อนั้นทันที                                        */
 function qdashMount(){
@@ -1078,7 +1438,9 @@ function qdashBadge(){ const d=document.getElementById('qdashDot'); const s=stat
   const left=s.items.length-Object.keys(s.answers).length;
   d.textContent=left>0?left:'✓'; d.style.background=left>0?'var(--teal)':'var(--ok)'; }
 function closeQDash(){ if(window.__qdashModal){ window.__qdashModal.remove(); window.__qdashModal=null; } }
-function qdashCurrent(){ const s=state.session; if(!s)return -1; let best=-1,bd=Infinity; const mid=window.innerHeight/2;
+function qdashCurrent(){ const s=state.session; if(!s)return -1;
+  if(quizView()==='focus'&&!s.submitted) return s.cur||0;
+  let best=-1,bd=Infinity; const mid=window.innerHeight/2;
   for(let i=0;i<s.items.length;i++){ const el=document.getElementById('qc'+i); if(!el)continue;
     const r=el.getBoundingClientRect(); const d=Math.abs(r.top+r.height/2-mid); if(d<bd){bd=d;best=i;} }
   return best; }
@@ -1088,7 +1450,7 @@ function openQDash(){
   const cur=qdashCurrent(); let done=0,mk=0;
   const cells=s.items.map((q,i)=>{
     const ans=s.answers[i]!==undefined; if(ans)done++;
-    const marked=!!(s.flags&&s.flags[i]); if(marked)mk++;   /* นับเฉพาะ 🚩 Mark for review ไม่รวม 💿 Save */
+    const marked=!!(s.flags&&s.flags[i]); if(marked)mk++;   /* นับเฉพาะ Mark for review ไม่รวม Save */
     return `<button class="qd${ans?' done':''}${i===cur?' cur':''}" onclick="qdashGo(${i})" `+
            `title="ข้อ ${i+1}${ans?' • ตอบแล้ว':' • ยังไม่ตอบ'}${marked?' • มาร์กไว้':''}">`+
            `${i+1}${marked?'<span class="fg">🚩</span>':''}</button>`;
@@ -1104,7 +1466,7 @@ function openQDash(){
     <div class="qdash-legend">
       <i><span class="box done"></span> ทำแล้ว (ไม่มีกรอบ)</i>
       <i><span class="box"></span> ยังไม่ทำ (มีกรอบ)</i>
-      <i>🚩 มาร์กไว้ทบทวน</i>
+      <i>มาร์กไว้ทบทวน</i>
     </div>
     <div class="qdash-grid">${cells}</div>
     <div class="muted" style="border-top:1px solid var(--line);padding-top:10px;text-align:center;font-size:15px">
@@ -1127,10 +1489,10 @@ function confirmSubmit(){ const s=state.session;
     <div class="muted">ตอบแล้ว ${Object.keys(s.answers).length}/${s.items.length} ข้อ • คลิกเลขข้อเพื่อกลับไปดู</div>
     <div style="margin-top:12px"><b style="color:var(--bad)">ยังไม่ได้ตอบ (${unanswered.length})</b>
       <div style="max-height:120px;overflow:auto;margin-top:4px">${unanswered.length?unanswered.map(chip).join(''):'<span class="muted">— ตอบครบแล้ว —</span>'}</div></div>
-    <div style="margin-top:12px"><b style="color:var(--gold-d)">🚩 ทำเครื่องหมายไว้ (${flagged.length})</b>
+    <div style="margin-top:12px"><b style="color:var(--gold-d)">ทำเครื่องหมายไว้ (${flagged.length})</b>
       <div style="max-height:120px;overflow:auto;margin-top:4px">${flagged.length?flagged.map(chip).join(''):'<span class="muted">— ไม่มี —</span>'}</div></div>
     <div class="row" style="margin-top:18px">
-      <button class="btn" onclick="__closeSubmit();submitExam()">✅ ส่งเลย</button>
+      <button class="btn" onclick="__closeSubmit();submitExam()">ส่งเลย</button>
       <button class="btn sec" onclick="__closeSubmit()">↩ กลับไปตรวจ</button></div>
   </div>`;
   bg.addEventListener('click',e=>{ if(e.target===bg)__closeSubmit(); });
@@ -1140,21 +1502,24 @@ function qCard(q,i){
   const s=state.session; const chosen=s.answers[i]; const reveal=s.mode==='practice'?chosen!==undefined:s.submitted;
   const flagged=!!(s.flags&&s.flags[i]);
   const div=document.createElement('div'); div.className='card'; div.id='qc'+i;
-  if(flagged) div.style.boxShadow='0 0 0 2px var(--gold)';
+  if(flagged) div.style.boxShadow='inset 3px 0 0 var(--gold)';
   /* ปุ่มมาร์กไว้ทบทวน: ใช้ได้ทุกโหมด (Practice / Exam) จนกว่าจะส่งคำตอบ
      ส่งแล้วค่อยเปลี่ยนเป็นป้ายบอกสถานะเฉย ๆ */
   const flagCtl = !s.submitted
-    ? `<button class="btn sm ${flagged?'gold':'sec'}" style="margin-left:auto;padding:4px 10px;font-size:12px" onclick="toggleFlag(${i})">${flagged?'🚩 มาร์กไว้':'⚑ Mark for review'}</button>`
-    : (flagged?'<span class="badge" style="margin-left:auto;background:var(--goldbg);color:var(--gold-d)">🚩 marked</span>':'');
+    ? `<button class="btn sm ${flagged?'gold':'sec'}" onclick="toggleFlag(${i})" title="มาร์กไว้ทบทวน (F)"><svg class="i"><use href="#i-flag"/></svg>${flagged?'มาร์กไว้':'มาร์ก'}</button>`
+    : (flagged?'<span class="badge" style="background:var(--goldbg);color:var(--gold-d)"><svg class="i"><use href="#i-flag"/></svg>มาร์กไว้</span>':'');
   const saved=isSavedQ(q.key);
-  const saveBtn=`<button id="sv${i}" class="btn sm ${saved?'':'sec'}" style="padding:3px 10px;font-size:12px" onclick="toggleSavedQ('${q.key}',${i})">💿 ${saved?'Saved':'Save'}</button>`;
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${saveBtn}${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}`;
+  const saveBtn=`<button id="sv${i}" class="btn sm ${saved?'':'sec'}" onclick="toggleSavedQ('${q.key}',${i})" title="เก็บเข้าคลังส่วนตัว"><svg class="i"><use href="#i-bookmark"/></svg>${saved?'เก็บแล้ว':'เก็บ'}</button>`;
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span><span style="flex:1"></span>${saveBtn}${flagCtl}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
-    b.innerHTML=`<span class="lab">${LAB[j]}.</span>${esc(c)}`; b.onclick=()=>selectAns(i,j); div.appendChild(b); });
+    b.innerHTML=`<span class="lab">${LAB[j]}</span><span class="otxt">${esc(c)}</span>`; b.onclick=()=>selectAns(i,j); div.appendChild(b); });
   if(reveal){ const ok=chosen===q.ans; const ex=document.createElement('div'); ex.className='exp';
-    ex.innerHTML=`<div class="res ${ok?'ok':'bad'}">${chosen===undefined?'ไม่ได้ตอบ':(ok?'✔ ถูกต้อง':'✘ ยังไม่ถูก')} — คำตอบที่ถูกคือ ${LAB[q.ans]}</div><div><span class="tag2">เฉลย:</span> ${esc(q.exp)}</div><div style="margin-top:8px"><button id="rep${i}" class="btn sm sec" style="padding:3px 10px;font-size:12px" onclick="reportQuestion(${i})">🚩 รายงานข้อผิด</button></div>`;
+    const mark=chosen===undefined ? '<svg class="i"><use href="#i-x"/></svg>ไม่ได้ตอบ'
+              : (ok ? '<svg class="i"><use href="#i-check"/></svg>ถูกต้อง'
+                    : '<svg class="i"><use href="#i-x"/></svg>ยังไม่ถูก');
+    ex.innerHTML=`<div class="res ${ok?'ok':'bad'}" style="display:flex;align-items:center;gap:6px;margin-bottom:8px">${mark}<span style="color:var(--ink2);font-weight:500"> — คำตอบที่ถูกคือ ${LAB[q.ans]}</span></div><div><span class="tag2">เฉลย:</span> ${esc(q.exp)}</div><div style="margin-top:12px"><button id="rep${i}" class="btn sm sec" onclick="reportQuestion(${i})"><svg class="i"><use href="#i-flag"/></svg>รายงานข้อผิด</button></div>`;
     div.appendChild(ex); }
   return div;
 }
@@ -1164,7 +1529,7 @@ function selectAns(i,j){ const s=state.session;
   const answered=Object.keys(s.answers).length;
   const cnt=document.getElementById('cnt'); if(cnt)cnt.textContent=`${answered}/${s.items.length}`;
   const pb=document.getElementById('pbar'); if(pb)pb.style.width=(answered/s.items.length*100)+'%';
-  const list=document.getElementById('qlist'); list.replaceChild(qCard(state.session.items[i],i),list.children[i]);
+  refreshQCard(i);
   qdashBadge();
   persistSession();
 }
@@ -1284,11 +1649,11 @@ async function startMistakes(){
   const qs=arr.map(k=>idx[k].q);
   hideLoader();
   if(!qs.length){ alert('ไม่มีข้อค้างทบทวนตอนนี้ 🎉\nทำข้อสอบเพิ่ม แล้วข้อที่พลาด/ถึงกำหนดจะถูกจัดคิวมาทบทวนแบบ spaced repetition'); return; }
-  window.__mistakes={id:'mistakes',title:'🔁 Smart Review — SRS ('+qs.length+' ข้อ)',subject:'past',questions:qs};
+  window.__mistakes={id:'mistakes',title:'Smart Review — SRS ('+qs.length+' ข้อ)',subject:'past',questions:qs};
   go('config',{quiz:'mistakes'});
 }
 
-function bar(pct,color){ return `<div style="background:#e7eef2;border-radius:6px;height:12px;overflow:hidden;flex:1"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`; }
+function bar(pct,color){ return `<div style="background:var(--line);border-radius:var(--r-full);height:10px;overflow:hidden;flex:1"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`; }
 function accColor(p){ return p>=70?'var(--ok)':p>=50?'#e0a800':'var(--bad)'; }
 
 async function renderWeakness(app){
@@ -1298,9 +1663,9 @@ async function renderWeakness(app){
   const weakTopics=Object.entries(topic).map(([k,v])=>({k,...v,p:Math.round(100*v.ok/v.n)})).filter(x=>x.n>=3).sort((a,b)=>a.p-b.p).slice(0,15);
   if(!sysArr.length){
     app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
-      <h2 class="qtitle">🎯 My Weakness</h2>
+      <h2 class="qtitle">My Weakness</h2>
       <div class="muted" style="margin-top:8px">ยังไม่มีข้อมูลพอ — ทำข้อสอบสักชุดก่อน แล้วระบบจะสรุป % ความแม่นแยกตามระบบและหัวข้อให้อัตโนมัติ</div>
-      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div></div></div>`; return;
   }
   const sysRows=sysArr.map(x=>`<div style="margin:10px 0">
       <div class="row" style="gap:10px;align-items:center"><b style="min-width:190px">${esc(icdLabel(x.k))}</b>
@@ -1313,18 +1678,18 @@ async function renderWeakness(app){
     : '<div class="muted">ยังมีข้อมูลไม่พอต่อหัวข้อ (ต้องทำอย่างน้อย 3 ข้อต่อหัวข้อ)</div>';
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
     <div class="card">
-      <h2 class="qtitle">🎯 My Weakness — ความแม่นแยกตามระบบ</h2>
+      <h2 class="qtitle">My Weakness — ความแม่นแยกตามระบบ</h2>
       <div class="muted">เรียงจากอ่อนสุดก่อน • คำนวณจากทุกครั้งที่ทำข้อสอบ</div>
       <div style="margin-top:14px">${sysRows}</div>
-      <div class="row" style="margin-top:8px"><button class="btn" onclick="startMistakes()">🔁 ทบทวนข้อที่เคยผิด</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="startMistakes()">ทบทวนข้อที่เคยผิด</button></div>
     </div>
     <div class="card" style="margin-top:16px">
-      <h2 class="qtitle">🔎 หัวข้อที่ควรทบทวนที่สุด</h2>
+      <h2 class="qtitle">หัวข้อที่ควรทบทวนที่สุด</h2>
       <div class="muted">15 หัวข้อที่ % ต่ำสุด (นับเฉพาะหัวข้อที่ทำ ≥ 3 ข้อ)</div>
       <div style="margin-top:12px">${topicRows}</div>
     </div>
-    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
-      <button class="btn sec" onclick="go('weakness')">🔄 รีเฟรช</button></div>
+    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button>
+      <button class="btn sec" onclick="go('weakness')">รีเฟรช</button></div>
   </div>`;
 }
 
@@ -1335,7 +1700,7 @@ function renderSimConfig(app){
     .concat(NL2_SYS.map(s=>`<tr><td>${esc(s.label)}</td><td style="text-align:right">${s.n}</td></tr>`)).join('');
   app.innerHTML=`<div class="wrap" style="padding-top:26px">
     <div class="card">
-      <h2 class="qtitle">🧪 NL2 Simulator</h2>
+      <h2 class="qtitle">NL2 Simulator</h2>
       <div class="muted">จำลองสนามสอบจริง — จับเวลา, ไม่เฉลยจนกว่าจะส่ง, สุ่มตาม <b>blueprint อย่างเป็นทางการของแพทยสภา (เริ่มใช้ ก.ค. 2567)</b> โดยดึงจาก<b>ข้อสอบ NL2 เก่าเท่านั้น</b></div>
       <label class="fld">จำนวนข้อ (เวลา = 1.5 นาที/ข้อ)</label>
       <select id="simSize">
@@ -1375,7 +1740,7 @@ function startSimulator(){
   const everything=shuffle([].concat(...Object.keys(g).map(k=>g[k])));
   for(const src of [g.flex, everything]){ for(const q of src){ if(picks.length>=size)break; if(!used.has(q)){used.add(q);picks.push(q);} } if(picks.length>=size)break; }
   const final=shuffle(picks).slice(0,size);
-  window.__sim={id:'nl2sim',title:'🧪 NL2 Simulator ('+final.length+' ข้อ)',subject:'past',questions:final};
+  window.__sim={id:'nl2sim',title:'NL2 Simulator ('+final.length+' ข้อ)',subject:'past',questions:final};
   showLoader('กำลังจัดชุดข้อสอบตาม blueprint แพทยสภา...');
   setTimeout(()=>{ state.session=buildSession(window.__sim,{mode:'exam',count:'all',shuffleQ:true,shuffleO:true,timer:true,sim:true,secPerItem:90}); persistSession(); hideLoader(); go('quiz'); if(state.session.timeLeft!=null)startTimer(); },650);
 }
@@ -1388,13 +1753,13 @@ function renderSystems(app){
   const c={}; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ const b=qBucket(x); c[b]=(c[b]||0)+1; }));
   const cards=SYS_ALL.map(s=>{ const n=c[s.id]||0; return `<div class="file-card" style="cursor:${n?'pointer':'default'};opacity:${n?1:.5}" ${n?`onclick="startSystemPractice('${s.id}')"`:''}>
      <div class="tab">${s.id}</div><h3 style="margin-top:20px">${esc(s.label)}</h3>
-     <div class="meta">📝 ${n} ข้อ</div>
+     <div class="meta">${n} ข้อ</div>
      ${n?`<button class="btn sm" onclick="event.stopPropagation();startSystemPractice('${s.id}')">ฝึกทำ</button>`:'<span class="muted">ยังไม่มีข้อ</span>'}</div>`; }).join('');
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
-    <div class="card"><h2 class="qtitle">🫀 Practice by Organ System</h2>
+    <div class="card"><h2 class="qtitle">Practice by Organ System</h2>
       <div class="muted">ฝึกทำแยกตามระบบอวัยวะ (ICD chapter ตาม blueprint แพทยสภา) — รวมทุกคลัง (NL2 เก่า + ชุดที่สร้างใหม่)</div></div>
     <div class="cat-grid">${cards}</div>
-    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
   </div>`;
 }
 function startSystemPractice(id){
@@ -1402,7 +1767,7 @@ function startSystemPractice(id){
   const label=(SYS_ALL.find(s=>s.id===id)||{}).label||id;
   const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if(qBucket(x)===id) qs.push(x); }));
   if(!qs.length){ alert('ยังไม่มีข้อในระบบนี้'); return; }
-  window.__sys={id:'sysquiz',title:'🫀 '+label,subject:'past',questions:shuffle(qs)};
+  window.__sys={id:'sysquiz',title:''+label,subject:'past',questions:shuffle(qs)};
   go('config',{quiz:'sysquiz'});
 }
 /* ฝึกเฉพาะหัวข้อย่อย (เรียกจากหน้า My Weakness) */
@@ -1410,7 +1775,7 @@ function startTopicPractice(topic){
   if(!requireLogin()) return;
   const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if((x.topic||'อื่นๆ')===topic) qs.push(x); }));
   if(!qs.length){ alert('ยังไม่มีข้อในหัวข้อนี้'); return; }
-  window.__sys={id:'sysquiz',title:'🔎 '+topic,subject:'past',questions:shuffle(qs)};
+  window.__sys={id:'sysquiz',title:''+topic,subject:'past',questions:shuffle(qs)};
   go('config',{quiz:'sysquiz'});
 }
 
@@ -1436,10 +1801,10 @@ async function renderReadiness(app){
   const r=await readinessData(); const pm=Math.round(PASS_MARK*100);
   if(!r.hasData){
     app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
-      <h2 class="qtitle">📈 Readiness / Pass Prediction</h2>
+      <h2 class="qtitle">Readiness / Pass Prediction</h2>
       <div class="muted" style="margin-top:8px">ยังไม่มีข้อมูล — ลองทำ <b>NL2 Simulator</b> สักรอบ แล้วระบบจะประเมินความพร้อมสอบและชี้ระบบที่ยังไม่ผ่านเกณฑ์ให้</div>
-      <div class="row" style="margin-top:16px"><button class="btn" onclick="go('simconfig')">🧪 เริ่ม NL2 Simulator</button>
-        <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+      <div class="row" style="margin-top:16px"><button class="btn" onclick="go('simconfig')">เริ่ม NL2 Simulator</button>
+        <button class="btn sec" onclick="go('home')">หน้าแรก</button></div></div></div>`; return;
   }
   const disp = r.sims.length? r.latestSimPct : r.overallPct;
   const arr=Object.entries(r.sys).map(([k,v])=>({k,...v,p:Math.round(100*v.ok/v.n)}));
@@ -1450,7 +1815,7 @@ async function renderReadiness(app){
   const readiness=Math.round(100*(0.7*margin+0.3*breadth));
   const weak=covered.filter(x=>x.p<pm).sort((a,b)=>a.p-b.p);
   const rc = readiness>=85?'var(--ok)':readiness>=60?'#d99700':'var(--bad)';
-  const verdict = disp>=pm+5?['✅ พร้อมสอบ','var(--ok)'] : disp>=pm-5?['⚠️ เฉียดเกณฑ์ — ดันอีกนิด','#d99700'] : ['❌ ยังต้องเตรียมอีก','var(--bad)'];
+  const verdict = disp>=pm+5?['พร้อมสอบ','var(--ok)'] : disp>=pm-5?['เฉียดเกณฑ์ — ดันอีกนิด','#d99700'] : ['ยังต้องเตรียมอีก','var(--bad)'];
   const ring=`<div style="position:relative;width:150px;height:150px;flex:none">
     <svg viewBox="0 0 120 120" style="width:150px;height:150px;transform:rotate(-90deg)">
       <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="12"/>
@@ -1464,30 +1829,30 @@ async function renderReadiness(app){
       <span style="min-width:210px">${esc(icdLabel(x.k))}</span>
       ${bar(x.p,accColor(x.p))}<span style="min-width:90px;text-align:right;color:${accColor(x.p)};font-weight:700">${x.p}% <span class="muted" style="font-weight:400">(${x.ok}/${x.n})</span></span>
       <button class="btn sm sec" onclick="startSystemPractice('${x.k}')">ฝึก</button></div>`).join('')
-    : '<div class="muted">🎉 ทุกระบบที่มีข้อมูลผ่านเกณฑ์แล้ว!</div>';
+    : '<div class="muted">ทุกระบบที่มีข้อมูลผ่านเกณฑ์แล้ว!</div>';
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
     <div class="card">
-      <h2 class="qtitle">📈 Readiness / Pass Prediction</h2>
+      <h2 class="qtitle">Readiness / Pass Prediction</h2>
       <div class="row" style="gap:24px;align-items:center;flex-wrap:wrap;margin-top:8px">
         ${ring}
         <div style="flex:1;min-width:220px">
           <div style="font-size:20px;font-weight:700;color:${verdict[1]}">${verdict[0]}</div>
           <div style="margin-top:8px">${r.sims.length?`คะแนน Simulator ล่าสุด: <b style="color:${accColor(disp)}">${disp}%</b> • ดีสุด ${r.bestSimPct}%`:`ความแม่นรวม (จากทุกแบบฝึก): <b style="color:${accColor(disp)}">${disp}%</b>`}</div>
           <div class="muted" style="margin-top:4px">เกณฑ์ผ่านโดยประมาณ ~${pm}% • ระบบที่ผ่านเกณฑ์ ${passed.length}/${covered.length}</div>
-          ${r.usedFallback?'<div class="muted" style="margin-top:6px;color:#d99700">* ยังไม่มีผล NL2 Simulator — ประเมินจากผลแบบฝึกทั่วไปไปก่อน ทำ Simulator เพื่อความแม่นยำ</div>':''}
-          <div class="row" style="margin-top:12px"><button class="btn" onclick="go('simconfig')">🧪 ทำ Simulator อีกรอบ</button></div>
+          ${r.usedFallback?'<div class="muted" style="margin-top:6px;color:var(--gold-d)">* ยังไม่มีผล NL2 Simulator — ประเมินจากผลแบบฝึกทั่วไปไปก่อน ทำ Simulator เพื่อความแม่นยำ</div>':''}
+          <div class="row" style="margin-top:12px"><button class="btn" onclick="go('simconfig')">ทำ Simulator อีกรอบ</button></div>
         </div>
       </div>
     </div>
     <div class="card">
-      <h2 class="qtitle">⚠️ ระบบที่ยังไม่ผ่านเกณฑ์ (&lt; ${pm}%)</h2>
+      <h2 class="qtitle">ระบบที่ยังไม่ผ่านเกณฑ์ (&lt; ${pm}%)</h2>
       <div class="muted">เรียงจากอ่อนสุด • นับเฉพาะระบบที่ทำ ≥ 3 ข้อ • กด "ฝึก" เพื่อเจาะระบบนั้น</div>
       <div style="margin-top:12px">${weakRows}</div>
     </div>
     <div class="card">
       <div class="muted">📌 "ความพร้อม %" = 70% จากคะแนนเทียบเกณฑ์ผ่าน + 30% จากสัดส่วนระบบที่ผ่านเกณฑ์. เกณฑ์ผ่าน ~${pm}% เป็นค่ามาตรฐานที่ใช้กันทั่วไป (ปัจจุบัน ศรว. รายงานผลเป็น Pass/Fail จากการตั้งเกณฑ์มาตรฐาน) — เป็นการประเมินเพื่อฝึกซ้อม ไม่ใช่การรับประกันผลสอบจริง</div>
-      <div class="row" style="margin-top:12px"><button class="btn sec" onclick="go('weakness')">🎯 ดูจุดอ่อนรายหัวข้อ</button>
-        <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+      <div class="row" style="margin-top:12px"><button class="btn sec" onclick="go('weakness')">ดูจุดอ่อนรายหัวข้อ</button>
+        <button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
     </div>
   </div>`;
 }
@@ -1500,23 +1865,25 @@ function shakyHTML(s){
     if(gradeAnswer(s,i,med)==='hard') idxs.push(i); });
   if(!idxs.length) return '';
   return `<div class="pill" style="margin-top:12px;background:var(--goldbg);color:var(--gold-d);display:inline-block">
-    ⚠️ ตอบถูกแบบไม่มั่นใจ ${idxs.length} ข้อ — ถูกกันไว้ในคิวทบทวนแล้ว
+    ตอบถูกแบบไม่มั่นใจ ${idxs.length} ข้อ — ถูกกันไว้ในคิวทบทวนแล้ว
     <span class="muted" style="font-weight:400">(${idxs.map(i=>i+1).join(', ')})</span></div>`;
 }
 function renderResult(app){
   const s=state.session; const pct=Math.round(s.score/s.items.length*100);
   const backId = s.quizId;
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
-   <div class="card" style="text-align:center">
-     <div class="muted">${esc(s.quizTitle)}</div>
-     <div class="scorebig">${s.score}/${s.items.length}</div>
-     <div class="qtitle" style="color:${pct>=60?'var(--ok)':'var(--bad)'};font-size:30px">${pct}%</div>
-     <div class="muted">${pct>=80?'เยี่ยมมาก! ชีพจรความขยันแรงดี ❤️':pct>=60?'ผ่านเกณฑ์ ทบทวนข้อที่ผิดต่อ':'ทบทวนเฉลยด้านล่างแล้วลองใหม่'}</div>
+   <div class="card" style="text-align:center;padding:32px 22px">
+     <div class="muted" style="font-size:13.5px">${esc(s.quizTitle)}</div>
+     <div class="scorebig" style="margin:10px 0 2px">${pct}<span style="font-size:26px;font-weight:600;color:var(--muted)">%</span></div>
+     <div style="font-size:15px;font-weight:600;color:${pct>=60?'var(--ok)':'var(--bad)'}">${s.score} / ${s.items.length} ข้อ</div>
+     <div class="progressbar" style="max-width:280px;margin:16px auto 12px">
+       <div style="width:${pct}%;background:${pct>=60?'var(--ok)':'var(--bad)'}"></div></div>
+     <div class="muted">${pct>=80?'เยี่ยมมาก รักษาจังหวะนี้ไว้':pct>=60?'ผ่านเกณฑ์ — ทบทวนข้อที่ผิดต่อ':'ทบทวนเฉลยด้านล่างแล้วลองใหม่'}</div>
      ${shakyHTML(s)}
-     <div class="row" style="justify-content:center;margin-top:16px">
-       <button class="btn" onclick="go('config',{quiz:'${backId}'})">🔄 ทำใหม่</button>
-       <button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
-       <button class="btn sec" onclick="go('history')">📊 ประวัติ</button>
+     <div class="row" style="justify-content:center;margin-top:20px">
+       <button class="btn" onclick="go('config',{quiz:'${backId}'})">${ic('repeat')}ทำใหม่</button>
+       <button class="btn sec" onclick="go('home')">หน้าแรก</button>
+       <button class="btn sec" onclick="go('history')">${ic('chart')}ประวัติ</button>
      </div>
    </div>
    <div class="card"><b class="qtitle" style="font-size:19px">ทบทวนคำตอบ</b></div>
@@ -1531,7 +1898,7 @@ async function renderHistory(app){
   window.__attempts=at;                       /* เก็บไว้ให้หน้า "ดูรายข้อ" ใช้ต่อโดยไม่ต้องยิงซ้ำ */
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
    <div class="card">
-     <h2 class="qtitle">📊 ประวัติการทำข้อสอบ</h2>
+     <h2 class="qtitle">ประวัติการทำข้อสอบ</h2>
      <div class="muted">${CLOUD&&user?esc(displayName())+' • '+esc(user.email):'เก็บในเครื่องนี้ (Guest)'}</div>
      ${at.length===0?'<div class="muted" style="margin-top:12px">ยังไม่มีประวัติ ลองทำข้อสอบสักชุด</div>':`
      <div class="tablewrap" style="margin-top:12px"><table>
@@ -1539,7 +1906,7 @@ async function renderHistory(app){
        ${at.map((a,i)=>`<tr class="hrow" onclick="go('attempt',{attemptIx:${i}})" style="cursor:pointer"><td>${new Date(a.created_at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(a.quiz_title||a.quiz_id)}</td><td>${a.score}/${a.total}</td><td style="color:${a.score/a.total>=.6?'var(--ok)':'var(--bad)'}">${Math.round(a.score/a.total*100)}%</td><td style="color:var(--teal-d);white-space:nowrap">ดูรายข้อ →</td></tr>`).join('')}
      </table></div>
      <div class="muted" style="margin-top:8px;font-size:14px">คลิกแถวเพื่อดูว่าครั้งนั้นข้อไหนผิด พร้อมอ่านเฉลย</div>`}
-     <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
+     <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button>
      ${!CLOUD&&at.length?`<button class="btn danger" onclick="if(confirm('ลบประวัติในเครื่องนี้?')){localStorage.removeItem('guestAttempts');go('history')}">ล้างประวัติ</button>`:''}</div>
    </div></div>`;
 }
@@ -1554,7 +1921,7 @@ function redoAttemptWrong(){
   const idx=QIDX();
   const qs=(a.answers||[]).filter(e=>e&&e.k&&!e.c&&idx[e.k]).map(e=>idx[e.k].q);
   if(!qs.length){ alert('ครั้งนั้นไม่มีข้อที่ผิด 🎉'); return; }
-  window.__mistakes={id:'mistakes',title:'🔁 แก้ตัว: '+(a.quiz_title||a.quiz_id)+' ('+qs.length+' ข้อ)',subject:'past',questions:qs};
+  window.__mistakes={id:'mistakes',title:'แก้ตัว: '+(a.quiz_title||a.quiz_id)+' ('+qs.length+' ข้อ)',subject:'past',questions:qs};
   go('config',{quiz:'mistakes'});
 }
 async function renderAttempt(app){
@@ -1598,7 +1965,7 @@ async function renderAttempt(app){
        <div class="m"><b>${skipped.length}</b><span>ไม่ได้ตอบ</span></div>
      </div>
      <div class="row" style="margin-top:14px;gap:8px;flex-wrap:wrap">
-       ${wrong.length?`<button class="btn sm" onclick="redoAttemptWrong()">🔁 ทำข้อที่พลาดซ้ำ (${wrong.length})</button>`:''}
+       ${wrong.length?`<button class="btn sm" onclick="redoAttemptWrong()">ทำข้อที่พลาดซ้ำ (${wrong.length})</button>`:''}
        <button class="btn sm sec" onclick="toggleAtFilter()">${__atWrongOnly?'แสดงทุกข้อ':'แสดงเฉพาะที่พลาด'}</button>
        <button class="btn sm sec" onclick="go('history')">↩ กลับประวัติ</button>
      </div>
@@ -1614,18 +1981,18 @@ async function renderLeaderboard(app){
   app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card"><b>กำลังโหลด Leaderboard...</b></div></div>`;
   if(!CLOUD){
     app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
-      <h2 class="qtitle">🏆 Leaderboard</h2>
+      <h2 class="qtitle">Leaderboard</h2>
       <div class="muted" style="margin-top:8px">ต้องตั้งค่าระบบล็อกอิน (Supabase) ก่อนจึงจะมีอันดับของทุกคนได้</div>
-      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
     </div></div>`; return;
   }
   const {data,error}=await supa.rpc('leaderboard');
   if(error){
     app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
-      <h2 class="qtitle">🏆 Leaderboard</h2>
+      <h2 class="qtitle">Leaderboard</h2>
       <div class="err" style="margin-top:8px">โหลดอันดับไม่สำเร็จ: ${esc(error.message)}</div>
       <div class="muted" style="margin-top:8px">ยังไม่ได้สร้างฟังก์ชัน leaderboard ในฐานข้อมูล? รัน SQL ใน supabase_schema.sql อีกครั้ง</div>
-      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+      <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
     </div></div>`; return;
   }
   const rows=(data||[]).filter(r=>+r.total_questions>0);
@@ -1650,24 +2017,24 @@ async function renderLeaderboard(app){
     </table></div>` : `<div class="muted" style="margin-top:8px">ยังไม่มีข้อมูล</div>`;
   app.innerHTML=`<div class="wrap" style="padding-top:24px">
     <div class="card">
-      <h2 class="qtitle">🎯 อันดับความแม่นยำสูงสุด</h2>
+      <h2 class="qtitle">อันดับความแม่นยำสูงสุด</h2>
       <div class="muted">เรียงตาม % การตอบถูก (นับเฉพาะคนที่ทำครบ ${MIN_Q} ข้อขึ้นไป)</div>
       ${accTable}
     </div>
     <div class="card" style="margin-top:16px">
-      <h2 class="qtitle">🔥 อันดับทำข้อสอบมากสุด</h2>
+      <h2 class="qtitle">อันดับทำข้อสอบมากสุด</h2>
       <div class="muted">เรียงตามจำนวนข้อที่ทำทั้งหมด</div>
       ${volTable}
     </div>
-    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button>
-      <button class="btn sec" onclick="go('leaderboard')">🔄 รีเฟรช</button></div>
+    <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button>
+      <button class="btn sec" onclick="go('leaderboard')">รีเฟรช</button></div>
   </div>`;
 }
 
 /* ---------- combined + upload ---------- */
 function startCombined(){
   const all=[]; window.QUIZ_DATA.forEach(q=>q.questions.forEach(x=>all.push(x)));
-  window.__combined={id:'combined',title:'🎲 สุ่มรวมทุกชุด',questions:all};
+  window.__combined={id:'combined',title:'สุ่มรวมทุกชุด',questions:all};
   go('config',{quiz:'combined'});
 }
 function handleUpload(ev){
@@ -1708,7 +2075,20 @@ function reportError(){
 
 /* ---------- boot ---------- */
 /* ---------- hamburger nav (mobile) ---------- */
-function toggleNav(){ const n=document.querySelector('.nav'); if(n)n.classList.toggle('open'); }
+function toggleNav(){ const n=document.querySelector('.nav'); if(n)n.classList.toggle('open');
+  const m=document.getElementById('moreMenu'); if(m)m.classList.remove('open'); }
+/* ดรอปดาวน์ "เพิ่มเติม" — บนมือถือเมนูกางเป็นรายการอยู่แล้ว จึงไม่ต้องพับ */
+function toggleMore(e){ e.stopPropagation();
+  const m=document.getElementById('moreMenu'); if(m)m.classList.toggle('open'); }
+document.addEventListener('click',e=>{
+  const m=document.getElementById('moreMenu');
+  if(m && m.classList.contains('open') && !m.contains(e.target)) m.classList.remove('open');
+});
+/* ปิดเมนูทุกครั้งที่เปลี่ยนหน้า ไม่ให้ค้างเปิดทับเนื้อหา */
+function closeMenus(){
+  document.querySelector('.nav')?.classList.remove('open');
+  document.getElementById('moreMenu')?.classList.remove('open');
+}
 (function(){ const n=document.querySelector('.nav'); if(n)n.addEventListener('click',e=>{ if(e.target.closest('button')||e.target.closest('.pill'))n.classList.remove('open'); }); })();
 
 /* ---------- daily goal + streak ---------- */
@@ -1720,7 +2100,7 @@ function todayCount(at){ const tk=dKey(new Date()); return (at||[]).filter(a=>dK
 function streakGoalHTML(at){
   const st=computeStreak(at), done=todayCount(at), goal=dailyGoal(), pct=Math.min(100,Math.round(done/goal*100));
   return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-    <div style="font-size:30px">🔥</div>
+    <div class="cardico">${ic('fire')}</div>
     <div><div style="font-size:22px;font-weight:800;color:var(--navy);line-height:1.1">${st} วัน</div><div class="muted" style="font-size:13px">streak ต่อเนื่อง</div></div>
     <div style="flex:1;min-width:180px">
       <div class="row" style="justify-content:space-between"><span class="muted">เป้าวันนี้</span><span style="font-weight:700;color:var(--navy)">${done}/${goal} ข้อ${done>=goal?' ✅':''}</span></div>
@@ -1752,7 +2132,7 @@ function applyPlanGoal(n){ LS.set('dailyGoal',Math.max(1,Math.round(n))); render
 function thDate(d){ try{ return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}); }
   catch(e){ return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); } }
 
-/* ---------- 🗓 แผนอ่านสอบ: นับถอยหลัง + คำนวณเป้าต่อวันจากงานที่เหลือจริง ----------
+/* ---------- แผนอ่านสอบ: นับถอยหลัง + คำนวณเป้าต่อวันจากงานที่เหลือจริง ----------
    เดิมการ์ดนี้บอกแค่ "อีกกี่วัน" ซึ่งไม่ได้บอกว่าต้องทำอะไร
    ตอนนี้ผูกกับจำนวนข้อที่ยังไม่เคยเจอ (จาก srsStats) แล้วคำนวณย้อนกลับเป็นเป้าต่อวัน */
 function planOpen(){ return LS.get('planOpen',false)===true; }
@@ -1765,7 +2145,7 @@ function togglePlan(){
 function examPlanHTML(at){
   const ex=examDate(), days=Math.ceil((ex-Date.now())/86400000);
   if(days<0) return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-    <div style="font-size:26px">🗓️</div><div style="flex:1;min-width:180px"><b style="color:var(--navy)">เลยวันสอบที่ตั้งไว้แล้ว</b>
+    <div class="cardico">${ic('clock')}</div><div style="flex:1;min-width:180px"><b style="color:var(--navy)">เลยวันสอบที่ตั้งไว้แล้ว</b>
     <div class="muted" style="font-size:13px">${EXAM_LABEL} • ${thDate(ex)}</div></div></div></div>`;
 
   const st=srsStats();
@@ -1782,14 +2162,14 @@ function examPlanHTML(at){
   if(!fresh){ msg='ทำครบทุกข้อในคลังแล้ว 🎉 จากนี้โฟกัสที่การเคลียร์คิว Smart Review ให้หมดทุกวัน'; mcol='var(--ok)'; }
   else if(inBuffer){ msg=`เหลือ ${days} วัน — เข้าโหมดทบทวนแล้ว ไม่ควรเปิดข้อใหม่ ให้เคลียร์คิวทบทวนและทำ NL2 Simulator จับเวลา`; mcol='var(--gold-d)'; }
   else if(pace<=0){ msg=`ยังไม่มีข้อมูลจังหวะ — เริ่มทำวันละ ${need} ข้อ แล้วระบบจะเทียบให้เองว่าตามแผนหรือไม่`; mcol='var(--muted)'; }
-  else if(pace>=need){ msg=`ตามแผนอยู่ ✅ จังหวะปัจจุบัน ${pace} ข้อ/วัน มากกว่าที่ต้องการ (${need} ข้อ/วัน)`; mcol='var(--ok)'; }
+  else if(pace>=need){ msg=`ตามแผนอยู่ จังหวะปัจจุบัน ${pace} ข้อ/วัน มากกว่าที่ต้องการ (${need} ข้อ/วัน)`; mcol='var(--ok)'; }
   else { const gap=Math.ceil(need-pace);
          msg=`ช้ากว่าแผน — ต้องเพิ่มอีกวันละ ${gap} ข้อ ถ้ายังทำ ${pace} ข้อ/วันเท่าเดิม จะจบคลัง${finish?' '+thDate(finish):''} ซึ่งช้ากว่ากำหนด`; mcol='var(--bad)'; }
 
   const op=planOpen();
   return `<div class="wrap" style="padding-top:16px"><div class="card" style="border-left:5px solid var(--navy)">
     <div class="row" style="align-items:center;gap:14px;flex-wrap:nowrap;cursor:pointer" onclick="togglePlan()">
-      <div style="font-size:30px">🗓️</div>
+      <div class="cardico">${ic('clock')}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:22px;font-weight:800;color:var(--navy);line-height:1.1">อีก ${days} วัน</div>
         <div class="muted" style="font-size:13px">ถึงวันสอบ ${EXAM_LABEL} • ${thDate(ex)}${days>=7?` (~${Math.floor(days/7)} สัปดาห์)`:''}</div>
@@ -1828,14 +2208,14 @@ function markDailyDone(){ LS.set('dailyDone',dKey(new Date())); }
 function startDaily(){
   if(isDailyDone() && !confirm('วันนี้ทำข้อสอบประจำวันแล้ว ต้องการทำซ้ำไหม?')) return;
   const items=dailyItems(); if(!items.length){ alert('ยังไม่มีข้อสอบในระบบ'); return; }
-  const q={id:'daily', title:'📅 ข้อสอบประจำวัน '+dKey(new Date()), questions:items};
+  const q={id:'daily', title:'ข้อสอบประจำวัน '+dKey(new Date()), questions:items};
   showLoader('กำลังจัดข้อสอบประจำวัน...');
   setTimeout(()=>{ state.session=buildSession(q,{mode:'practice',count:'all',shuffleQ:false,shuffleO:true,timer:false}); persistSession(); hideLoader(); go('quiz'); },400);
 }
 function dailyCardHTML(){
   const done=isDailyDone();
   return `<div class="wrap" style="padding-top:16px"><div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-left:5px solid var(--teal)">
-    <div style="font-size:30px">📅</div>
+    <div class="cardico">${ic('flask')}</div>
     <div style="flex:1;min-width:180px"><div style="font-size:18px;font-weight:800;color:var(--navy);line-height:1.15">ข้อสอบประจำวัน</div>
       <div class="muted" style="font-size:13px">${DAILY_N} ข้อสุ่มจากคลัง • ทุกคนได้ชุดเดียวกัน${done?' • วันนี้ทำแล้ว ✅':''}</div></div>
     <button class="btn${done?' sec':''}" style="padding:8px 16px" onclick="startDaily()">${done?'ทำซ้ำ':'▶ เริ่มทำ'}</button>
@@ -1856,54 +2236,54 @@ async function reportQuestion(i){
       question_text:String(it.q||'').slice(0,800), correct_ans:it.ans, reason:reason||null
     });
     if(error) throw error;
-    if(btn){ btn.textContent='✅ ส่งรายงานแล้ว ขอบคุณ'; }
+    if(btn){ btn.textContent='ส่งรายงานแล้ว ขอบคุณ'; }
   }catch(e){
     console.warn('report error',e); alert('ส่งรายงานไม่สำเร็จ: '+(e.message||e));
-    if(btn){ btn.disabled=false; btn.textContent='🚩 รายงานข้อผิด'; }
+    if(btn){ btn.disabled=false; btn.textContent='รายงานข้อผิด'; }
   }
 }
 
-/* ---------- 💿 Saved Exam (บันทึกข้อไว้ทบทวน, localStorage) ---------- */
+/* ---------- Saved Exam (บันทึกข้อไว้ทบทวน, localStorage) ---------- */
 function savedQ(){ return LS.get('savedQuestions',[]); }
 function isSavedQ(key){ return savedQ().includes(key); }
 function toggleSavedQ(key,i){
   let a=savedQ(); const on=a.includes(key);
   a=on?a.filter(k=>k!==key):[...a,key]; LS.set('savedQuestions',a);
   const b=document.getElementById('sv'+i);
-  if(b){ if(on){ b.classList.add('sec'); b.innerHTML='💿 Save'; } else { b.classList.remove('sec'); b.innerHTML='💿 Saved'; } }
+  if(b){ if(on){ b.classList.add('sec'); b.innerHTML='Save'; } else { b.classList.remove('sec'); b.innerHTML='Saved'; } }
 }
 function savedQItems(){ const idx=QIDX(); return savedQ().map(k=>idx[k]&&idx[k].q).filter(Boolean); }
 function unsaveFromList(k){ LS.set('savedQuestions', savedQ().filter(x=>x!==k)); render(); }
 function startSaved(){ const qs=savedQItems(); if(!qs.length){ alert('ยังไม่มีข้อที่บันทึก'); return; }
-  window.__saved={id:'saved',title:'💿 Saved Exam',subject:'past',questions:qs}; go('config',{quiz:'saved'}); }
+  window.__saved={id:'saved',title:'Saved Exam',subject:'past',questions:qs}; go('config',{quiz:'saved'}); }
 function renderSaved(app){
   const idx=QIDX(); const keys=savedQ(); const items=keys.map(k=>({k,rec:idx[k]})).filter(x=>x.rec);
   app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
-    <div class="row"><b class="qtitle" style="font-size:20px">💿 Saved Exam</b><span style="flex:1"></span>
+    <div class="row"><b class="qtitle" style="font-size:20px">Saved Exam</b><span style="flex:1"></span>
       ${items.length?`<button class="btn sm" onclick="startSaved()">▶ เริ่มทบทวน (${items.length})</button>`:''}</div>
     <div class="muted" style="margin-top:6px">ข้อที่กดบันทึกไว้ อยากกลับมาทบทวน แม้ตอบถูกหรือเดาถูก</div>
     ${items.length?`<div style="margin-top:12px">${items.map(x=>{ const r=x.rec; const t=(r.q&&r.q.q)||''; return `<div class="card" style="margin-bottom:10px;border-left:4px solid var(--gold)">
         <div class="muted" style="font-size:12px">${esc(r.quizTitle||'-')} • ${esc(r.topic||'-')}</div>
         <div class="stem" style="margin-top:6px;font-size:15px">${esc(t.slice(0,220))}${t.length>220?'…':''}</div>
-        <div class="row" style="margin-top:8px"><button class="btn sm sec" style="padding:3px 10px" onclick="unsaveFromList('${x.k}')">🗑 เอาออก</button></div>
+        <div class="row" style="margin-top:8px"><button class="btn sm sec" style="padding:3px 10px" onclick="unsaveFromList('${x.k}')">เอาออก</button></div>
       </div>`; }).join('')}</div>`
-      :`<div class="card" style="margin-top:12px"><div class="muted">ยังไม่มีข้อที่บันทึก — ระหว่างทำข้อสอบ กดปุ่ม 💿 Save ข้างเลขข้อ</div></div>`}
-    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div>
+      :`<div class="card" style="margin-top:12px"><div class="muted">ยังไม่มีข้อที่บันทึก — ระหว่างทำข้อสอบ กดปุ่ม Save ข้างเลขข้อ</div></div>`}
+    <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
   </div></div>`;
 }
 
 /* ---------- กล่องรายงาน (เฉพาะแอดมิน) ---------- */
 async function renderReports(app){
   if(!isAdmin()){
-    app.innerHTML=`<div class="wrap" style="padding-top:26px"><div class="card"><b class="qtitle" style="font-size:19px">🔒 เฉพาะแอดมิน</b>
+    app.innerHTML=`<div class="wrap" style="padding-top:26px"><div class="card"><b class="qtitle" style="font-size:19px">เฉพาะแอดมิน</b>
       <div class="muted" style="margin-top:6px">หน้านี้สำหรับผู้ดูแลระบบเท่านั้น</div>
-      <div class="row" style="margin-top:14px"><button class="btn sec" onclick="go('home')">🏠 หน้าแรก</button></div></div></div>`; return;
+      <div class="row" style="margin-top:14px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div></div></div>`; return;
   }
   const filt = state.repFilter||'open';
   const chip=(id,label)=>`<button class="btn sm ${filt===id?'':'sec'}" onclick="go('reports',{repFilter:'${id}'})">${label}</button>`;
   app.innerHTML=`<div class="wrap" style="padding-top:26px"><div class="card">
-    <div class="row"><b class="qtitle" style="font-size:20px">📮 กล่องรายงานข้อผิด</b><span style="flex:1"></span>
-      ${chip('open','⏳ รอจัดการ')} ${chip('fixed','✅ แก้แล้ว')} ${chip('dismissed','🗑 ปิดแล้ว')} ${chip('all','ทั้งหมด')}
+    <div class="row"><b class="qtitle" style="font-size:20px">กล่องรายงานข้อผิด</b><span style="flex:1"></span>
+      ${chip('open','⏳ รอจัดการ')} ${chip('fixed','แก้แล้ว')} ${chip('dismissed','ปิดแล้ว')} ${chip('all','ทั้งหมด')}
       <button class="btn sm sec" onclick="render()" title="รีเฟรช">↻</button></div>
     <div id="repList" style="margin-top:14px"><div class="muted">กำลังโหลด...</div></div>
   </div></div>`;
@@ -1917,16 +2297,16 @@ async function renderReports(app){
     box.innerHTML=data.map(r=>{
       const when=new Date(r.created_at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
       const badge = r.status==='open'?'<span class="badge" style="background:var(--goldbg);color:var(--gold-d)">⏳ รอจัดการ</span>'
-                  : r.status==='fixed'?'<span class="badge" style="background:#e6f7ef;color:#0a7a4a">✅ แก้แล้ว</span>'
-                  : '<span class="badge" style="background:#eee;color:#777">🗑 ปิดแล้ว</span>';
+                  : r.status==='fixed'?'<span class="badge" style="background:var(--okbg);color:var(--ok)">แก้แล้ว</span>'
+                  : '<span class="badge" style="background:var(--paper2);color:var(--muted)">ปิดแล้ว</span>';
       return `<div class="card" style="margin-bottom:10px;border-left:4px solid var(--teal)">
         <div class="row" style="gap:8px;align-items:center">${badge}<span class="muted" style="font-size:12px">${esc(when)} • ${esc(r.user_email||'-')}</span></div>
         <div class="stem" style="margin-top:8px;font-size:15px">${esc(r.question_text||'(ไม่มีข้อความโจทย์)')}</div>
         <div class="muted" style="margin-top:6px;font-size:13px"><b style="color:var(--bad)">เหตุผล:</b> ${esc(r.reason||'—')}</div>
         <div class="muted" style="margin-top:4px;font-size:12px">เฉลยปัจจุบัน: <b>${r.correct_ans!=null?LAB[r.correct_ans]:'?'}</b> • ชุด: ${esc(r.set_id||'-')} • qkey: <code>${esc(r.qkey||'-')}</code></div>
         <div class="row" style="margin-top:10px;gap:6px">
-          ${r.status!=='fixed'?`<button class="btn sm" style="padding:4px 12px" onclick="setReportStatus('${r.id}','fixed')">✅ ทำเครื่องหมายว่าแก้แล้ว</button>`:''}
-          ${r.status!=='dismissed'?`<button class="btn sm sec" style="padding:4px 12px" onclick="setReportStatus('${r.id}','dismissed')">🗑 ปิด</button>`:''}
+          ${r.status!=='fixed'?`<button class="btn sm" style="padding:4px 12px" onclick="setReportStatus('${r.id}','fixed')">ทำเครื่องหมายว่าแก้แล้ว</button>`:''}
+          ${r.status!=='dismissed'?`<button class="btn sm sec" style="padding:4px 12px" onclick="setReportStatus('${r.id}','dismissed')">ปิด</button>`:''}
           ${r.status!=='open'?`<button class="btn sm sec" style="padding:4px 12px" onclick="setReportStatus('${r.id}','open')">↩ กลับเป็นรอจัดการ</button>`:''}
         </div></div>`;
     }).join('');
@@ -1950,7 +2330,7 @@ function srsMap(){ return LS.get('srs',{}); }
 function gradeAnswer(session,i,med){
   const it=session.items[i], ans=session.answers[i];
   if(ans!==it.ans) return 'again';
-  if(session.flags && session.flags[i]) return 'hard';          // 🚩 ผู้ใช้บอกเองว่าไม่ชัวร์
+  if(session.flags && session.flags[i]) return 'hard';          // ผู้ใช้บอกเองว่าไม่ชัวร์
   const t=session.times ? session.times[i] : null;
   if(med && typeof t==='number' && t > med*2) return 'hard';    // ช้ากว่า median ตัวเอง 2 เท่า
   return 'good';
@@ -1975,7 +2355,7 @@ function updateSRS(session){ const m=srsMap(), now=Date.now(), IV=[0,1,3,7,16,35
   invalidateAnalytics();
 }
 
-/* ---------- 🔁 Smart Review hub — ทำให้ SRS "มองเห็นได้" ----------
+/* ---------- Smart Review hub — ทำให้ SRS "มองเห็นได้" ----------
    เดิมมีเครื่องยนต์ Leitner อยู่แล้ว แต่ผู้ใช้ไม่มีทางรู้ว่าวันนี้ค้างกี่ข้อ
    ถ้าไม่กดเข้าไปเดา ส่วนนี้จึงเป็นชั้นแสดงผล + ตัวนับบนแถบเมนู          */
 let __ana=null, __dueCache=null;
@@ -2017,17 +2397,19 @@ async function srsQueueKeys(){
 }
 async function updateReviewBadge(){
   const el=document.getElementById('revDue'); if(!el)return;
+  const tb=document.getElementById('tbDue');
   try{
     if(__dueCache===null) __dueCache=(await srsQueueKeys()).length;
-    el.textContent=__dueCache>99?'99+':__dueCache;
-    el.classList.toggle('on', __dueCache>0);
-  }catch(e){ el.classList.remove('on'); }
+    const txt=__dueCache>99?'99+':String(__dueCache);
+    el.textContent=txt; el.classList.toggle('on', __dueCache>0);
+    if(tb){ tb.textContent=txt; tb.style.display=__dueCache>0?'':'none'; }
+  }catch(e){ el.classList.remove('on'); if(tb)tb.style.display='none'; }
 }
 async function renderReview(app){
   const st=srsStats();
   app.innerHTML=`<div class="wrap" style="padding-top:18px">
     <div class="row" style="margin-bottom:10px;align-items:center">
-      <b class="qtitle" style="font-size:20px">🔁 Smart Review</b>
+      <b class="qtitle" style="font-size:20px">Smart Review</b>
       <span class="badge">spaced repetition</span><span style="flex:1"></span>
       <button class="btn sec" onclick="goBack()">↩ กลับ</button></div>
     <div class="card"><div class="muted">กำลังคำนวณคิวทบทวน...</div></div></div>`;
@@ -2053,7 +2435,7 @@ async function renderReview(app){
       <span class="lb">${i===0?'วันนี้':dn[d.getDay()]+' '+d.getDate()}</span></div>`; }).join('');
   app.innerHTML=`<div class="wrap" style="padding-top:18px">
    <div class="row" style="margin-bottom:10px;align-items:center">
-     <b class="qtitle" style="font-size:20px">🔁 Smart Review</b>
+     <b class="qtitle" style="font-size:20px">Smart Review</b>
      <span class="badge">spaced repetition</span><span style="flex:1"></span>
      <button class="btn sec" onclick="goBack()">↩ กลับ</button></div>
 
@@ -2065,7 +2447,7 @@ async function renderReview(app){
          ${queue.length
            ? `<button class="btn" style="font-size:17px;padding:12px 22px" onclick="startMistakes()">▶ เริ่มทบทวน ${queue.length} ข้อ</button>
               <div class="muted" style="margin-top:8px;font-size:14px">เรียงข้อที่อ่อนที่สุดขึ้นก่อน (กล่องต่ำ → ค้างนานสุด)</div>`
-           : `<div class="warn" style="margin:0">🎉 เคลียร์คิวหมดแล้ว — ไปทำชุดใหม่เพื่อเติมข้อเข้าระบบทบทวนได้เลย</div>`}
+           : `<div class="warn" style="margin:0">เคลียร์คิวหมดแล้ว — ไปทำชุดใหม่เพื่อเติมข้อเข้าระบบทบทวนได้เลย</div>`}
        </div>
      </div>
      <div class="srs-mini">
@@ -2086,7 +2468,7 @@ async function renderReview(app){
 
    <div class="card">
      <b style="color:var(--navy)">ขั้นความจำ (Leitner)</b>
-     <div class="muted" style="font-size:14px;margin:4px 0 10px">ตอบถูกแบบมั่นใจ = เลื่อนขึ้นกล่อง • ตอบผิด = ตกกลับกล่อง 1 • ถูกแบบไม่มั่นใจ (ติดธง 🚩 หรือใช้เวลานานผิดปกติ) = ค้างที่เดิมและกลับมาเร็วขึ้น</div>
+     <div class="muted" style="font-size:14px;margin:4px 0 10px">ตอบถูกแบบมั่นใจ = เลื่อนขึ้นกล่อง • ตอบผิด = ตกกลับกล่อง 1 • ถูกแบบไม่มั่นใจ (ติดธง หรือใช้เวลานานผิดปกติ) = ค้างที่เดิมและกลับมาเร็วขึ้น</div>
      <div class="ladder">${ladder}</div>
    </div>
 
