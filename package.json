@@ -4,7 +4,13 @@
   "description": "เว็บทำข้อสอบ NL2 พร้อมเฉลยไทยละเอียดและบันทึกคะแนนรายคน ต้องเข้าสู่ระบบก่อนทำข้อสอบ คลังข้อสอบหลักอยู่บน Supabase โดยมี data.js เป็นตัวสำรอง",
   "main": "config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-data": "node build-data.mjs",
+    "build-data:dry": "node build-data.mjs --dry-run",
+    "mirror-images": "node mirror-images.mjs",
+    "mirror-images:dry": "node mirror-images.mjs --dry-run",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check": "node check.mjs",
+    "check:full": "node check.mjs --full"
   },
   "keywords": [],
   "author": "",
