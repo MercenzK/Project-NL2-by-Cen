@@ -3,6 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ══ Content-Security-Policy ══════════════════════════════════════════════
+     GitHub Pages ตั้ง HTTP header เองไม่ได้ จึงประกาศผ่าน <meta> แทน
+     ทำหน้าที่เป็นด่านสุดท้าย: ต่อให้มีช่อง XSS หลุดมา สคริปต์แปลกปลอมก็รันไม่ได้
+     และข้อมูลก็ถูกส่งออกไปโดเมนอื่นไม่ได้
+
+     'unsafe-inline' ของ script ยังจำเป็นอยู่ เพราะโค้ดใช้ onclick= ใน HTML
+     และมีสคริปต์ตั้งธีมแบบ inline ที่ต้องรันก่อนวาดหน้า
+     ถ้าจะรัดกุมกว่านี้ต้องเลิกใช้ onclick แล้วผูก event ด้วย addEventListener ทั้งหมด
+     ══════════════════════════════════════════════════════════════════════ -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data: https://cnbpycjepfsjjizhohtm.supabase.co https://cdn.jsdelivr.net;
+  connect-src 'self' https://cnbpycjepfsjjizhohtm.supabase.co wss://cnbpycjepfsjjizhohtm.supabase.co;
+  frame-src 'self';
+  form-action 'none';
+  base-uri 'self';
+  object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>NL2 Med Quiz — คลังข้อสอบแพทย์</title>
 <meta name="description" content="คลังข้อสอบ NL2 (ศรว. ขั้นที่ 2) พร้อมเฉลยภาษาไทยละเอียด, NL2 Simulator ตาม blueprint แพทยสภา, ทบทวนข้อที่ผิดแบบ spaced repetition และวิเคราะห์จุดอ่อนรายระบบ">
 <link rel="icon" href="icon-192.png">

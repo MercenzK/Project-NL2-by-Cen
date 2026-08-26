@@ -348,7 +348,7 @@ function openProfile(){
     msg.innerHTML='<div class="muted">กำลังบันทึก...</div>';
     if(CLOUD && user){
       const {data,error}=await supa.auth.updateUser({data:{username:name}});
-      if(error){ msg.innerHTML='<div class="err">'+error.message+'</div>'; return; }
+      if(error){ msg.innerHTML='<div class="err">'+esc(error.message)+'</div>'; return; }
       user=data.user;
     } else { LS.set('guestName',name); }
     bg.remove(); renderTopbar(); render();
@@ -374,7 +374,7 @@ function openAuth(){
       if(!CLOUD){ msg.innerHTML='<div class="err">ยังไม่ได้ตั้งค่า Supabase (ดู README)</div>'; return; }
       msg.innerHTML='<div class="muted">กำลังไปหน้า Google...</div>';
       const {error}=await supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,queryParams:{hd:'up.ac.th',prompt:'select_account'}}});
-      if(error){ msg.innerHTML='<div class="err">'+error.message+'</div>'; }
+      if(error){ msg.innerHTML='<div class="err">'+esc(error.message)+'</div>'; }
     };
     bg.querySelector('#closeBtn').onclick=()=>bg.remove();
     bg.querySelector('#goBtn').onclick=async()=>{
@@ -458,6 +458,11 @@ function syncHash(replace){
 }
 /* อ่าน hash แล้วพาไปหน้านั้น (ใช้ตอนเปิดลิงก์ตรง / กดปุ่มย้อนกลับ) */
 function applyHash(){
+  /* ล็อกอินด้วย Google จะเด้งกลับมาพร้อม hash ที่เป็นโทเคน เช่น
+     #access_token=...&refresh_token=... ซึ่งไม่ใช่เส้นทางของเรา
+     ปล่อยให้ supabase-js จัดการเอง อย่าไปแตะและอย่า render ทับ
+     (ถ้าไม่กันไว้ จะถูกตีความเป็นเส้นทางที่ไม่รู้จักแล้วเด้งกลับหน้าแรกระหว่างล็อกอิน) */
+  if(location.hash && !location.hash.startsWith('#/')) return;
   const raw=(location.hash||'').replace(/^#\/?/,'');
   const parts=raw.split('/').filter(Boolean).map(decodeURIComponent);
   const seg=parts[0]||'';
@@ -2279,7 +2284,7 @@ if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null;
   await refreshUser();    /* ตัวนี้เรียก renderTopbar()+render() ให้ตอนจบอยู่แล้ว */
   /* เปิดลิงก์ตรง เช่น .../#/quiz/nl2-2024 → พาไปหน้านั้นเลย
      ต้องทำหลังคลังข้อสอบโหลดเสร็จ ไม่งั้นหาชุดไม่เจอ */
-  if(location.hash && location.hash!=='#/') applyHash();
+  if(location.hash.startsWith('#/') && location.hash!=='#/') applyHash();
   else syncHash(true);    /* ไม่มี hash → เขียน #/ ให้เรียบร้อยโดยไม่ถมประวัติ */
 })();
 /* โหลดคลังไม่ได้เลย — บอกให้ชัดว่าเกิดอะไรและทำอะไรได้บ้าง ดีกว่าโชว์หน้าเปล่า ๆ */

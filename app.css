@@ -299,8 +299,23 @@ section{padding:var(--sp-5) 0}
 .monitor .stat:first-child .n{color:var(--accent)}
 .monitor .stat .l{font-size:12px;color:var(--ink-3);margin-top:4px}
 .monitor .msg{background:var(--accent-w);border-left:3px solid var(--accent);padding:11px 15px;
-  border-radius:0 var(--r) var(--r) 0;margin-top:var(--s4);font-size:14px;color:var(--ink-2);line-height:1.6}
-.monitor .ecg{display:none}
+  border-radius:0 var(--r) var(--r) 0;margin-top:var(--s4);font-size:14px;color:var(--ink-2);line-height:1.6;
+  position:relative;z-index:1}
+/* เส้น ECG วิ่งมุมขวาล่างของการ์ด เหมือน index เดิม
+   ปรับให้เข้ากับพื้นกระดาษ: ใช้สีเน้นแทนเขียวเรืองแสง และลดความทึบลง
+   ให้เป็นลายพื้นหลัง ไม่ใช่ของที่แย่งสายตากับตัวเลข */
+.monitor .ecg{display:block;position:absolute;right:-8px;bottom:6px;
+  width:300px;height:80px;opacity:.16;pointer-events:none;z-index:0}
+.monitor .ecg path{fill:none;stroke:var(--accent);stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+  stroke-dasharray:900;stroke-dashoffset:900;animation:ecgsweep 3.6s linear infinite}
+html[data-theme="dark"] .monitor .ecg{opacity:.26}
+/* ตัวเลขกับหัวข้อต้องลอยเหนือเส้นเสมอ */
+.monitor h3,.monitor .stats,.monitor > .muted{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){
+  .monitor .ecg path{animation:none!important;stroke-dashoffset:0!important}
+}
+@media(max-width:640px){ .monitor .ecg{display:none} }
 
 /* generic cards for quiz/result/history */
 .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);
