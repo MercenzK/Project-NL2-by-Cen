@@ -301,11 +301,13 @@ section{padding:var(--sp-5) 0}
 .monitor .msg{background:var(--accent-w);border-left:3px solid var(--accent);padding:11px 15px;
   border-radius:0 var(--r) var(--r) 0;margin-top:var(--s4);font-size:14px;color:var(--ink-2);line-height:1.6;
   position:relative;z-index:1}
-/* เส้น ECG วิ่งมุมขวาล่างของการ์ด เหมือน index เดิม
+/* เส้น ECG วิ่งในการ์ด — วางมุมขวา "บน" ซึ่งเป็นพื้นที่ว่างจริง ๆ
+   (เดิมวางมุมขวาล่างเหมือน index เก่า แต่ดีไซน์ใหม่มีกล่องข้อความยาวเต็มความกว้าง
+    อยู่ตรงนั้น เส้นเลยโดนบังเกือบหมด)
    ปรับให้เข้ากับพื้นกระดาษ: ใช้สีเน้นแทนเขียวเรืองแสง และลดความทึบลง
    ให้เป็นลายพื้นหลัง ไม่ใช่ของที่แย่งสายตากับตัวเลข */
-.monitor .ecg{display:block;position:absolute;right:-8px;bottom:6px;
-  width:300px;height:80px;opacity:.16;pointer-events:none;z-index:0}
+.monitor .ecg{display:block;position:absolute;right:var(--s5);top:var(--s5);
+  width:min(46%,440px);height:96px;opacity:.18;pointer-events:none;z-index:0}
 .monitor .ecg path{fill:none;stroke:var(--accent);stroke-width:2.5;
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   stroke-dasharray:900;stroke-dashoffset:900;animation:ecgsweep 3.6s linear infinite}
