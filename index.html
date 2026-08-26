@@ -31,6 +31,10 @@
      เป็น "สีของแบรนด์" จริง ๆ ตอนนี้เหลือเขียวหัวเป็ดเข้มตัวเดียว
      #0d7c6e คอนทราสต์ 4.9:1 บนพื้นขาว จึงใช้เป็นตัวอักษรได้ตามเกณฑ์ AA */
   --accent:#0d7c6e; --accent-h:#0a655a; --accent-w:#eefaf7; --accent-l:#c3ebe3;
+  /* สีตัวอักษรบนพื้นสีเน้น — ต้องเป็นโทเคน ไม่ใช่กฎ html[data-theme="dark"] .btn
+     เพราะกฎแบบนั้นมี specificity สูงกว่า .btn.outline แล้วไปทับสีตัวอักษร
+     ของปุ่มรองจนกลืนหายไปกับพื้นในโหมดมืด */
+  --on-accent:#ffffff;
   /* ── พื้นผิว 4 ขั้น ── */
   --bg:#fafafa; --paper:#ffffff; --sunken:#f4f5f7; --hover:#eef0f3;
   /* ── หมึก 3 ขั้น (ทุกขั้นผ่าน 4.5:1 บนพื้นขาว) ── */
@@ -97,7 +101,7 @@ a{color:var(--accent);text-decoration:none}
 /* ---------- header — พื้นอ่อน เส้นคั่นบาง ๆ แทนแถบน้ำเงินทึบ ---------- */
 header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.86);
   backdrop-filter:saturate(180%) blur(14px);color:var(--ink);border-bottom:1px solid var(--line)}
-html[data-theme="dark"] header{background:rgba(13,20,28,.86)}
+html[data-theme="dark"] header{background:rgba(12,17,22,.86)}
 .hbar{max-width:1040px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:12px}
 .logo{display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:700;font-size:16px;
   letter-spacing:-.02em;color:var(--ink);flex:none}
@@ -147,7 +151,7 @@ html[data-theme="dark"] .lg-fg{stroke:#08201d}
 #tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;
   background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(14px);
   border-top:1px solid var(--line);padding:5px 4px calc(5px + env(safe-area-inset-bottom))}
-html[data-theme="dark"] #tabbar{background:rgba(13,20,28,.94)}
+html[data-theme="dark"] #tabbar{background:rgba(12,17,22,.94)}
 #tabbar .tb{display:flex;max-width:560px;margin:0 auto}
 #tabbar button{flex:1;background:none;border:none;font-family:inherit;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px 4px;
@@ -168,11 +172,10 @@ html[data-theme="dark"] #tabbar{background:rgba(13,20,28,.94)}
 }
 /* ปุ่ม — ความสูงคงที่ 42px ทุกตัว (แตะง่ายและเรียงกันตรง) ไม่มีเงา ไม่มีสีทอง
    มี 4 ระดับพอ: หลัก (accent) / รอง (ขอบ) / เงียบ (โปร่ง) / อันตราย         */
-.btn{background:var(--accent);color:#fff;border:1px solid transparent;border-radius:var(--r);
+.btn{background:var(--accent);color:var(--on-accent);border:1px solid transparent;border-radius:var(--r);
   height:42px;padding:0 18px;font-weight:600;cursor:pointer;font-size:15px;font-family:inherit;
   line-height:1;transition:background .15s var(--ease),border-color .15s var(--ease),opacity .15s;
   display:inline-flex;align-items:center;justify-content:center;gap:8px}
-html[data-theme="dark"] .btn{color:#06201c}
 .btn:hover{background:var(--accent-h)}
 .btn:active{transform:translateY(1px)}
 /* .outline / .sec / .gold ในโค้ดเดิมยุบเหลือหน้าตาเดียวกันคือ "ปุ่มรอง"
@@ -200,7 +203,26 @@ html[data-theme="dark"] .btn{color:#06201c}
   letter-spacing:-.03em;font-weight:700}
 .hero p{font-size:17px;color:var(--ink-2);margin:0 0 var(--s5);font-weight:400;
   max-width:58ch;line-height:1.6}
-.greet{font-size:13px;color:var(--ink-3);margin-bottom:6px}
+/* บรรทัดทักทาย + นับถอยหลัง แล้วต่อด้วยเส้น ECG วิ่งไปจนสุดความกว้าง
+   ย้ายมาจาก hero เดิมที่เส้นพาดเต็มความกว้างแถบไล่สี — ตอนนี้เป็นรายละเอียดเล็ก ๆ
+   ที่ให้กลิ่นอายเครื่องมือแพทย์โดยไม่กินพื้นที่และไม่แย่งสายตาจากตัวเลข */
+.greet{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--ink-3);margin-bottom:8px}
+.greet > span{flex:none}
+.ecgline{flex:1;min-width:70px;height:24px;display:block}
+.ecgline path{fill:none;stroke:var(--accent);stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.6;vector-effect:non-scaling-stroke;
+  stroke-dasharray:760;stroke-dashoffset:760;animation:ecgsweep 5.5s linear infinite}
+@keyframes ecgsweep{
+  0%{stroke-dashoffset:760}
+  55%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:-760}
+}
+/* ปิดการเคลื่อนไหวให้คนที่ตั้งค่าไว้ และต้องคงเส้นให้เห็นเต็ม ๆ
+   (กฎ reduced-motion รวมด้านล่างจะทำให้อนิเมชันจบที่เฟรมสุดท้าย = เส้นหายไป) */
+@media(prefers-reduced-motion:reduce){
+  .ecgline path{animation:none!important;stroke-dashoffset:0!important;opacity:.45}
+}
+@media(max-width:640px){ .ecgline{display:none} }
 /* แถบตัวเลขสถานะ — 4 ตัวที่ทำให้ตัดสินใจได้ทันทีว่าจะทำอะไรต่อ */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
@@ -529,6 +551,7 @@ footer .copy{border-top:1px solid var(--line);margin-top:var(--sp-4);padding-top
 html[data-theme="dark"]{
   color-scheme:dark;
   --accent:#3ecdb8; --accent-h:#5cdcc9; --accent-w:#0e2b28; --accent-l:#1d4c46;
+  --on-accent:#06201c;
   --bg:#0c1116; --paper:#141b22; --sunken:#1b242d; --hover:#212c37;
   --ink:#e9eef4; --ink-2:#aebbc8; --ink-3:#8595a4;
   --line:#323e4c; --line-2:#577087;   /* ผ่าน 3:1 บนพื้นทั้ง 3 ระดับของโหมดมืด */
@@ -674,9 +697,9 @@ tr.hrow:hover td{background:var(--paper2)}
 </style>
 <script>
 (function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0d141c':'#ffffff');}catch(e){}})();
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0c1116':'#ffffff');}catch(e){}})();
 function toggleTheme(){var d=document.documentElement;var t=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=t;try{localStorage.setItem('theme',t);}catch(e){}
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0d141c':'#ffffff');
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0c1116':'#ffffff');
   if(window.setThemeIcon)setThemeIcon();}
 /* ---- PWA: service worker + install prompt ---- */
 if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
@@ -1457,7 +1480,17 @@ async function renderHome(app){
   ${LIB_MISSING?`<div class="wrap" style="padding-top:16px"><div class="warn"><b style="color:var(--bad)">โหลดระบบล็อกอินไม่สำเร็จ</b><div class="muted">ตั้งค่า Supabase ครบแล้ว แต่เบราว์เซอร์โหลดไลบรารีไม่ได้ (มักโดนตัวบล็อกโฆษณา/เครือข่ายบล็อก CDN) — ปิดตัวบล็อกโฆษณาสำหรับเว็บนี้แล้วรีเฟรช หรือลองเบราว์เซอร์/เน็ตอื่น. ระหว่างนี้ยังทำข้อสอบได้แบบ Guest</div></div></div>`:''}
 
   <div class="hero"><div class="wrap">
-    <div class="greet">${thaiToday()}${examDaysLeftText()}</div>
+    <div class="greet">
+      <span>${thaiToday()}${examDaysLeftText()}</span>
+      <svg class="ecgline" viewBox="0 0 600 28" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0,14 H30 C34,14 36,9 40,9 C44,9 46,14 50,14 H68 L72,14 L76,3 L82,25 L88,8 L92,14
+                 H110 C116,14 120,7 126,7 C132,7 136,14 142,14
+                 H230 C234,14 236,9 240,9 C244,9 246,14 250,14 H268 L272,14 L276,3 L282,25 L288,8 L292,14
+                 H310 C316,14 320,7 326,7 C332,7 336,14 342,14
+                 H430 C434,14 436,9 440,9 C444,9 446,14 450,14 H468 L472,14 L476,3 L482,25 L488,8 L492,14
+                 H510 C516,14 520,7 526,7 C532,7 536,14 542,14 H600"/>
+      </svg>
+    </div>
     <h1>${at.length?'กลับมาต่อจากเดิมได้เลย':'เริ่มข้อแรกกันเลย'}</h1>
     ${homeMetricsHTML({at,totalQ,totalDone,weekDone,avg})}
     <div class="cta">
@@ -1515,7 +1548,7 @@ async function renderHome(app){
     <section>
       <div class="monitor">
         <h3>ความคืบหน้าของคุณ</h3>
-        <div class="muted" style="color:rgba(255,255,255,.62)">${CLOUD&&user?'สวัสดี '+esc(displayName())+' 👋':'เก็บในเครื่องนี้ (Guest)'}</div>
+        <div class="muted" style="font-size:13px">${CLOUD&&user?'สวัสดี '+esc(displayName()):'เก็บในเครื่องนี้ (โหมด Guest)'}</div>
         <div class="stats">
           <div class="stat"><div class="n">${weekDone}</div><div class="l">ข้อ (7 วันล่าสุด)</div></div>
           <div class="stat"><div class="n">${totalDone}</div><div class="l">ข้อทั้งหมด</div></div>
