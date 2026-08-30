@@ -668,9 +668,13 @@ function hideLoader(){ document.getElementById('loader').style.display='none'; }
 /* หน้าที่ต้อง "มองเห็นทั้งคลัง" ถึงจะคำนวณได้ถูก — ทบทวน จุดอ่อน ความพร้อม
    ตามระบบ จำลองสอบ ที่บันทึกไว้ สถิติ ดูย้อนหลัง
    หน้าแรก/หมวดวิชา ไม่อยู่ในนี้ เพราะใช้แค่ตัวเลขจากสารบัญก็พอ */
+let __dataFailed=false;   /* โหลดสารบัญข้อสอบไม่สำเร็จ — ใช้กันไม่ให้ render() วาดหน้าเปล่าทับข้อความบอกสาเหตุ */
 const VIEWS_NEED_ALL = new Set(['review','weakness','readiness','systems','simconfig','saved','history','attempt']);
 async function render(){
   const app=document.getElementById('app');
+  /* โหลดคลังไม่สำเร็จ → คงข้อความบอกสาเหตุไว้เสมอ อย่าวาดหน้าแรกที่ว่างเปล่าทับ
+     (การล็อกอินสำเร็จจะยิง render() ตามมาทีหลัง ถ้าไม่กันตรงนี้ข้อความจะหายไป) */
+  if(__dataFailed || !(window.QUIZ_DATA||[]).length){ __bootFailedNotice(); return; }
   if(VIEWS_NEED_ALL.has(state.view)) await needAllSets();
   /* หน้าตั้งค่าก่อนเริ่มทำ ต้องมีข้อสอบชุดนั้นจริง ๆ ถึงจะบอกจำนวนข้อ/สุ่มได้ */
   if(state.view==='config' && state.quiz) await ensureSet(state.quiz);
@@ -2308,16 +2312,32 @@ if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null;
   prefetchSets();
 })();
 /* โหลดคลังไม่ได้ — บอกให้ชัดว่าเกิดอะไรและทำอะไรต่อได้ ดีกว่าโชว์หน้าเปล่า ๆ
-   เว็บนี้ต้องใช้เน็ต จึงไม่มีทางเลือกสำรองในเครื่องแล้ว                       */
+
+   หมายเหตุสำคัญ: ตัวฟังก์ชันนี้เขียนทับ #app ตรง ๆ แต่ onAuthStateChange
+   ของ Supabase จะยิง render() ตามมาทีหลังแล้วลบข้อความนี้ทิ้ง จนกลายเป็น
+   หน้าแรกที่ว่างเปล่าโดยไม่บอกสาเหตุ — จึงต้องมีธง __dataFailed ให้ render()
+   เช็คด้วย (ดูต้นฟังก์ชัน render) ไม่ใช่พึ่งการเขียน innerHTML อย่างเดียว     */
 function __bootFailedNotice(){
+  __dataFailed=true;
   const app=document.getElementById('app'); if(!app)return;
   const offline = navigator.onLine===false;
+  const isFile  = location.protocol==='file:';
   app.innerHTML=`<div class="wrap" style="padding-top:var(--s7)"><div class="warn">
-    <b style="color:var(--no)">${offline?'ตอนนี้ไม่ได้ต่ออินเทอร์เน็ต':'ยังโหลดคลังข้อสอบไม่ได้'}</b>
-    <div class="muted" style="margin-top:6px;line-height:1.7">
-      ${offline
+    <b style="color:var(--no)">${
+      isFile ? 'เปิดไฟล์ตรง ๆ จะโหลดข้อสอบไม่ได้'
+             : offline ? 'ตอนนี้ไม่ได้ต่ออินเทอร์เน็ต' : 'ยังโหลดคลังข้อสอบไม่ได้'}</b>
+    <div class="muted" style="margin-top:6px;line-height:1.75">
+      ${isFile
+        ? 'ตอนนี้เปิดด้วย <code>file://</code> ซึ่งเบราว์เซอร์ห้ามอ่านไฟล์ใน <code>data/</code> ด้วยเหตุผลด้านความปลอดภัย '
+          +'ถ้าจะทดสอบในเครื่อง ให้เปิดผ่านเซิร์ฟเวอร์เล็ก ๆ แทน — เปิด Terminal แล้วพิมพ์:<br>'
+          +'<code style="display:inline-block;margin-top:8px;padding:6px 10px;background:var(--sunken);border-radius:6px">'
+          +'cd &quot;โฟลเดอร์ Website&quot; แล้ว python3 -m http.server 8000</code><br>'
+          +'จากนั้นเปิด <code>http://localhost:8000</code>'
+        : offline
         ? 'เว็บนี้ต้องใช้เน็ตในการดึงข้อสอบ ต่อ Wi-Fi หรือเปิดเน็ตมือถือแล้วลองใหม่อีกครั้ง'
-        : 'อาจเป็นเพราะเน็ตไม่เสถียร ตัวบล็อกโฆษณากันการเชื่อมต่อไว้ หรือเซิร์ฟเวอร์กำลังมีปัญหา — ลองรีเฟรชอีกครั้ง'}
+        : 'หาไฟล์ <code>data/index.json</code> ไม่เจอ หรือเน็ตมีปัญหา<br>'
+          +'ถ้าเพิ่งอัปเว็บขึ้น GitHub ให้ตรวจว่าอัปโฟลเดอร์ <code>data/</code> ขึ้นไปด้วยแล้วหรือยัง '
+          +'(รัน <code>npm run build-data</code> เพื่อสร้าง)'}
     </div>
     <button class="btn" style="margin-top:var(--s4)" onclick="location.reload()">ลองใหม่</button>
   </div></div>`;
