@@ -1,7 +1,7 @@
 {
   "name": "website",
   "version": "1.0.0",
-  "description": "เว็บทำข้อสอบ NL2 พร้อมเฉลยไทยละเอียดและบันทึกคะแนนรายคน ต้องเข้าสู่ระบบก่อนทำข้อสอบ คลังข้อสอบหลักอยู่บน Supabase โดยมี data.js เป็นตัวสำรอง",
+  "description": "เว็บทำข้อสอบ NL2 พร้อมเฉลยไทยละเอียด ข้อสอบเป็นไฟล์ static รายชุดใน data/ (สร้างด้วย npm run build-data) ส่วน Supabase ใช้เก็บบัญชี คะแนน และอันดับ",
   "main": "config.js",
   "scripts": {
     "build-data": "node build-data.mjs",

@@ -153,57 +153,106 @@ function syncLabel(){
 window.addEventListener('beforeunload',()=>{ if(__syncTimer){ clearTimeout(__syncTimer); pushState(); } });
 function customQuizzes(){ return LS.get('customQuizzes',[]); }
 function allQuizzes(){ return [...window.QUIZ_DATA, ...customQuizzes()]; }
+/* จำนวนข้อของชุด — ตอนยังไม่ได้โหลดเนื้อหา (เป็นแค่โครงจากสารบัญ) ให้ใช้ count
+   จากสารบัญแทน จะได้วาดการ์ดหน้าแรกได้ทันทีโดยไม่ต้องรอโหลดข้อสอบชุดไหนเลย */
+function qCount(qz){ return qz && (qz.__stub ? (qz.count||0) : (qz.questions||[]).length); }
 function findQuiz(id){ if(id==='combined'&&window.__combined)return window.__combined; if(window.__search&&id==='search')return window.__search; if(id==='mistakes'&&window.__mistakes)return window.__mistakes; if(id==='nl2sim'&&window.__sim)return window.__sim; if(id==='sysquiz'&&window.__sys)return window.__sys; if(id==='saved'&&window.__saved)return window.__saved; return allQuizzes().find(q=>q.id===id); }
 /* ---------- stable question key + global index (for mistakes & weakness) ---------- */
 function qkey(text){ let h=5381; const s=String(text||''); for(let i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;} return 'q'+h.toString(36); }
 let __qidx=null;
 function QIDX(){ if(__qidx)return __qidx; __qidx={}; allQuizzes().forEach(qz=>{ (qz.questions||[]).forEach(x=>{ __qidx[qkey(x.q)]={q:x, subject:quizSubject(qz), topic:x.topic, quizTitle:qTitle(qz)}; }); }); return __qidx; }
 function resetIdx(){ __qidx=null; }
-/* ---------- คลังข้อสอบมาจาก Supabase อย่างเดียว ---------------------------
-   เว็บนี้ทำงานแบบออนไลน์เท่านั้น จึงไม่มีคลังสำรอง data.js ในหน้าเว็บแล้ว
-   (ไฟล์ data.js ยังสร้างได้จาก npm run build-data ไว้เป็นข้อมูลสำรอง/ส่งออก
-    แต่ตัวเว็บไม่โหลดและไม่แคชอีกต่อไป)
-   ------------------------------------------------------------------------ */
-/* ---------- โหลดคลังข้อสอบจาก Supabase ---------- */
-async function loadCloudQuestions(){
-  if(!CLOUD || !supa) return false;                       // ยังไม่ได้ตั้งค่า Supabase
-  const withTimeout=(p,ms)=>Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+/* ══════════════════════════════════════════════════════════════════════════
+   คลังข้อสอบ — ไฟล์ static รายชุดใน data/
+
+   ทำไมไม่ดึงจาก Supabase ทุกครั้ง
+     คลังทั้งหมดหนัก ~14.7 MB ถ้าดึงผ่าน API ทุกครั้งที่เปิดเว็บ โควตา egress
+     ของ Supabase (5 GB/เดือน) จะหมดภายในราว 340 ครั้ง แล้วเว็บจะดึงข้อสอบไม่ได้เลย
+     ส่วน GitHub Pages เสิร์ฟไฟล์ static ได้ ~100 GB/เดือน แถม gzip ให้ (ลด 78%)
+     และเบราว์เซอร์แคชได้ → เปิดซ้ำแทบไม่เสียแบนด์วิดท์
+     Supabase จึงเหลือหน้าที่แค่บัญชี/คะแนน/อันดับ ซึ่งเป็นข้อมูลไม่กี่ KB
+
+   โหลดยังไง
+     เปิดเว็บ      → data/index.json (1.5 KB gzip) ได้รายชื่อชุด + จำนวนข้อ
+                     พอสำหรับวาดหน้าแรกและการ์ดทุกใบ
+     กดเข้าชุด     → ensureSet(id) ดึง data/<id>.json เฉพาะชุดนั้น
+     ฟีเจอร์ที่ต้องรู้ทั้งคลัง (ทบทวน จุดอ่อน จำลองสอบ ฯลฯ)
+                   → ensureAllSets() และมีการโหลดล่วงหน้าเงียบ ๆ ตอนว่าง
+                     ทำให้ส่วนใหญ่กดแล้วมาเลยไม่ต้องรอ
+   ══════════════════════════════════════════════════════════════════════════ */
+const DATA_DIR = 'data/';
+let   __setIndex = [];                 /* [{id,title,subject,count,file}] */
+const __setLoading = new Map();        /* id → promise (กันโหลดซ้อน) */
+
+/* สารบัญ — เรียกครั้งเดียวตอนบูต */
+async function loadIndex(){
   try{
-    // 1) ดึงรายชื่อชุดข้อสอบ (เรียงตาม sort)
-    const setsRes = await withTimeout(supa.from('quiz_sets').select('id,title,subject,sort').order('sort',{ascending:true}), 15000);
-    if(setsRes.error) throw setsRes.error;
-    const setRows = setsRes.data||[];
-    if(!setRows.length) return false;                      // คลาวด์ยังไม่มีชุดข้อสอบ
-    // 2) ดึงข้อสอบทั้งหมด แบ่งหน้าครั้งละ 1000 (Supabase จำกัดต่อ query)
-    const qById={}; const PAGE=1000;
-    for(let from=0;;from+=PAGE){
-      const r = await withTimeout(
-        supa.from('questions').select('set_id,topic,q,choices,ans,exp,img,sys,sort')
-          .order('set_id',{ascending:true}).order('sort',{ascending:true}).range(from,from+PAGE-1), 20000);
-      if(r.error) throw r.error;
-      const rows=r.data||[];
-      rows.forEach(x=>{ (qById[x.set_id]||(qById[x.set_id]=[])).push(x); });
-      if(rows.length<PAGE) break;
-    }
-    // 3) ประกอบให้เป็นรูปแบบเดียวกับ data.js: [{id,title,subject,questions:[{topic,q,choices,ans,exp,img,sys}]}]
-    const built = setRows.map(s=>({
+    const r = await fetch(DATA_DIR+'index.json', {cache:'no-cache'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const idx = await r.json();
+    __setIndex = idx.sets||[];
+    if(!__setIndex.length) throw new Error('สารบัญว่าง');
+    /* วาง "โครงชุด" ที่ยังไม่มีตัวข้อสอบไว้ก่อน หน้าแรกใช้ count วาดการ์ดได้เลย
+       โดยไม่ต้องรอโหลดเนื้อหาชุดไหน */
+    window.QUIZ_DATA = __setIndex.map(s=>({
       id:s.id, title:s.title, subject:s.subject||undefined,
-      questions:(qById[s.id]||[]).slice().sort((a,b)=>(a.sort||0)-(b.sort||0)).map(x=>({
-        topic:x.topic||undefined, q:x.q, choices:x.choices, ans:x.ans,
-        exp:x.exp||undefined, img:x.img||undefined, sys:x.sys||undefined
-      }))
+      count:s.count, questions:[], __stub:true
     }));
-    const total = built.reduce((n,s)=>n+s.questions.length,0);
-    if(!total) return false;                               // กันพลาด: ไม่มีข้อเลย
-    window.QUIZ_DATA = built;                              // ใช้คลาวด์เป็นแหล่งหลัก
     resetIdx();
-    window.__cloudQuestions = true;
-    console.log('โหลดข้อสอบจากคลาวด์สำเร็จ:', built.length, 'ชุด /', total, 'ข้อ');
+    console.log('สารบัญข้อสอบ:',__setIndex.length,'ชุด /',idx.total,'ข้อ');
     return true;
   }catch(e){
-    console.warn('โหลดข้อสอบจากคลาวด์ไม่สำเร็จ:', e.message||e);
+    console.warn('โหลดสารบัญข้อสอบไม่สำเร็จ:', e.message||e);
     return false;
   }
+}
+/* ดึงข้อสอบของชุดเดียว — ปลอดภัยเมื่อเรียกซ้ำ/เรียกพร้อมกัน */
+function ensureSet(id){
+  const cur = (window.QUIZ_DATA||[]).find(s=>s.id===id);
+  if(!cur) return Promise.resolve(false);            /* ชุดที่สร้างเองระหว่างใช้งาน */
+  if(!cur.__stub) return Promise.resolve(true);      /* โหลดแล้ว */
+  if(__setLoading.has(id)) return __setLoading.get(id);
+  const meta = __setIndex.find(s=>s.id===id);
+  const p = fetch(DATA_DIR+(meta&&meta.file||id+'.json'))
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(data=>{
+      cur.questions = data.questions||[];
+      cur.title = data.title||cur.title;
+      if(data.subject) cur.subject = data.subject;
+      delete cur.__stub;
+      resetIdx();
+      return true;
+    })
+    .catch(e=>{ console.warn('โหลดชุด',id,'ไม่สำเร็จ:',e.message||e); __setLoading.delete(id); return false; });
+  __setLoading.set(id,p);
+  return p;
+}
+/* ดึงครบทุกชุด — ใช้กับฟีเจอร์ที่ต้องมองเห็นทั้งคลัง
+   จำกัดการยิงพร้อมกันไว้ 6 เส้น กันเบราว์เซอร์มือถือคอขวด */
+async function ensureAllSets(){
+  const ids=(window.QUIZ_DATA||[]).filter(s=>s.__stub).map(s=>s.id);
+  if(!ids.length) return true;
+  const LIMIT=6;
+  for(let i=0;i<ids.length;i+=LIMIT) await Promise.all(ids.slice(i,i+LIMIT).map(ensureSet));
+  return true;
+}
+/* เรียกก่อนเข้าหน้าที่ต้องใช้ทั้งคลัง — โชว์ loader ให้เฉพาะตอนที่ยังโหลดไม่เสร็จจริง ๆ */
+async function needAllSets(){
+  if(!(window.QUIZ_DATA||[]).some(s=>s.__stub)) return;
+  showLoader('กำลังเตรียมคลังข้อสอบ...');
+  try{ await ensureAllSets(); } finally { hideLoader(); }
+}
+/* โหลดล่วงหน้าเงียบ ๆ ตอนเบราว์เซอร์ว่าง — ผู้ใช้กำลังอ่านหน้าแรกอยู่พอดี
+   ทำให้พอกดเข้าหน้าทบทวน/จุดอ่อน มักจะพร้อมแล้วไม่ต้องรอ */
+function prefetchSets(){
+  /* เคารพผู้ใช้ที่เปิดโหมดประหยัดเน็ต หรืออยู่บนสัญญาณช้า — ไม่ดึงล่วงหน้า
+     ให้ไปโหลดตอนกดใช้จริงแทน (จะมี loader ขึ้นให้เห็นว่ากำลังทำอะไรอยู่) */
+  const c = navigator.connection || {};
+  if(c.saveData) return;
+  if(/(^|-)2g$/.test(c.effectiveType||'')) return;
+  const go=()=>ensureAllSets().then(()=>{ if(state && state.view==='home') render(); });
+  if('requestIdleCallback' in window) requestIdleCallback(go,{timeout:4000});
+  else setTimeout(go,1500);
 }
 /* map a fine topic to a broad clinical system/subject bucket */
 function sysBucket(t){ t=(t||'').toLowerCase();
@@ -616,8 +665,15 @@ function scrollToCat(){ if(state.view!=='home'){go('home');setTimeout(()=>docume
 function showLoader(m){ const l=document.getElementById('loader'); document.getElementById('loaderMsg').textContent=m||'กำลังเตรียมข้อสอบ...'; l.style.display='flex'; }
 function hideLoader(){ document.getElementById('loader').style.display='none'; }
 
+/* หน้าที่ต้อง "มองเห็นทั้งคลัง" ถึงจะคำนวณได้ถูก — ทบทวน จุดอ่อน ความพร้อม
+   ตามระบบ จำลองสอบ ที่บันทึกไว้ สถิติ ดูย้อนหลัง
+   หน้าแรก/หมวดวิชา ไม่อยู่ในนี้ เพราะใช้แค่ตัวเลขจากสารบัญก็พอ */
+const VIEWS_NEED_ALL = new Set(['review','weakness','readiness','systems','simconfig','saved','history','attempt']);
 async function render(){
   const app=document.getElementById('app');
+  if(VIEWS_NEED_ALL.has(state.view)) await needAllSets();
+  /* หน้าตั้งค่าก่อนเริ่มทำ ต้องมีข้อสอบชุดนั้นจริง ๆ ถึงจะบอกจำนวนข้อ/สุ่มได้ */
+  if(state.view==='config' && state.quiz) await ensureSet(state.quiz);
   qdashUnmount();                                  /* ปุ่ม Dashboard โผล่เฉพาะหน้าทำข้อสอบ */
   updateReviewBadge();                             /* ตัวนับข้อค้างทบทวนบนแถบเมนู */
   markActiveNav();                                 /* ไฮไลต์เมนูของหน้าปัจจุบัน */
@@ -692,7 +748,7 @@ async function renderHome(app){
   const totalDone=at.reduce((s,a)=>s+a.total,0);
   const weekDone=at.filter(a=>now-new Date(a.created_at).getTime()<7*864e5).reduce((s,a)=>s+a.total,0);
   const avg=at.length?Math.round(at.reduce((s,a)=>s+a.score/a.total,0)/at.length*100):0;
-  const totalQ=qs.reduce((s,q)=>s+q.questions.length,0);
+  const totalQ=qs.reduce((s,q)=>s+qCount(q),0);
 
   app.innerHTML=`
   ${resumeBannerHTML()}
@@ -728,7 +784,7 @@ async function renderHome(app){
     <section id="categories">
       <div class="sechead"><span class="bar"></span><h2>หมวดหมู่รายวิชา</h2><span class="muted" style="margin-left:auto">เลือกหมวด แล้วกดเข้าไปดูชุดข้อสอบ</span></div>
       <div class="cat-grid">
-        ${SUBJECTS.map(sub=>{ const list=subjectQuizzes(sub.id); const tq=list.reduce((s,q)=>s+q.questions.length,0);
+        ${SUBJECTS.map(sub=>{ const list=subjectQuizzes(sub.id); const tq=list.reduce((s,q)=>s+qCount(q),0);
           return `<div class="file-card subj" onclick="go('subject',{subject:'${sub.id}'})">
             <div class="subjico">${ic(sub.icon)}</div>
             <h3 style="margin-top:2px">${sub.name}</h3>
@@ -755,7 +811,7 @@ async function renderHome(app){
               <span class="bk ${on?'on':''}" style="position:static" onclick="toggleBookmark('${q.id}',event)">${ic('star')}</span>
             </div>
             <h3>${esc(qTitle(q))}</h3>
-            <div class="meta"><span>${q.questions.length} ข้อ</span><span>~${EST_MIN(q.questions.length)} นาที</span></div>
+            <div class="meta"><span>${qCount(q)} ข้อ</span><span>~${EST_MIN(qCount(q))} นาที</span></div>
             <div class="foot">
               <button class="btn sm" onclick="go('config',{quiz:'${q.id}'})">${ic('play')}${pct>0&&pct<100?'ทำต่อ':'ทำข้อสอบ'}</button>
               <span class="muted" style="font-size:12px;margin-left:auto">${
@@ -790,7 +846,10 @@ async function renderHome(app){
 let __searchShow=40;
 function searchFields(x){ return (x.q+' '+(x.topic||'')+' '+(x.exp||'')+' '+((x.choices||[]).join(' '))).toLowerCase(); }
 /* รับ kw ตรง ๆ ได้ด้วย เพื่อให้เปิดลิงก์ #/search/<คำค้น> แล้วค้นให้เองอัตโนมัติ */
-function doSearch(kwArg){
+async function doSearch(kwArg){
+  /* ค้นในเนื้อเฉลยด้วย จึงต้องมีข้อสอบครบทุกชุดก่อน
+     (ปกติโหลดล่วงหน้าไปแล้วตั้งแต่ตอนอยู่หน้าแรก จึงมักไม่ต้องรอ) */
+  await needAllSets();
   const raw=(kwArg!=null?kwArg:((document.getElementById('searchInput')||{}).value||''));
   const kw=String(raw).trim();
   if(!kw){ scrollToCat(); return; }
@@ -874,7 +933,7 @@ async function renderSubject(app){
         <span class="bk ${on?'on':''}" title="บันทึกไว้ทำทีหลัง" onclick="toggleBookmark('${q.id}',event)">${ic('bookmark')}</span>
         <h3>${esc(qTitle(q))}</h3>
         <div class="tags">${tags.map(t=>`<span class="tag teal">${esc(t)}</span>`).join('')} ${q.custom?'<span class="tag">อัปโหลดเอง</span>':''}</div>
-        <div class="meta"><span>${q.questions.length} ข้อ</span><span>~${EST_MIN(q.questions.length)} นาที</span></div>
+        <div class="meta"><span>${qCount(q)} ข้อ</span><span>~${EST_MIN(qCount(q))} นาที</span></div>
         ${b?`<div class="best">${ic('check')} คะแนนดีสุด ${b.score}/${b.total} (${Math.round(b.pct*100)}%)</div>`:'<div class="muted">ยังไม่เคยทำ</div>'}
         ${q.custom?`<div style="margin-top:8px"><span class="tag" style="cursor:pointer;background:var(--badbg);color:var(--bad)" onclick="event.stopPropagation();delCustom('${q.id}')">ลบชุดนี้</span></div>`:''}
       </div>`; }).join('')}</div>`
@@ -889,7 +948,7 @@ function renderConfig(app){
    <div class="row" style="margin-bottom:10px"><button class="btn sec sm" onclick="goBack()">${ic('left')} ย้อนกลับ</button></div>
    <div class="card">
      <h2 class="qtitle">${esc(qTitle(q))}</h2>
-     <div class="muted">${q.questions.length} ข้อ • ประมาณ ${EST_MIN(q.questions.length)} นาที</div>
+     <div class="muted">${qCount(q)} ข้อ • ประมาณ ${EST_MIN(qCount(q))} นาที</div>
      <label class="fld">โหมด</label>
      <select id="mode">
        <option value="practice">ฝึก (Practice) — คลิกตอบแล้วเฉลยทันที</option>
@@ -898,7 +957,7 @@ function renderConfig(app){
      <label class="fld">จำนวนข้อ</label>
      <select id="count">
        <option value="10">10 ข้อ</option><option value="20">20 ข้อ</option>
-       <option value="50">50 ข้อ</option><option value="all" selected>ทั้งหมด (${q.questions.length})</option>
+       <option value="50">50 ข้อ</option><option value="all" selected>ทั้งหมด (${qCount(q)})</option>
      </select>
      <label class="fld chk"><input type="checkbox" id="shuffleQ" checked> สลับลำดับข้อ</label>
      <label class="fld chk"><input type="checkbox" id="shuffleO"> สลับลำดับตัวเลือก</label>
@@ -1329,6 +1388,7 @@ async function analytics(){
 
 async function startMistakes(){
   if(!requireLogin()) return;
+  await needAllSets();
   showLoader('กำลังจัดคิวทบทวน (SRS)...');
   const idx=QIDX();
   const arr=await srsQueueKeys();                 /* ใช้ตัวเดียวกับที่หน้า Smart Review นับให้ ตัวเลขจะได้ตรงกันเสมอ */
@@ -1408,7 +1468,8 @@ function renderSimConfig(app){
     </div></div>`;
 }
 
-function startSimulator(){
+async function startSimulator(){
+  await needAllSets();
   if(!requireLogin()) return;
   const size=parseInt(val('simSize'))||NL2_TOTAL;
   const scale=size/NL2_TOTAL;
@@ -1448,8 +1509,9 @@ function renderSystems(app){
     <div class="row" style="margin-top:8px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
   </div>`;
 }
-function startSystemPractice(id){
+async function startSystemPractice(id){
   if(!requireLogin()) return;
+  await needAllSets();
   const label=(SYS_ALL.find(s=>s.id===id)||{}).label||id;
   const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if(qBucket(x)===id) qs.push(x); }));
   if(!qs.length){ alert('ยังไม่มีข้อในระบบนี้'); return; }
@@ -1457,8 +1519,9 @@ function startSystemPractice(id){
   go('config',{quiz:'sysquiz'});
 }
 /* ฝึกเฉพาะหัวข้อย่อย (เรียกจากหน้า My Weakness) */
-function startTopicPractice(topic){
+async function startTopicPractice(topic){
   if(!requireLogin()) return;
+  await needAllSets();
   const qs=[]; allQuizzes().forEach(qz=>qz.questions.forEach(x=>{ if((x.topic||'อื่นๆ')===topic) qs.push(x); }));
   if(!qs.length){ alert('ยังไม่มีข้อในหัวข้อนี้'); return; }
   window.__sys={id:'sysquiz',title:''+topic,subject:'past',questions:shuffle(qs)};
@@ -1757,7 +1820,8 @@ async function renderLeaderboard(app){
 }
 
 /* ---------- combined + upload ---------- */
-function startCombined(){
+async function startCombined(){
+  await needAllSets();
   const all=[]; window.QUIZ_DATA.forEach(q=>q.questions.forEach(x=>all.push(x)));
   window.__combined={id:'combined',title:'สุ่มรวมทุกชุด',questions:all};
   go('config',{quiz:'combined'});
@@ -1930,7 +1994,8 @@ function dailyItems(){
 }
 function isDailyDone(){ return LS.get('dailyDone','')===dKey(new Date()); }
 function markDailyDone(){ LS.set('dailyDone',dKey(new Date())); }
-function startDaily(){
+async function startDaily(){
+  await needAllSets();
   if(isDailyDone() && !confirm('วันนี้ทำข้อสอบประจำวันแล้ว ต้องการทำซ้ำไหม?')) return;
   const items=dailyItems(); if(!items.length){ alert('ยังไม่มีข้อสอบในระบบ'); return; }
   const q={id:'daily', title:'ข้อสอบประจำวัน '+dKey(new Date()), questions:items};
@@ -1987,7 +2052,7 @@ function toggleSavedQ(key,i){
 }
 function savedQItems(){ const idx=QIDX(); return savedQ().map(k=>idx[k]&&idx[k].q).filter(Boolean); }
 function unsaveFromList(k){ LS.set('savedQuestions', savedQ().filter(x=>x!==k)); render(); }
-function startSaved(){ const qs=savedQItems(); if(!qs.length){ alert('ยังไม่มีข้อที่บันทึก'); return; }
+async function startSaved(){ await needAllSets(); const qs=savedQItems(); if(!qs.length){ alert('ยังไม่มีข้อที่บันทึก'); return; }
   window.__saved={id:'saved',title:'Saved Exam',subject:'past',questions:qs}; go('config',{quiz:'saved'}); }
 function renderSaved(app){
   const idx=QIDX(); const keys=savedQ(); const items=keys.map(k=>({k,rec:idx[k]})).filter(x=>x.rec);
@@ -2100,11 +2165,19 @@ function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x.getTi
 /* สถิติจาก srsMap อย่างเดียว (ไม่แตะเน็ต) — ใช้กับ ladder / forecast / mastery */
 function srsStats(){
   const m=srsMap(), idx=QIDX(), now=Date.now();
+  /* คิวทบทวนเก็บใน localStorage ตาม qkey จึงนับได้แม้ยังโหลดข้อสอบไม่ครบ
+     ปกติจะกรองข้อที่ถูกถอดออกจากคลังทิ้ง แต่ตอนที่ยังโหลดไม่ครบ (เช่นหน้าแรก
+     ที่มีแต่สารบัญ) ต้องไม่กรอง ไม่งั้นตัวเลข "ถึงกำหนดทบทวนวันนี้" จะขึ้น 0 ผิด ๆ */
+  const partial = (window.QUIZ_DATA||[]).some(x=>x.__stub);
+  const known = k => partial ? true : !!idx[k];
   const t0=startOfDay(now), endToday=t0+DAY-1;
-  const st={total:Object.keys(idx).length,seen:0,mastered:0,overdue:0,dueToday:0,
+  const total = partial
+    ? (__setIndex.reduce((n,x)=>n+(x.count||0),0) || Object.keys(m).length)
+    : Object.keys(idx).length;
+  const st={total,seen:0,mastered:0,overdue:0,dueToday:0,
             boxes:[0,0,0,0,0,0],fc:[0,0,0,0,0,0,0]};
   Object.keys(m).forEach(k=>{
-    if(!idx[k]) return;                                  /* ข้อที่ถูกถอดออกจากคลังแล้ว */
+    if(!known(k)) return;                                /* ข้อที่ถูกถอดออกจากคลังแล้ว */
     const e=m[k], box=Math.min(e.box||0,5); st.seen++; st.boxes[box]++;
     if(box>=5){ st.mastered++; return; }                 /* box 5 = หลุดคิวถาวร */
     const due=e.due||0;
@@ -2219,18 +2292,20 @@ async function renderReview(app){
 }
 
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); __syncReady=false; await pullState(); renderTopbar(); render(); }); }
-/* ---------- บูต: โหลดคลังข้อสอบจากคลาวด์ (ต้องมีเน็ต) แล้วค่อย render ---------- */
+/* ---------- บูต: โหลดสารบัญข้อสอบ (ไฟล์เดียว 1.5 KB) แล้ววาดหน้าได้เลย ---------- */
 (async()=>{
   let ok=false;
-  try{ showLoader('กำลังโหลดคลังข้อสอบ...'); ok=await loadCloudQuestions(); }
-  catch(e){ console.warn('boot: cloud questions failed', e); }
+  try{ showLoader('กำลังโหลดคลังข้อสอบ...'); ok=await loadIndex(); }
+  catch(e){ console.warn('boot: load index failed', e); }
   hideLoader();
   if(!ok){ __bootFailedNotice(); return; }
   await refreshUser();    /* ตัวนี้เรียก renderTopbar()+render() ให้ตอนจบอยู่แล้ว */
-  /* เปิดลิงก์ตรง เช่น .../#/quiz/nl2-2024 → พาไปหน้านั้นเลย
-     ต้องทำหลังคลังข้อสอบโหลดเสร็จ ไม่งั้นหาชุดไม่เจอ */
+  /* เปิดลิงก์ตรง เช่น .../#/quiz/nl2-2024 → พาไปหน้านั้นเลย */
   if(location.hash.startsWith('#/') && location.hash!=='#/') applyHash();
   else syncHash(true);    /* ไม่มี hash → เขียน #/ ให้เรียบร้อยโดยไม่ถมประวัติ */
+  /* ผู้ใช้กำลังอ่านหน้าแรกอยู่ ระหว่างนั้นค่อย ๆ ดึงชุดที่เหลือมาไว้เงียบ ๆ
+     พอกดเข้าหน้าทบทวน/จุดอ่อน/จำลองสอบ มักจะพร้อมแล้วไม่ต้องรอ */
+  prefetchSets();
 })();
 /* โหลดคลังไม่ได้ — บอกให้ชัดว่าเกิดอะไรและทำอะไรต่อได้ ดีกว่าโชว์หน้าเปล่า ๆ
    เว็บนี้ต้องใช้เน็ต จึงไม่มีทางเลือกสำรองในเครื่องแล้ว                       */

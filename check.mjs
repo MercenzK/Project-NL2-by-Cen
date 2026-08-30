@@ -10,10 +10,10 @@
      3. ไอคอนที่โค้ดเรียก มีอยู่ใน sprite ของ index.html ครบ
      4. ฟังก์ชันที่ onclick ใน index.html เรียก หาเจอใน app.js จริง
      5. ไฟล์ที่ sw.js precache มีอยู่จริงทุกไฟล์
-     6. ไม่มีร่องรอยคลังสำรอง data.js หลงเหลือในหน้าเว็บ
+     6. ไฟล์ใน data/ ครบตามสารบัญ + ไม่มีโค้ดโหลดคลังแบบเก่าหลงเหลือ
      7. (--full) เรนเดอร์เฉลยทุกข้อ ต้องไม่มีแท็กค้างและไม่มี ** หลงเหลือ
    ========================================================================== */
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
@@ -75,40 +75,54 @@ const gone = core.filter(f => !existsSync(F(f)));
 gone.length ? bad('ไฟล์หาย: ' + gone.join(', ')) : ok(`มีครบ (${core.length} ไฟล์)`);
 if (core.includes('data.js')) bad('data.js ไม่ควรอยู่ใน CORE — จะบังคับให้ทุกคนโหลด 15 MB ตั้งแต่เข้าครั้งแรก');
 
-/* ---- 6. เตือนถ้ายังมีร่องรอย data.js ในหน้าเว็บ ---- */
-console.log('\n6) โหมดออนไลน์อย่างเดียว');
-const leftover = [];
-// ตัดคอมเมนต์ออกก่อน ไม่งั้นข้อความอธิบายที่พูดถึง data.js จะถูกนับเป็นการเรียกใช้จริง
+/* ---- 6. ไฟล์ข้อสอบใน data/ ---- */
+console.log('\n6) ไฟล์ข้อสอบใน data/');
+const IDX = F('data/index.json');
+if (!existsSync(IDX)) {
+  bad('ไม่มี data/index.json — รัน npm run build-data ก่อน');
+} else {
+  const idx = JSON.parse(readFileSync(IDX, 'utf8'));
+  const sets = idx.sets || [];
+  const missing = sets.filter(s => !existsSync(F('data/' + (s.file || s.id + '.json'))));
+  missing.length ? bad('ไฟล์ชุดหาย: ' + missing.map(s => s.id).join(', '))
+                 : ok(`${sets.length} ชุด / ${idx.total} ข้อ — ไฟล์ครบทุกชุด`);
+  const sum = sets.reduce((n, s) => n + (s.count || 0), 0);
+  if (sum !== idx.total) bad(`ยอดรวมไม่ตรง: index บอก ${idx.total} แต่รวมรายชุดได้ ${sum}`);
+  let bytes = 0;
+  for (const s of sets) { const f = F('data/' + (s.file || s.id + '.json')); if (existsSync(f)) bytes += statSync(f).size; }
+  ok(`ขนาดรวม ${(bytes / 1048576).toFixed(1)} MB (gzip ~${(bytes / 1048576 * 0.22).toFixed(1)} MB) · index ${(statSync(IDX).size / 1024).toFixed(1)} KB`);
+  /* ไฟล์ที่ไม่มีใน index แล้ว = ชุดที่ถูกลบไป ควรลบไฟล์ทิ้งไม่ให้ค้างบน GitHub */
+  const known = new Set(sets.map(s => s.file || s.id + '.json').concat('index.json'));
+  const orphan = readdirSync(F('data')).filter(f => f.endsWith('.json') && !known.has(f));
+  if (orphan.length) warn('ไฟล์ที่ไม่อยู่ในสารบัญแล้ว (ลบทิ้งได้): ' + orphan.join(', '));
+}
+/* ต้องไม่เหลือโค้ดดึงข้อสอบผ่าน Supabase หรือคลังสำรองก้อนเดียว */
 const htmlNoComment = html.replace(/<!--[\s\S]*?-->/g, '');
-const swNoComment   = sw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 const jsNoComment   = js.replace(/\/\*[\s\S]*?\*\//g, '');
+const leftover = [];
 if (/<script[^>]*src="data\.js"/.test(htmlNoComment)) leftover.push('index.html ยังโหลด data.js');
-if (/'data\.js'/.test(swNoComment))                   leftover.push('sw.js ยังอ้าง data.js');
-if (/loadFallbackData|prepOffline/.test(jsNoComment)) leftover.push('app.js ยังมีโค้ดคลังสำรอง');
-leftover.length ? bad(leftover.join(' · ')) : ok('ไม่มีร่องรอยคลังสำรองหลงเหลือ');
-if (existsSync(F('data.js')))
-  warn(`ยังมี data.js (${(statSync(F('data.js')).size/1048576).toFixed(1)} MB) อยู่ในโฟลเดอร์ — `
-     + 'เว็บไม่ใช้แล้ว ไม่ต้องอัปขึ้น GitHub (เก็บไว้เป็นข้อมูลสำรองในเครื่องได้)');
+if (/loadFallbackData|prepOffline|loadCloudQuestions/.test(jsNoComment)) leftover.push('app.js ยังมีโค้ดโหลดคลังแบบเก่า');
+leftover.length ? bad(leftover.join(' · ')) : ok('ไม่มีโค้ดโหลดคลังแบบเก่าหลงเหลือ');
 
 /* ---- 7. เรนเดอร์เฉลยทุกข้อ ---- */
-if (FULL && existsSync(F('data.js'))) {
+if (FULL && existsSync(F('data/index.json'))) {
   console.log('\n7) เรนเดอร์เฉลยทุกข้อ');
   const a = js.indexOf('function esc(s){');
   const b = js.indexOf('\n}', js.indexOf('function expClean(h){')) + 2;
   const ctx = { console: { log() {}, warn() {} } };
   vm.createContext(ctx);
   vm.runInContext(js.slice(a, b), ctx);
-  const sandbox = { window: {} };
-  vm.createContext(sandbox);
-  vm.runInContext(read('data.js'), sandbox);
   let n = 0, broken = 0;
   const pair = (h, o, c) => (h.split(o).length === h.split(c).length);
-  for (const set of sandbox.window.QUIZ_DATA) for (const q of (set.questions || [])) {
-    if (!q.exp || q.exp.length < 200) continue;
-    n++;
-    const h = ctx.renderExp(q.exp);
-    if (!pair(h, '<strong>', '</strong>') || !pair(h, '<ul>', '</ul>') ||
-        !pair(h, '<ol>', '</ol>') || /\*\*/.test(h)) broken++;
+  for (const meta of JSON.parse(readFileSync(F('data/index.json'), 'utf8')).sets) {
+    const set = JSON.parse(readFileSync(F('data/' + (meta.file || meta.id + '.json')), 'utf8'));
+    for (const q of (set.questions || [])) {
+      if (!q.exp || q.exp.length < 200) continue;
+      n++;
+      const h = ctx.renderExp(q.exp);
+      if (!pair(h, '<strong>', '</strong>') || !pair(h, '<ul>', '</ul>') ||
+          !pair(h, '<ol>', '</ol>') || /\*\*/.test(h)) broken++;
+    }
   }
   broken ? bad(`เรนเดอร์ ${n} ข้อ — พัง ${broken} ข้อ`) : ok(`เรนเดอร์ ${n} ข้อ ไม่มีปัญหา`);
 } else if (!FULL) {
