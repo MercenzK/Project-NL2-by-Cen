@@ -5,7 +5,7 @@
    - รูปไอคอน/สื่อ = cache-first (แทบไม่เปลี่ยน จึงเสิร์ฟจากแคชเพื่อความเร็ว)
    - CDN ข้ามโดเมน (fonts, Supabase lib) = stale-while-revalidate
 */
-const CACHE = 'nl2quiz-v7';
+const CACHE = 'nl2quiz-v8';
 /* รูปข้อสอบแยกแคชต่างหาก เพราะ:
    - มีจำนวนมาก (400+ รูป) ไม่ควรโดนล้างทิ้งทุกครั้งที่ปล่อยแอปเวอร์ชันใหม่
    - รูปข้อสอบไม่เปลี่ยนเนื้อหา จึงใช้ cache-first ล้วน ไม่ต้องยิงเน็ตซ้ำ (ประหยัดเน็ตมือถือมาก) */
@@ -20,7 +20,7 @@ const DATA_CACHE = 'nl2quiz-data-v1';
      (1) โหลดจากคลาวด์ไม่สำเร็จ   (2) ผู้ใช้กดปุ่ม "เตรียมใช้งานออฟไลน์" เอง   */
 const CORE = [
   'index.html', 'app.css', 'app.js', 'config.js', 'manifest.json',
-  'icon-192.png', 'icon-512.png', 'study.html'
+  'icon.svg', 'icon-192-v2.png', 'icon-512-v2.png', 'icon-maskable-512.png', 'study.html'
 ];
 const DATA_FILE = /(?:^|\/)data\.js(?:$|\?)/i;
 // ไฟล์ที่ต้อง "สดใหม่เสมอ" (network-first) — เฉพาะตัวแอป ไม่รวมคลังข้อมูล
