@@ -135,7 +135,6 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
         <button data-view="leaderboard" onclick="go('leaderboard')"><svg class="i"><use href="#i-trophy"/></svg>อันดับ</button>
         <div class="sep"></div>
         <button id="reportsBtn" onclick="go('reports')" style="display:none"><svg class="i"><use href="#i-inbox"/></svg>กล่องรายงาน</button>
-        <button id="offlineBtn" onclick="prepOffline()"><svg class="i"><use href="#i-download"/></svg>เตรียมใช้งานออฟไลน์</button>
         <button id="installBtn" onclick="installApp()" style="display:none"><svg class="i"><use href="#i-download"/></svg>ติดตั้งแอป</button>
         <button id="authBtn" onclick="openAuth()"><svg class="i"><use href="#i-logout"/></svg><span>เข้าสู่ระบบ</span></button>
       </div>
@@ -211,12 +210,12 @@ function installApp(){ if(__deferredPrompt){ __deferredPrompt.prompt(); __deferr
 <script src="config.js"></script>
 <!-- โหลดไลบรารี Supabase จาก jsdelivr ก่อน ถ้าโหลดไม่ได้ (โดนบล็อก) จะลองโหลดจาก unpkg แทน -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- data.js (คลังสำรองสำหรับตอนออฟไลน์) มีขนาด ~15 MB — ไม่โหลดตรงนี้แล้ว
-     เดิมเป็น <script src="data.js"> แบบ blocking ทำให้ทุกคนต้องดาวน์โหลด 15 MB
-     ก่อนเว็บจะเริ่มทำงาน ทั้งที่แหล่งข้อมูลหลักคือ Supabase และไฟล์นี้ใช้เฉพาะ
-     ตอนคลาวด์ล่ม → ย้ายไปโหลดแบบ dynamic ใน loadFallbackData() แทน -->
+<!-- เว็บนี้ทำงานแบบออนไลน์อย่างเดียว ข้อสอบดึงจาก Supabase ตอนเปิดหน้า
+     เดิมเคยมี <script src="data.js"> ขนาด ~15 MB เป็นคลังสำรองไว้ใช้ตอนไม่มีเน็ต
+     ตอนนี้ถอดออกแล้ว (ไฟล์ data.js ยังสร้างได้จาก npm run build-data
+     ไว้เป็นข้อมูลสำรอง/ส่งออก แต่ตัวเว็บไม่โหลดและไม่แคชอีกต่อไป) -->
 <script>
-window.QUIZ_DATA = window.QUIZ_DATA || [];   /* ตัวยึดที่ว่างไว้ก่อน จนกว่าจะโหลดจริง */
+window.QUIZ_DATA = window.QUIZ_DATA || [];   /* ตัวยึดที่ว่างไว้ก่อน จนกว่าจะโหลดจากคลาวด์เสร็จ */
 </script>
 <script src="app.js" defer></script>
 </body>

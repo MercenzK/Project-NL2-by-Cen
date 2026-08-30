@@ -159,64 +159,21 @@ function qkey(text){ let h=5381; const s=String(text||''); for(let i=0;i<s.lengt
 let __qidx=null;
 function QIDX(){ if(__qidx)return __qidx; __qidx={}; allQuizzes().forEach(qz=>{ (qz.questions||[]).forEach(x=>{ __qidx[qkey(x.q)]={q:x, subject:quizSubject(qz), topic:x.topic, quizTitle:qTitle(qz)}; }); }); return __qidx; }
 function resetIdx(){ __qidx=null; }
-/* ---------- คลังสำรอง data.js — โหลดเมื่อจำเป็นเท่านั้น ------------------------
-   ไฟล์นี้ใหญ่ ~15 MB (เฉลยไทยละเอียด 4,488 ข้อ) จึงไม่แนบเป็น <script> ตั้งแต่แรก
-   เรียกใช้เฉพาะ 2 กรณี: (1) ไม่ได้ตั้งค่าคลาวด์  (2) โหลดจากคลาวด์ไม่สำเร็จ
-   โหลดซ้ำจะคืน promise เดิม ไม่ยิงซ้ำ                                          */
-let __fallbackPromise=null;
-function loadFallbackData(){
-  if(window.__fallbackLoaded) return Promise.resolve(true);
-  if(__fallbackPromise) return __fallbackPromise;
-  /* data.js ขึ้นต้นด้วย window.QUIZ_DATA = [...] จึงเขียนทับตัวแปรเสมอ
-     ถ้าตอนนี้ใช้ข้อมูลจากคลาวด์อยู่ (ซึ่งใหม่กว่า) ต้องเก็บไว้แล้วคืนกลับหลังโหลดเสร็จ
-     ไม่งั้นการกด "เตรียมใช้งานออฟไลน์" จะทำให้ข้อสอบย้อนกลับไปเป็นเวอร์ชันในไฟล์ */
-  const hadCloud=!!window.__cloudQuestions, cloudData=hadCloud?window.QUIZ_DATA:null;
-  __fallbackPromise = new Promise(resolve=>{
-    const el=document.createElement('script');
-    el.src='data.js';
-    el.async=true;
-    el.onload=()=>{
-      window.__fallbackLoaded=true;
-      const n=(window.QUIZ_DATA||[]).length;
-      if(hadCloud&&cloudData) window.QUIZ_DATA=cloudData;   /* คลาวด์ยังเป็นแหล่งหลัก */
-      else resetIdx();
-      console.log('โหลดคลังสำรอง data.js สำเร็จ:',n,'ชุด');
-      resolve(true);
-    };
-    el.onerror=()=>{
-      console.warn('โหลดคลังสำรอง data.js ไม่สำเร็จ');
-      __fallbackPromise=null;                 /* ให้ลองใหม่ได้ถ้าเน็ตกลับมา */
-      resolve(false);
-    };
-    document.head.appendChild(el);
-  });
-  return __fallbackPromise;
-}
-/* ผู้ใช้กดเองเมื่ออยากให้เครื่องเก็บคลังไว้ใช้ตอนไม่มีเน็ต
-   เดิมทุกคนโดนบังคับดาวน์โหลด 15 MB ตั้งแต่เข้าครั้งแรกโดยไม่รู้ตัว
-   ตอนนี้เป็นทางเลือก และบอกขนาดให้ตัดสินใจก่อน (สำคัญมากสำหรับเน็ตมือถือ) */
-async function prepOffline(){
-  const b=document.getElementById('offlineBtn');
-  if(window.__fallbackLoaded){ alert('เครื่องนี้เก็บคลังข้อสอบไว้แล้ว ใช้งานตอนไม่มีเน็ตได้เลย'); return; }
-  if(!confirm('จะดาวน์โหลดคลังข้อสอบทั้งหมด (ประมาณ 15 MB) เก็บไว้ในเครื่อง\n'+
-              'ทำครั้งเดียว หลังจากนั้นใช้ได้แม้ไม่มีสัญญาณ\n\nแนะนำให้ทำตอนต่อ Wi-Fi'))return;
-  const old=b?b.innerHTML:'';
-  if(b){ b.disabled=true; b.innerHTML='กำลังดาวน์โหลด...'; }
-  const ok=await loadFallbackData();
-  if(b){ b.disabled=false; b.innerHTML=old; }
-  alert(ok?'เก็บคลังไว้ในเครื่องเรียบร้อย ใช้งานตอนไม่มีเน็ตได้แล้ว'
-          :'ดาวน์โหลดไม่สำเร็จ ลองใหม่อีกครั้งเมื่อสัญญาณดีขึ้น');
-}
-/* ---------- โหลดคลังข้อสอบจาก Supabase (แหล่งหลัก) — ถ้าล้มเหลว/ว่าง จะ fallback ไป data.js ---------- */
+/* ---------- คลังข้อสอบมาจาก Supabase อย่างเดียว ---------------------------
+   เว็บนี้ทำงานแบบออนไลน์เท่านั้น จึงไม่มีคลังสำรอง data.js ในหน้าเว็บแล้ว
+   (ไฟล์ data.js ยังสร้างได้จาก npm run build-data ไว้เป็นข้อมูลสำรอง/ส่งออก
+    แต่ตัวเว็บไม่โหลดและไม่แคชอีกต่อไป)
+   ------------------------------------------------------------------------ */
+/* ---------- โหลดคลังข้อสอบจาก Supabase ---------- */
 async function loadCloudQuestions(){
-  if(!CLOUD || !supa) return false;                       // ไม่มีคลาวด์ → ใช้ data.js เดิม
+  if(!CLOUD || !supa) return false;                       // ยังไม่ได้ตั้งค่า Supabase
   const withTimeout=(p,ms)=>Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
   try{
     // 1) ดึงรายชื่อชุดข้อสอบ (เรียงตาม sort)
     const setsRes = await withTimeout(supa.from('quiz_sets').select('id,title,subject,sort').order('sort',{ascending:true}), 15000);
     if(setsRes.error) throw setsRes.error;
     const setRows = setsRes.data||[];
-    if(!setRows.length) return false;                      // คลาวด์ยังว่าง → ใช้ data.js
+    if(!setRows.length) return false;                      // คลาวด์ยังไม่มีชุดข้อสอบ
     // 2) ดึงข้อสอบทั้งหมด แบ่งหน้าครั้งละ 1000 (Supabase จำกัดต่อ query)
     const qById={}; const PAGE=1000;
     for(let from=0;;from+=PAGE){
@@ -237,14 +194,14 @@ async function loadCloudQuestions(){
       }))
     }));
     const total = built.reduce((n,s)=>n+s.questions.length,0);
-    if(!total) return false;                               // กันพลาด: ไม่มีข้อเลย → ใช้ data.js
+    if(!total) return false;                               // กันพลาด: ไม่มีข้อเลย
     window.QUIZ_DATA = built;                              // ใช้คลาวด์เป็นแหล่งหลัก
     resetIdx();
     window.__cloudQuestions = true;
     console.log('โหลดข้อสอบจากคลาวด์สำเร็จ:', built.length, 'ชุด /', total, 'ข้อ');
     return true;
   }catch(e){
-    console.warn('โหลดข้อสอบจากคลาวด์ไม่สำเร็จ — ใช้ data.js แทน:', e.message||e);
+    console.warn('โหลดข้อสอบจากคลาวด์ไม่สำเร็จ:', e.message||e);
     return false;
   }
 }
@@ -2262,41 +2219,36 @@ async function renderReview(app){
 }
 
 if(CLOUD){ supa.auth.onAuthStateChange(async(_e,sess)=>{ let u=sess?.user||null; if(u && !(await emailAllowed(u.email))){ await supa.auth.signOut(); u=null; alert('อนุญาตเฉพาะบัญชีอีเมล @up.ac.th เท่านั้น'); } user=u; isAdminFlag=await computeAdmin(); __syncReady=false; await pullState(); renderTopbar(); render(); }); }
-/* ---------- บูต: โหลดคลังข้อสอบจากคลาวด์ก่อน (ถ้าล้มเหลวใช้ data.js) แล้วค่อย render ---------- */
+/* ---------- บูต: โหลดคลังข้อสอบจากคลาวด์ (ต้องมีเน็ต) แล้วค่อย render ---------- */
 (async()=>{
   let ok=false;
-  /* ออฟไลน์อยู่แล้วก็ไม่ต้องเสียเวลารอ timeout ของคลาวด์ 15 วินาที ข้ามไปใช้คลังสำรองเลย */
-  const online = (typeof navigator==='undefined') || navigator.onLine !== false;
-  if(online){
-    try{ showLoader('กำลังโหลดคลังข้อสอบ...'); ok=await loadCloudQuestions(); }
-    catch(e){ console.warn('boot: cloud questions failed', e); }
-  }
-  /* คลาวด์ไม่สำเร็จ (ไม่ได้ตั้งค่า / เน็ตล่ม / ออฟไลน์) ค่อยดึงคลังสำรองมาใช้
-     ต้อง await ให้เสร็จก่อน render ไม่งั้นหน้าแรกจะขึ้นว่าไม่มีข้อสอบ */
-  if(!ok){
-    try{
-      showLoader(online?'กำลังโหลดคลังสำรอง...':'ออฟไลน์อยู่ — เปิดคลังที่บันทึกไว้ในเครื่อง...');
-      ok=await loadFallbackData();
-    }catch(e){ console.warn('boot: fallback failed', e); }
-  }
+  try{ showLoader('กำลังโหลดคลังข้อสอบ...'); ok=await loadCloudQuestions(); }
+  catch(e){ console.warn('boot: cloud questions failed', e); }
   hideLoader();
-  if(!ok && !(window.QUIZ_DATA||[]).length){ __bootFailedNotice(); return; }
+  if(!ok){ __bootFailedNotice(); return; }
   await refreshUser();    /* ตัวนี้เรียก renderTopbar()+render() ให้ตอนจบอยู่แล้ว */
   /* เปิดลิงก์ตรง เช่น .../#/quiz/nl2-2024 → พาไปหน้านั้นเลย
      ต้องทำหลังคลังข้อสอบโหลดเสร็จ ไม่งั้นหาชุดไม่เจอ */
   if(location.hash.startsWith('#/') && location.hash!=='#/') applyHash();
   else syncHash(true);    /* ไม่มี hash → เขียน #/ ให้เรียบร้อยโดยไม่ถมประวัติ */
 })();
-/* โหลดคลังไม่ได้เลย — บอกให้ชัดว่าเกิดอะไรและทำอะไรได้บ้าง ดีกว่าโชว์หน้าเปล่า ๆ */
+/* โหลดคลังไม่ได้ — บอกให้ชัดว่าเกิดอะไรและทำอะไรต่อได้ ดีกว่าโชว์หน้าเปล่า ๆ
+   เว็บนี้ต้องใช้เน็ต จึงไม่มีทางเลือกสำรองในเครื่องแล้ว                       */
 function __bootFailedNotice(){
   const app=document.getElementById('app'); if(!app)return;
+  const offline = navigator.onLine===false;
   app.innerHTML=`<div class="wrap" style="padding-top:var(--s7)"><div class="warn">
-    <b style="color:var(--no)">ยังโหลดคลังข้อสอบไม่ได้</b>
+    <b style="color:var(--no)">${offline?'ตอนนี้ไม่ได้ต่ออินเทอร์เน็ต':'ยังโหลดคลังข้อสอบไม่ได้'}</b>
     <div class="muted" style="margin-top:6px;line-height:1.7">
-      ${navigator.onLine===false
-        ? 'ตอนนี้ไม่ได้ต่อเน็ต และยังไม่เคยบันทึกคลังไว้ในเครื่อง — ต่อเน็ตหนึ่งครั้งแล้วกด “เตรียมใช้งานออฟไลน์” ในเมนูมุมขวาบน จากนั้นจะใช้ได้แม้ไม่มีสัญญาณ'
-        : 'อาจเป็นเพราะเน็ตไม่เสถียร หรือตัวบล็อกโฆษณากันการเชื่อมต่อไว้ — ลองรีเฟรชอีกครั้ง'}
+      ${offline
+        ? 'เว็บนี้ต้องใช้เน็ตในการดึงข้อสอบ ต่อ Wi-Fi หรือเปิดเน็ตมือถือแล้วลองใหม่อีกครั้ง'
+        : 'อาจเป็นเพราะเน็ตไม่เสถียร ตัวบล็อกโฆษณากันการเชื่อมต่อไว้ หรือเซิร์ฟเวอร์กำลังมีปัญหา — ลองรีเฟรชอีกครั้ง'}
     </div>
     <button class="btn" style="margin-top:var(--s4)" onclick="location.reload()">ลองใหม่</button>
   </div></div>`;
 }
+/* เน็ตกลับมาแล้วแต่หน้ายังค้างอยู่ที่ข้อความ "ต่อเน็ตไม่ได้" → โหลดให้เองเลย
+   ไม่ต้องให้ผู้ใช้มานั่งกดรีเฟรชเอง */
+window.addEventListener('online',()=>{
+  if(!(window.QUIZ_DATA||[]).length) location.reload();
+});

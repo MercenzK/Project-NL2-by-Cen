@@ -1,5 +1,8 @@
 node_modules/
 .DS_Store
+# เว็บทำงานแบบออนไลน์อย่างเดียวแล้ว ไม่ได้เสิร์ฟ data.js
+# ยังสร้างเก็บไว้ในเครื่องได้ (npm run build-data) แต่ไม่ต้องอัป 15 MB ขึ้น GitHub
+data.js
 *.bak
 *.bak_*
 data.js.bak_*

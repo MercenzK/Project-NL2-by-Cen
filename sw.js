@@ -1,29 +1,24 @@
-/* NL2 Med Quiz service worker — offline app shell + data
+/* NL2 Med Quiz service worker — แคชเฉพาะ "ตัวแอป" (เว็บนี้ทำงานแบบออนไลน์)
    กลยุทธ์:
-   - ไฟล์แอป + ข้อมูล (html/js) = network-first → ผู้ใช้ได้เวอร์ชันใหม่เสมอเมื่อออนไลน์,
-     ถ้าออฟไลน์ค่อย fallback ไปตัวที่แคชไว้ (แก้ปัญหา "ติดข้อสอบ/แอปเวอร์ชันเก่า")
-   - รูปไอคอน/สื่อ = cache-first (แทบไม่เปลี่ยน จึงเสิร์ฟจากแคชเพื่อความเร็ว)
+   - ไฟล์แอป (html/css/js) = network-first → ได้เวอร์ชันใหม่เสมอเมื่อออนไลน์
+     ออฟไลน์ค่อยเสิร์ฟตัวที่แคชไว้ เพื่อให้เปิดขึ้นมาแล้วเห็นข้อความบอกสถานะ
+     แทนหน้า error ของเบราว์เซอร์ (ข้อสอบยังต้องใช้เน็ตดึงจาก Supabase)
+   - รูปไอคอน/รูปข้อสอบ = cache-first (แทบไม่เปลี่ยน จึงเสิร์ฟจากแคชเพื่อความเร็ว)
    - CDN ข้ามโดเมน (fonts, Supabase lib) = stale-while-revalidate
 */
-const CACHE = 'nl2quiz-v8';
+const CACHE = 'nl2quiz-v9';
 /* รูปข้อสอบแยกแคชต่างหาก เพราะ:
    - มีจำนวนมาก (400+ รูป) ไม่ควรโดนล้างทิ้งทุกครั้งที่ปล่อยแอปเวอร์ชันใหม่
    - รูปข้อสอบไม่เปลี่ยนเนื้อหา จึงใช้ cache-first ล้วน ไม่ต้องยิงเน็ตซ้ำ (ประหยัดเน็ตมือถือมาก) */
 const IMG_CACHE = 'nl2quiz-img-v1';
-/* คลังสำรอง data.js (~15 MB) แยกแคชและแยกเวอร์ชันต่างหาก เพราะ:
-   - ถ้าอยู่รวมกับแคชแอป ทุกครั้งที่แก้ CSS นิดเดียวแล้วบัมป์เวอร์ชัน
-     ผู้ใช้จะต้องดาวน์โหลดใหม่ 15 MB โดยไม่จำเป็น
-   ► บัมป์เลขตัวนี้ "เฉพาะตอนรัน npm run build-data ใหม่" เท่านั้น            */
-const DATA_CACHE = 'nl2quiz-data-v1';
-/* data.js ไม่อยู่ใน CORE แล้ว — ไม่ควร precache 15 MB ให้ทุกคนตั้งแต่เข้าครั้งแรก
-   ทั้งที่ส่วนใหญ่ใช้ข้อมูลจาก Supabase ตลอด ไฟล์นี้จะถูกดึงเมื่อ:
-     (1) โหลดจากคลาวด์ไม่สำเร็จ   (2) ผู้ใช้กดปุ่ม "เตรียมใช้งานออฟไลน์" เอง   */
+/* เว็บทำงานแบบออนไลน์อย่างเดียว — ข้อสอบดึงจาก Supabase ตอนเปิดหน้า
+   service worker จึงแคชเฉพาะ "ตัวแอป" (html/css/js/ไอคอน) ให้เปิดซ้ำได้เร็ว
+   ไม่ได้แคชคลังข้อสอบ และไม่มี data.js ในสมการอีกต่อไป                     */
 const CORE = [
   'index.html', 'app.css', 'app.js', 'config.js', 'manifest.json',
   'icon.svg', 'icon-192-v2.png', 'icon-512-v2.png', 'icon-maskable-512.png', 'study.html'
 ];
-const DATA_FILE = /(?:^|\/)data\.js(?:$|\?)/i;
-// ไฟล์ที่ต้อง "สดใหม่เสมอ" (network-first) — เฉพาะตัวแอป ไม่รวมคลังข้อมูล
+// ไฟล์ที่ต้อง "สดใหม่เสมอ" (network-first) — ตัวแอปทั้งหมด
 const FRESH = /\.(?:html|js|css)(?:$|\?)/i;
 const IMG_EXT = /\.(?:png|jpe?g|gif|webp|svg)(?:$|\?)/i;
 const isImg = (req, url) => req.destination === 'image' || IMG_EXT.test(url.pathname);
@@ -38,7 +33,7 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     // ล้างเฉพาะแคชแอปรุ่นเก่า — แคชรูปเก็บไว้ ไม่งั้นผู้ใช้ต้องโหลดรูป ECG ใหม่ทุกครั้งที่อัปเดตเว็บ
     caches.keys().then(ks => Promise.all(
-      ks.filter(k => k !== CACHE && k !== IMG_CACHE && k !== DATA_CACHE).map(k => caches.delete(k))
+      ks.filter(k => k !== CACHE && k !== IMG_CACHE).map(k => caches.delete(k))
     )).then(() => self.clients.claim())
   );
 });
@@ -63,19 +58,6 @@ self.addEventListener('fetch', e => {
 
   // รูปทุกแหล่ง (รวมรูป ECG ที่ยังชี้ไปเว็บนอก) → cache-first แคชแยก
   if (isImg(req, url)) { e.respondWith(imageFirst(req)); return; }
-
-  /* คลังสำรอง data.js → cache-first เสมอ และเก็บในแคชของตัวเอง
-     เดิมโดนกฎ FRESH จับไปเป็น network-first ทำให้ยิงโหลด 15 MB ใหม่ทุกครั้งที่เปิดเว็บ
-     แม้จะมีในแคชอยู่แล้ว — เป็นสาเหตุหนึ่งที่ทำให้เว็บอืดมาก                      */
-  if (url.origin === location.origin && DATA_FILE.test(url.pathname)) {
-    e.respondWith(
-      caches.open(DATA_CACHE).then(c => c.match(req).then(hit => hit || fetch(req).then(res => {
-        if (res && res.ok) c.put(req, res.clone());
-        return res;
-      })))
-    );
-    return;
-  }
 
   if (url.origin === location.origin) {
     // เอกสารนำทาง (เปิดหน้า) หรือไฟล์ html/js → network-first

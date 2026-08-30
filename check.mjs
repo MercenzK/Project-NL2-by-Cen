@@ -2,7 +2,7 @@
    check.mjs — ตรวจทุกอย่างก่อนอัปโหลดขึ้น GitHub
 
      node check.mjs          ตรวจเฉพาะโค้ด (เร็ว ไม่ต้องมี data.js)
-     node check.mjs --full   ตรวจเรนเดอร์เฉลยทุกข้อจาก data.js ด้วย (ช้ากว่า)
+     node check.mjs --full   ตรวจเรนเดอร์เฉลยทุกข้อจาก data.js ด้วย (ต้องมีไฟล์ ช้ากว่า)
 
    ตรวจอะไรบ้าง
      1. app.js  ผ่าน syntax หรือไม่
@@ -10,7 +10,7 @@
      3. ไอคอนที่โค้ดเรียก มีอยู่ใน sprite ของ index.html ครบ
      4. ฟังก์ชันที่ onclick ใน index.html เรียก หาเจอใน app.js จริง
      5. ไฟล์ที่ sw.js precache มีอยู่จริงทุกไฟล์
-     6. เตือนถ้า data.js ใหม่กว่า sw.js (แปลว่าลืมบัมป์ DATA_CACHE)
+     6. ไม่มีร่องรอยคลังสำรอง data.js หลงเหลือในหน้าเว็บ
      7. (--full) เรนเดอร์เฉลยทุกข้อ ต้องไม่มีแท็กค้างและไม่มี ** หลงเหลือ
    ========================================================================== */
 import { readFileSync, existsSync, statSync } from 'node:fs';
@@ -75,14 +75,20 @@ const gone = core.filter(f => !existsSync(F(f)));
 gone.length ? bad('ไฟล์หาย: ' + gone.join(', ')) : ok(`มีครบ (${core.length} ไฟล์)`);
 if (core.includes('data.js')) bad('data.js ไม่ควรอยู่ใน CORE — จะบังคับให้ทุกคนโหลด 15 MB ตั้งแต่เข้าครั้งแรก');
 
-/* ---- 6. data.js กับ DATA_CACHE ---- */
-console.log('\n6) เวอร์ชันแคชของคลังข้อมูล');
-if (existsSync(F('data.js'))) {
-  const mb = (statSync(F('data.js')).size / 1048576).toFixed(1);
-  if (statSync(F('data.js')).mtimeMs > statSync(F('sw.js')).mtimeMs)
-    warn(`data.js (${mb} MB) ใหม่กว่า sw.js — อย่าลืมบัมป์ DATA_CACHE ไม่งั้นคนที่เคยโหลดไว้จะยังได้ของเก่า`);
-  else ok(`data.js ${mb} MB · DATA_CACHE = ${(sw.match(/DATA_CACHE\s*=\s*'([^']+)'/) || [, '?'])[1]}`);
-} else warn('ยังไม่มี data.js — รัน npm run build-data ก่อนถ้าต้องการให้ใช้งานออฟไลน์ได้');
+/* ---- 6. เตือนถ้ายังมีร่องรอย data.js ในหน้าเว็บ ---- */
+console.log('\n6) โหมดออนไลน์อย่างเดียว');
+const leftover = [];
+// ตัดคอมเมนต์ออกก่อน ไม่งั้นข้อความอธิบายที่พูดถึง data.js จะถูกนับเป็นการเรียกใช้จริง
+const htmlNoComment = html.replace(/<!--[\s\S]*?-->/g, '');
+const swNoComment   = sw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+const jsNoComment   = js.replace(/\/\*[\s\S]*?\*\//g, '');
+if (/<script[^>]*src="data\.js"/.test(htmlNoComment)) leftover.push('index.html ยังโหลด data.js');
+if (/'data\.js'/.test(swNoComment))                   leftover.push('sw.js ยังอ้าง data.js');
+if (/loadFallbackData|prepOffline/.test(jsNoComment)) leftover.push('app.js ยังมีโค้ดคลังสำรอง');
+leftover.length ? bad(leftover.join(' · ')) : ok('ไม่มีร่องรอยคลังสำรองหลงเหลือ');
+if (existsSync(F('data.js')))
+  warn(`ยังมี data.js (${(statSync(F('data.js')).size/1048576).toFixed(1)} MB) อยู่ในโฟลเดอร์ — `
+     + 'เว็บไม่ใช้แล้ว ไม่ต้องอัปขึ้น GitHub (เก็บไว้เป็นข้อมูลสำรองในเครื่องได้)');
 
 /* ---- 7. เรนเดอร์เฉลยทุกข้อ ---- */
 if (FULL && existsSync(F('data.js'))) {
