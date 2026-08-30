@@ -3,3 +3,8 @@ node_modules/
 *.bak
 *.bak_*
 data.js.bak_*
+# ไฟล์สำรองก่อนแก้ใหญ่ — เก็บไว้ในเครื่องพอ ไม่ต้องขึ้น GitHub (เป็น public และรก)
+index.backup-*.html
+# ไฟล์เสนอดีไซน์ ไม่ใช่ส่วนของเว็บจริง
+redesign-mockup.html
+landing-mockup.html
