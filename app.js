@@ -1855,12 +1855,23 @@ async function renderLeaderboard(app){
       <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
     </div></div>`; return;
   }
+  /* อันดับมีชื่อ/อีเมลของผู้ใช้คนอื่น จึงเปิดให้เฉพาะคนที่ล็อกอินแล้ว
+     (ฝั่งฐานข้อมูล revoke สิทธิ์ execute ของ leaderboard() จาก PUBLIC/anon ไว้แล้ว
+      การเช็คตรงนี้เป็นแค่การบอกผู้ใช้ให้เข้าใจ ไม่ใช่ตัวกั้นความปลอดภัย) */
+  if(!user){
+    app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
+      <h2 class="qtitle">Leaderboard</h2>
+      <div class="muted" style="margin-top:8px">ต้องเข้าสู่ระบบก่อนจึงจะดูอันดับได้ เพราะตารางนี้แสดงชื่อของผู้ใช้คนอื่นด้วย</div>
+      <div class="row" style="margin-top:16px"><button class="btn" onclick="openAuth()">เข้าสู่ระบบ</button>
+        <button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
+    </div></div>`; return;
+  }
   const {data,error}=await supa.rpc('leaderboard');
   if(error){
     app.innerHTML=`<div class="wrap" style="padding-top:24px"><div class="card">
       <h2 class="qtitle">Leaderboard</h2>
       <div class="err" style="margin-top:8px">โหลดอันดับไม่สำเร็จ: ${esc(error.message)}</div>
-      <div class="muted" style="margin-top:8px">ยังไม่ได้สร้างฟังก์ชัน leaderboard ในฐานข้อมูล? รัน SQL ใน supabase_schema.sql อีกครั้ง</div>
+      <div class="muted" style="margin-top:8px">ถ้าเพิ่งเข้าสู่ระบบ ลองรีเฟรชหน้าอีกครั้ง</div>
       <div class="row" style="margin-top:16px"><button class="btn sec" onclick="go('home')">หน้าแรก</button></div>
     </div></div>`; return;
   }
