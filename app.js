@@ -847,27 +847,102 @@ async function renderHome(app){
 /* ---------- search ---------- */
 /* ---------- ค้นหา — เปิดเป็นหน้าอ่านผลลัพธ์ ไม่ใช่โยนเข้าไปทำข้อสอบทันที ----------
    เฉลย 2,699 ข้อที่เขียนไว้จึงใช้เป็นหนังสืออ้างอิงได้ พิมพ์ "Sgarbossa" แล้วอ่านได้เลย  */
-let __searchShow=40;
+const SEARCH_PAGE=40;
+let __searchShow=SEARCH_PAGE;
 function searchFields(x){ return (x.q+' '+(x.topic||'')+' '+(x.exp||'')+' '+((x.choices||[]).join(' '))).toLowerCase(); }
+
+/* ── ค้นฝั่งเซิร์ฟเวอร์ (RPC search_questions) ─────────────────────────────
+   ใช้เมื่อคลังยังโหลดไม่ครบในเครื่อง — ส่งกลับเฉพาะข้อที่ตรง (ไม่กี่สิบ KB)
+   แทนที่จะต้องดาวน์โหลดข้อสอบทั้งคลังราว 3.5 MB มาค้นในเบราว์เซอร์
+   ฝั่ง Postgres ใช้ ILIKE ที่มี GIN trigram index หนุน จึงค้นภาษาไทยได้
+   โดยไม่ต้องตัดคำ (คำ 3 ตัวอักษรขึ้นไปใช้ index ~5 ms) */
+async function searchServer(kw,lim,off){
+  const {data,error}=await supa.rpc('search_questions',{kw:kw,lim:lim,off:off});
+  if(error) throw error;
+  const titleOf={}; __setIndex.forEach(s=>{ titleOf[s.id]=s.title; });
+  const rows=((data&&data.rows)||[]).map(r=>({
+    topic:r.topic||undefined, q:r.q, choices:r.choices||[], ans:r.ans,
+    exp:r.exp||undefined, img:r.img||undefined, sys:r.sys||undefined,
+    /* ผลจากเซิร์ฟเวอร์ไม่ได้อยู่ใน QIDX (ชุดยังเป็นแค่โครง) จึงต้องพกชื่อชุดมาเอง */
+    __setTitle: titleOf[r.set_id]||'คลังข้อสอบ'
+  }));
+  return {total:(data&&data.total)||0, rows:rows};
+}
+function localHits(kw){
+  const low=kw.toLowerCase(), all=[];
+  allQuizzes().forEach(q=>(q.questions||[]).forEach(x=>all.push(x)));
+  return all.filter(x=>searchFields(x).includes(low));
+}
+function showSearch(kw,questions,opts){
+  const o=opts||{}, n=o.__total||questions.length;
+  window.__searchKw=kw; __searchShow=SEARCH_PAGE;
+  window.__search=Object.assign({id:'search',title:'ผลค้นหา: "'+kw+'" ('+n+' ข้อ)',questions:questions},o);
+  go('search');
+}
 /* รับ kw ตรง ๆ ได้ด้วย เพื่อให้เปิดลิงก์ #/search/<คำค้น> แล้วค้นให้เองอัตโนมัติ */
 async function doSearch(kwArg){
-  /* ค้นในเนื้อเฉลยด้วย จึงต้องมีข้อสอบครบทุกชุดก่อน
-     (ปกติโหลดล่วงหน้าไปแล้วตั้งแต่ตอนอยู่หน้าแรก จึงมักไม่ต้องรอ) */
-  await needAllSets();
   const raw=(kwArg!=null?kwArg:((document.getElementById('searchInput')||{}).value||''));
   const kw=String(raw).trim();
   if(!kw){ scrollToCat(); return; }
-  const low=kw.toLowerCase();
-  const all=[]; allQuizzes().forEach(q=>q.questions.forEach(x=>all.push(x)));
-  const hits=all.filter(x=>searchFields(x).includes(low));
-  if(!hits.length){ alert('ไม่พบข้อสอบที่ตรงกับ "'+kw+'"'); return; }
-  __searchShow=40;
-  window.__searchKw=kw;
-  window.__search={id:'search',title:'ผลค้นหา: "'+kw+'" ('+hits.length+' ข้อ)',questions:hits};
-  go('search');
+  const notFound=()=>alert('ไม่พบข้อสอบที่ตรงกับ "'+kw+'"');
+
+  /* 1) คลังโหลดครบในเครื่องแล้ว → ค้นในเครื่อง เร็วทันที ไม่ต้องยิงเน็ตเลย
+        (ปกติโหลดล่วงหน้าเงียบ ๆ ไปแล้วตั้งแต่ตอนอยู่หน้าแรก) */
+  if(!(window.QUIZ_DATA||[]).some(s=>s.__stub)){
+    const hits=localHits(kw);
+    if(!hits.length){ notFound(); return; }
+    showSearch(kw,hits); return;
+  }
+  /* 2) ยังโหลดไม่ครบ → ให้ Postgres ค้นให้ ส่งกลับเฉพาะข้อที่ตรง */
+  if(CLOUD){
+    showLoader('กำลังค้นหา...');
+    let page=null;
+    try{ page=await searchServer(kw,SEARCH_PAGE,0); }
+    catch(e){ console.warn('ค้นฝั่งเซิร์ฟเวอร์ไม่สำเร็จ:',e.message||e); }
+    finally{ hideLoader(); }
+    if(page){
+      if(!page.total){ notFound(); return; }
+      showSearch(kw,page.rows,{__server:true,__total:page.total}); return;
+    }
+  }
+  /* 3) ค้นฝั่งเซิร์ฟเวอร์ใช้ไม่ได้ → กลับไปวิธีเดิม โหลดทั้งคลังแล้วค้นในเครื่อง */
+  await needAllSets();
+  const hits=localHits(kw);
+  if(!hits.length){ notFound(); return; }
+  showSearch(kw,hits);
 }
-function searchMore(){ __searchShow+=40; render(); }
-function startSearchQuiz(){ if(window.__search) go('config',{quiz:'search'}); }
+/* โหลดผลเพิ่ม — โหมดเซิร์ฟเวอร์ต้องไปขอหน้าถัดไปก่อน โหมดในเครื่องแค่เปิดดูเพิ่ม */
+async function searchMore(){
+  const S=window.__search; if(!S) return;
+  if(S.__server && S.questions.length<(S.__total||0)){
+    showLoader('กำลังโหลดผลเพิ่ม...');
+    try{
+      const page=await searchServer(window.__searchKw,SEARCH_PAGE,S.questions.length);
+      S.questions=S.questions.concat(page.rows);
+      S.__total=page.total;
+    }catch(e){ console.warn('โหลดผลค้นหาเพิ่มไม่สำเร็จ:',e.message||e); alert('โหลดผลเพิ่มไม่สำเร็จ ลองใหม่อีกครั้ง'); }
+    finally{ hideLoader(); }
+  }
+  __searchShow+=SEARCH_PAGE;
+  render();
+}
+/* เอาผลค้นหาไปทำเป็นชุดข้อสอบ — โหมดเซิร์ฟเวอร์ต้องดึงให้ครบก่อน (สูงสุด 200 ข้อ
+   ตามเพดานของ RPC) ไม่งั้นจะได้แค่ข้อที่เลื่อนดูไปแล้ว */
+async function startSearchQuiz(){
+  const S=window.__search; if(!S) return;
+  if(S.__server && S.questions.length<Math.min(S.__total||0,200)){
+    showLoader('กำลังรวบรวมข้อสอบ...');
+    try{
+      while(S.questions.length<Math.min(S.__total||0,200)){
+        const page=await searchServer(window.__searchKw,SEARCH_PAGE,S.questions.length);
+        if(!page.rows.length) break;
+        S.questions=S.questions.concat(page.rows);
+      }
+    }catch(e){ console.warn('รวบรวมผลค้นหาไม่ครบ:',e.message||e); }
+    finally{ hideLoader(); }
+  }
+  go('config',{quiz:'search'});
+}
 /* escape ก่อน แล้วค่อยครอบ <mark> — ทำสลับลำดับจะเปิดช่องให้ HTML หลุดเข้ามา */
 function hlEsc(s,kw){
   const t=esc(s||''); if(!kw) return t;
@@ -896,13 +971,15 @@ function renderSearch(app){
   const S=window.__search, kw=window.__searchKw||'';
   if(!S){ go('home'); return; }
   const idx=QIDX(), hits=S.questions, show=Math.min(__searchShow,hits.length);
+  /* โหมดเซิร์ฟเวอร์รู้ยอดรวมจาก RPC แต่ยังโหลดมาแค่บางส่วน */
+  const total=S.__server?(S.__total||hits.length):hits.length;
   const inExp=hits.filter(x=>(x.exp||'').toLowerCase().includes(kw.toLowerCase())).length;
   const cards=hits.slice(0,show).map(x=>{
     const rec=idx[qkey(x.q)]||{};
     const ansTxt=(x.choices||[])[x.ans]||'';
     return `<div class="card srch">
       <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">
-        <span class="tag">${esc(rec.quizTitle||'คลังข้อสอบ')}</span>
+        <span class="tag">${esc(x.__setTitle||rec.quizTitle||'คลังข้อสอบ')}</span>
         ${x.topic?`<span class="tag teal">${esc(x.topic)}</span>`:''}</div>
       <div style="font-weight:500;line-height:1.55">${hlEsc(x.q,kw)}</div>
       <div style="margin-top:7px;color:var(--ok);font-size:15px"><b>เฉลย ${LAB[x.ans]}.</b> ${hlEsc(ansTxt,kw)}</div>
@@ -911,14 +988,14 @@ function renderSearch(app){
   app.innerHTML=`<div class="wrap" style="padding-top:18px">
     <div class="row" style="margin-bottom:10px;align-items:center;flex-wrap:wrap">
       <b class="qtitle" style="font-size:20px">${esc(kw)}</b>
-      <span class="badge">${hits.length} ข้อ</span>
+      <span class="badge">${total} ข้อ</span>
       <span style="flex:1"></span>
       <button class="btn sm" onclick="startSearchQuiz()">▶ ทำเป็นชุดข้อสอบ</button>
       <button class="btn sm sec" onclick="goBack()">${ic('left')}กลับ</button></div>
     <div class="card" style="padding:12px 18px"><span class="muted" style="font-size:14px">
-      พบในเฉลย ${inExp} ข้อ • ที่เหลือพบในโจทย์ ตัวเลือก หรือหัวข้อ — เลื่อนอ่านได้เลย หรือกดปุ่มขวาบนเพื่อเอาทั้งหมดไปทำเป็นชุดข้อสอบ</span></div>
+      พบในเฉลย ${inExp} ข้อ${S.__server?` จาก ${hits.length} ข้อที่โหลดมาแล้ว`:''} • ที่เหลือพบในโจทย์ ตัวเลือก หรือหัวข้อ — เลื่อนอ่านได้เลย หรือกดปุ่มขวาบนเพื่อเอาทั้งหมดไปทำเป็นชุดข้อสอบ</span></div>
     ${cards}
-    ${show<hits.length?`<div class="card" style="text-align:center"><button class="btn sec" onclick="searchMore()">โหลดเพิ่ม (เหลืออีก ${hits.length-show} ข้อ)</button></div>`:''}
+    ${show<total?`<div class="card" style="text-align:center"><button class="btn sec" onclick="searchMore()">โหลดเพิ่ม (เหลืออีก ${total-show} ข้อ)</button></div>`:''}
   </div>`;
   window.scrollTo({top:0,behavior:'auto'});
 }
