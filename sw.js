@@ -17,7 +17,7 @@ const IMG_CACHE = 'nl2quiz-img-v1';
    และเก็บในแคชของตัวเองที่แยกเวอร์ชันต่างหาก
    ► บัมป์ DATA_VER เฉพาะตอนรัน npm run build-data ใหม่เท่านั้น
      (ถ้าใช้เวอร์ชันเดียวกับแอป แก้ CSS นิดเดียวผู้ใช้ต้องโหลดข้อสอบใหม่ทั้งหมด) */
-const DATA_VER   = 'nl2quiz-data-v1';
+const DATA_VER   = 'nl2quiz-data-v2';
 const DATA_FILE  = /\/data\/[^/]+\.json$/i;
 const CORE = [
   'index.html', 'app.css', 'app.js', 'config.js', 'manifest.json',
