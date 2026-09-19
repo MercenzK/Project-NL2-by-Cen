@@ -660,6 +660,195 @@ function imgFail(el){
   d.appendChild(t); d.appendChild(a); d.appendChild(n);
   el.replaceWith(d);
 }
+
+/* ══ กล่องขยายรูปข้อสอบ (lightbox) ═══════════════════════════════════════
+   ข้อสอบที่มีรูปมี 400+ ข้อ ส่วนใหญ่เป็น ECG 12 lead, ฟิล์ม และ blood smear
+   ซึ่งถูกย่อลงกรอบ 380px แล้วอ่าน ST segment หรือเม็ดเลือดไม่ออก
+   โดยเฉพาะบนมือถือ — ถ้าซูมไม่ได้ ข้อพวกนี้ก็ทำไม่ได้จริง
+
+   ทำไมเขียน pinch/pan เอง ไม่ปล่อยให้เบราว์เซอร์จัดการ:
+   หน้าเว็บตั้ง viewport ไว้ไม่ให้ซูมทั้งหน้า (กันโดนซูมตอนกดตัวเลือก)
+   ถ้าจะให้ pinch เฉพาะรูปได้จึงต้องรับ pointer event มาคำนวณเอง
+   ใช้ Pointer Events ตัวเดียวคุมทั้งเมาส์และนิ้ว ไม่ต้องเขียนแยก touch/mouse */
+var LBX = { el:null, img:null, pct:null, s:1, x:0, y:0, box:null, pts:new Map(), pinch:null, moved:false, lastFocus:null, openedAt:0 };
+var LBX_MIN = 1, LBX_MAX = 8;
+
+function lbxClamp(){
+  /* บีบไม่ให้ลากรูปหลุดจอ: ถ้ารูปเล็กกว่าจอให้อยู่กลาง ถ้าใหญ่กว่าจอ
+     ก็ห้ามให้ขอบรูปหลุดเข้ามาในจอจนเห็นพื้นหลังเป็นแถบ */
+  var b=LBX.box; if(!b) return;
+  var vw=innerWidth, vh=innerHeight, w=b.width*LBX.s, h=b.height*LBX.s;
+  if(w<=vw) LBX.x=(vw-w)/2-b.left;
+  else { if(b.left+LBX.x>0) LBX.x=-b.left; if(b.left+LBX.x+w<vw) LBX.x=vw-w-b.left; }
+  if(h<=vh) LBX.y=(vh-h)/2-b.top;
+  else { if(b.top+LBX.y>0) LBX.y=-b.top; if(b.top+LBX.y+h<vh) LBX.y=vh-h-b.top; }
+}
+function lbxApply(glide){
+  if(!LBX.img) return;
+  LBX.img.classList.toggle('glide', !!glide);
+  lbxClamp();
+  LBX.img.style.transform='translate('+LBX.x+'px,'+LBX.y+'px) scale('+LBX.s+')';
+  LBX.el.classList.toggle('zoomed', LBX.s>1.01);
+  if(LBX.pct) LBX.pct.textContent=Math.round(LBX.s*100)+'%';
+  var zo=LBX.el.querySelector('[data-lbx="out"]'), zi=LBX.el.querySelector('[data-lbx="in"]');
+  if(zo) zo.disabled = LBX.s<=LBX_MIN+.01;
+  if(zi) zi.disabled = LBX.s>=LBX_MAX-.01;
+}
+/* ซูมโดยตรึงจุด (px,py) บนจอให้อยู่ที่เดิม — ไม่งั้นซูมแล้วภาพจะเด้งหนี
+   นิ้ว/เคอร์เซอร์ ทำให้หาตำแหน่งที่อยากดูไม่เจอ */
+function lbxZoomAt(ns, px, py, glide){
+  var b=LBX.box; if(!b) return;
+  ns=Math.max(LBX_MIN,Math.min(LBX_MAX,ns));
+  var loc=(px-b.left-LBX.x)/LBX.s, locY=(py-b.top-LBX.y)/LBX.s;
+  LBX.x=px-b.left-loc*ns; LBX.y=py-b.top-locY*ns; LBX.s=ns;
+  lbxApply(glide);
+}
+function lbxOpen(src, alt){
+  if(LBX.el) lbxClose();
+  LBX.lastFocus=document.activeElement;
+  var el=document.createElement('div');
+  el.className='lbx'; el.setAttribute('role','dialog');
+  el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','รูปประกอบข้อสอบ ขยายเต็มจอ');
+  el.innerHTML='<div class="lbx-bar">'
+    + '<span class="sp"></span>'
+    + '<button class="lbx-btn" data-lbx="out" type="button" title="ย่อ" aria-label="ย่อ">'+ic('zoom-out')+'</button>'
+    + '<span class="lbx-pct">100%</span>'
+    + '<button class="lbx-btn" data-lbx="in" type="button" title="ขยาย" aria-label="ขยาย">'+ic('zoom-in')+'</button>'
+    + '<button class="lbx-btn" data-lbx="fit" type="button" title="พอดีจอ" aria-label="พอดีจอ">'+ic('fit')+'</button>'
+    + '<button class="lbx-btn" data-lbx="close" type="button" title="ปิด (Esc)" aria-label="ปิด">'+ic('x')+'</button>'
+    + '</div><div class="lbx-tip">ซูม: ดับเบิลคลิก · หุบ-กางสองนิ้ว · เลื่อนล้อ &nbsp;|&nbsp; ลากเพื่อเลื่อนภาพ &nbsp;|&nbsp; Esc ปิด</div>';
+  var img=document.createElement('img');
+  img.alt=alt||'รูปประกอบข้อสอบ'; img.draggable=false;
+  img.src=src;                       /* ตั้ง src ผ่าน property ไม่ต่อสตริง HTML */
+  el.insertBefore(img,el.firstChild);
+  document.body.appendChild(el);
+  LBX.el=el; LBX.img=img; LBX.pct=el.querySelector('.lbx-pct');
+  LBX.s=1; LBX.x=0; LBX.y=0; LBX.pts.clear(); LBX.pinch=null;
+  LBX.openedAt=Date.now();
+
+  /* จำกรอบของรูปตอน "พอดีจอ" ไว้เป็นฐานคำนวณ ต้องรอ decode ก่อน
+     ไม่งั้นรูปยังไม่มีขนาดจริง กรอบที่วัดได้จะเป็น 0 */
+  var measure=function(){ LBX.box=img.getBoundingClientRect(); lbxApply(false); };
+  if(img.complete && img.naturalWidth) measure();
+  else { img.addEventListener('load',measure,{once:true});
+         img.addEventListener('error',function(){ lbxClose(); },{once:true}); }
+
+  document.documentElement.style.overflow='hidden';   /* กันหน้าหลังเลื่อนตาม */
+  requestAnimationFrame(function(){ el.classList.add('on'); });
+  el.querySelector('[data-lbx="close"]').focus();
+
+  el.addEventListener('click',function(e){
+    var b=e.target.closest('[data-lbx]');
+    if(b){
+      var k=b.dataset.lbx;
+      if(k==='close') return lbxClose();
+      if(k==='fit'){ LBX.s=1; LBX.x=0; LBX.y=0; return lbxApply(true); }
+      var f=k==='in'?1.6:1/1.6;
+      return lbxZoomAt(LBX.s*f, innerWidth/2, innerHeight/2, true);
+    }
+    /* กดพื้นหลัง = ปิด แต่มีสองกรณีที่ห้ามปิด:
+       1. เพิ่งลากรูปเสร็จแล้วปล่อยนิ้วบนพื้นหลัง
+       2. เพิ่งเปิดมาไม่ถึง 400ms — คนที่ "ดับเบิลคลิกรูปย่อ" จะมีคลิกที่สอง
+          ตกลงมาบนพื้นหลังของกล่องที่เพิ่งเปิด ทำให้เปิดแล้วเด้งปิดทันที */
+    if(e.target===el && !LBX.moved && Date.now()-LBX.openedAt>400) lbxClose();
+  });
+  img.addEventListener('dblclick',function(e){
+    e.preventDefault();
+    lbxZoomAt(LBX.s>1.01?1:2.6, e.clientX, e.clientY, true);
+  });
+  /* แทร็กแพด Mac ไม่ส่ง pointer event ตอนหุบ-กางสองนิ้ว (ต่างจากจอสัมผัส)
+     แต่ส่งมาเป็น wheel ที่ ctrlKey=true พร้อม delta ที่ละเอียดกว่าล้อเมาส์มาก
+     ถ้าใช้ความไวเดียวกันทั้งคู่ pinch บนแทร็กแพดจะแทบไม่ขยับ */
+  el.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var k = e.ctrlKey ? 0.012 : 0.0016;
+    lbxZoomAt(LBX.s*Math.exp(-e.deltaY*k), e.clientX, e.clientY, false);
+  },{passive:false});
+
+  el.addEventListener('pointerdown',lbxDown);
+  el.addEventListener('pointermove',lbxMove);
+  el.addEventListener('pointerup',lbxUp);
+  el.addEventListener('pointercancel',lbxUp);
+  addEventListener('keydown',lbxKey,true);
+  addEventListener('resize',lbxResize);
+}
+function lbxResize(){ if(!LBX.img) return;
+  var t=LBX.img.style.transform; LBX.img.style.transform='none';
+  LBX.box=LBX.img.getBoundingClientRect(); LBX.img.style.transform=t; lbxApply(false); }
+function lbxDown(e){
+  if(e.target.closest('[data-lbx]')) return;       /* ปล่อยให้ปุ่มทำงานปกติ */
+  LBX.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  LBX.moved=false;
+  if(LBX.pts.size===2){
+    var a=[...LBX.pts.values()];
+    LBX.pinch={ d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), s:LBX.s };
+  }
+  try{ LBX.el.setPointerCapture(e.pointerId); }catch(_){}
+  LBX.el.classList.add('drag');
+}
+function lbxMove(e){
+  if(!LBX.pts.has(e.pointerId)) return;
+  var prev=LBX.pts.get(e.pointerId);
+  LBX.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(LBX.pts.size>=2 && LBX.pinch){
+    var a=[...LBX.pts.values()];
+    var d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    if(LBX.pinch.d>0){
+      LBX.moved=true;
+      lbxZoomAt(LBX.pinch.s*(d/LBX.pinch.d),(a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2,false);
+    }
+    return;
+  }
+  if(LBX.s<=1.01) return;                           /* ยังไม่ซูม ไม่ต้องลาก */
+  var dx=e.clientX-prev.x, dy=e.clientY-prev.y;
+  if(Math.abs(dx)+Math.abs(dy)>2) LBX.moved=true;
+  LBX.x+=dx; LBX.y+=dy; lbxApply(false);
+}
+function lbxUp(e){
+  LBX.pts.delete(e.pointerId);
+  if(LBX.pts.size<2) LBX.pinch=null;
+  if(!LBX.pts.size){ LBX.el && LBX.el.classList.remove('drag');
+    setTimeout(function(){ LBX.moved=false; },0); }  /* ให้ click ที่ตามมาเช็กทัน */
+}
+function lbxKey(e){
+  if(!LBX.el) return;
+  if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); return lbxClose(); }
+  if(e.key==='+'||e.key==='='){ e.preventDefault(); return lbxZoomAt(LBX.s*1.6,innerWidth/2,innerHeight/2,true); }
+  if(e.key==='-'||e.key==='_'){ e.preventDefault(); return lbxZoomAt(LBX.s/1.6,innerWidth/2,innerHeight/2,true); }
+  if(e.key==='0'){ e.preventDefault(); LBX.s=1; LBX.x=0; LBX.y=0; return lbxApply(true); }
+  /* ลูกศรเลื่อนภาพตอนซูมอยู่ — สำหรับคนที่ใช้คีย์บอร์ดอย่างเดียว */
+  var step=60, m={ArrowLeft:[step,0],ArrowRight:[-step,0],ArrowUp:[0,step],ArrowDown:[0,-step]}[e.key];
+  if(m && LBX.s>1.01){ e.preventDefault(); LBX.x+=m[0]; LBX.y+=m[1]; lbxApply(true); }
+  /* กักโฟกัสไว้ในกล่อง ไม่ให้แท็บหลุดไปโดนปุ่มของหน้าที่อยู่ข้างหลัง */
+  if(e.key==='Tab'){
+    var f=LBX.el.querySelectorAll('.lbx-btn:not([disabled])');
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  }
+}
+function lbxClose(){
+  if(!LBX.el) return;
+  removeEventListener('keydown',lbxKey,true);
+  removeEventListener('resize',lbxResize);
+  LBX.el.remove();
+  LBX.el=null; LBX.img=null; LBX.pct=null; LBX.box=null; LBX.pts.clear(); LBX.pinch=null;
+  document.documentElement.style.overflow='';
+  if(LBX.lastFocus && document.contains(LBX.lastFocus)) LBX.lastFocus.focus();
+  LBX.lastFocus=null;
+}
+/* ผูกครั้งเดียวแบบ delegate — รูปถูก render ใหม่ตลอดเวลาทั้งหน้าทำข้อสอบ
+   และหน้าทบทวน ถ้าไปผูกทีละรูปจะหลุดทุกครั้งที่ re-render */
+document.addEventListener('click',function(e){
+  var im=e.target.closest('img.qimg');
+  if(im && im.getAttribute('src')) lbxOpen(im.getAttribute('src'), im.alt);
+});
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter' && e.key!==' ') return;
+  var im=document.activeElement;
+  if(im && im.matches && im.matches('img.qimg')){ e.preventDefault(); lbxOpen(im.getAttribute('src'), im.alt); }
+});
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function scrollToCat(){ if(state.view!=='home'){go('home');setTimeout(()=>document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}),80);} else document.getElementById('categories')?.scrollIntoView({behavior:'smooth'}); }
 function showLoader(m){ const l=document.getElementById('loader'); document.getElementById('loaderMsg').textContent=m||'กำลังเตรียมข้อสอบ...'; l.style.display='flex'; }
@@ -1334,7 +1523,7 @@ function qCard(q,i){
   const saveBtn=`<button id="sv${i}" class="actbtn save ${saved?'on':''}" onclick="toggleSavedQ('${q.key}',${i})" aria-pressed="${saved}"
       title="${saved?'เอาออกจากคลังของฉัน':'บันทึกข้อนี้เข้าคลังของฉัน'} (B)"
       aria-label="${saved?'เอาออกจากคลังของฉัน':'บันทึกข้อนี้เข้าคลังของฉัน'}"><svg class="i"><use href="#i-save"/></svg></button>`;
-  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${q.topic?`<span class="tag">${esc(q.topic)}</span>`:''}<span style="flex:1"></span><span class="acthint" id="ah${i}"></span>${flagCtl}${saveBtn}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}`;
+  div.innerHTML=`<div class="qhead"><span class="qnum">ข้อ ${i+1}</span>${q.topic?`<span class="tag">${esc(q.topic)}</span>`:''}<span style="flex:1"></span><span class="acthint" id="ah${i}"></span>${flagCtl}${saveBtn}</div><div class="stem">${esc(q.q)}</div>${q.img?`<img class="qimg" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ — กดเพื่อขยาย" title="กดเพื่อขยาย" tabindex="0" role="button" loading="lazy" onerror="imgFail(this)">`:''}`;
   q.choices.forEach((c,j)=>{ const b=document.createElement('button'); b.className='opt';
     if(chosen===j)b.classList.add('sel');
     if(reveal){ if(j===q.ans)b.classList.add('correct'); if(j===chosen&&chosen!==q.ans)b.classList.add('wrong'); b.disabled=s.mode==='practice'; }
@@ -1814,7 +2003,7 @@ async function renderAttempt(app){
         <span class="tag">${esc(rec.quizTitle||'')}</span>
         ${q.topic?`<span class="tag teal">${esc(q.topic)}</span>`:''}</div>
       <div style="font-weight:500;line-height:1.55">${esc(q.q)}</div>
-      ${q.img?`<img class="qimg" style="margin-top:10px" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ" loading="lazy" onerror="imgFail(this)">`:''}
+      ${q.img?`<img class="qimg" style="margin-top:10px" src="${esc(q.img)}" alt="รูปประกอบข้อสอบ — กดเพื่อขยาย" title="กดเพื่อขยาย" tabindex="0" role="button" loading="lazy" onerror="imgFail(this)">`:''}
       <div style="margin-top:7px;color:var(--ok);font-size:15px"><b>เฉลย ${LAB[q.ans]}.</b> ${esc(ansTxt)}</div>
       <div class="exp">${renderExp(q.exp)}</div>
     </div>`; }).join('');
