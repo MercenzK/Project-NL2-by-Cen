@@ -7,7 +7,7 @@
    - รูปไอคอน/รูปข้อสอบ = cache-first แคชแยก (IMG_CACHE)
    - CDN ข้ามโดเมน (fonts, Supabase lib) = stale-while-revalidate
 */
-const CACHE = 'nl2quiz-v11';
+const CACHE = 'nl2quiz-v12';
 /* รูปข้อสอบแยกแคชต่างหาก เพราะ:
    - มีจำนวนมาก (400+ รูป) ไม่ควรโดนล้างทิ้งทุกครั้งที่ปล่อยแอปเวอร์ชันใหม่
    - รูปข้อสอบไม่เปลี่ยนเนื้อหา จึงใช้ cache-first ล้วน ไม่ต้องยิงเน็ตซ้ำ (ประหยัดเน็ตมือถือมาก) */
@@ -60,6 +60,18 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+
+  /* สรุปเนื้อหา (notes/*.md, notes/index.json, รูป SVG ใน notes/img) แก้ไขบ่อย
+     → network-first แล้วเก็บสำเนาไว้อ่านออฟไลน์ (ถ้าใช้ cache-first จะเห็นฉบับเก่าค้าง) */
+  if (url.origin === location.origin && /\/notes\//.test(url.pathname)) {
+    e.respondWith(
+      fetch(req).then(res => {
+        if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
 
   // รูปทุกแหล่ง (รวมรูป ECG ที่ยังชี้ไปเว็บนอก) → cache-first แคชแยก
   if (isImg(req, url)) { e.respondWith(imageFirst(req)); return; }

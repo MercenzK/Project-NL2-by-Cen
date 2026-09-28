@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" font-family="sans-serif">
+  <rect width="760" height="300" fill="#ffffff"/>
+  <text x="380" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#222">ECG evolution in STEMI without reperfusion</text>
+  <g stroke="#dddddd" stroke-width="1">
+    <line x1="20" y1="170" x2="740" y2="170"/>
+  </g>
+  <g fill="none" stroke="#c0392b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <!-- 1 normal: baseline y=170 -->
+    <path d="M30,170 L45,170 Q52,160 59,170 L68,170 L72,176 L78,110 L84,182 L88,170 L100,170 Q115,150 130,170 L140,170"/>
+    <!-- 2 hyperacute T -->
+    <path d="M175,170 L190,170 Q197,160 204,170 L213,170 L217,176 L223,110 L229,182 L233,172 L240,168 Q258,100 272,170 L285,170"/>
+    <!-- 3 ST elevation (tombstone/convex) -->
+    <path d="M320,170 L335,170 Q342,160 349,170 L358,170 L362,176 L368,115 L374,140 Q385,112 400,125 Q412,140 420,170 L430,170"/>
+    <!-- 4 Q wave + ST elevation falling + T inversion -->
+    <path d="M465,170 L480,170 Q487,160 494,170 L503,170 L507,205 L513,140 L519,160 Q532,150 545,165 Q555,192 568,170 L575,170"/>
+    <!-- 5 Q wave + persistent T inversion -->
+    <path d="M610,170 L625,170 Q632,160 639,170 L648,170 L652,210 L658,145 L664,172 L672,170 Q690,200 710,170 L725,170"/>
+  </g>
+  <g font-size="14" text-anchor="middle" fill="#222">
+    <text x="85" y="235" font-weight="bold">Normal</text>
+    <text x="230" y="235" font-weight="bold">Hyperacute T waves</text>
+    <text x="230" y="255">minutes</text>
+    <text x="375" y="235" font-weight="bold">ST elevation</text>
+    <text x="375" y="255">minutes–hours</text>
+    <text x="520" y="235" font-weight="bold">Q waves + T inversion</text>
+    <text x="520" y="255">hours–days</text>
+    <text x="667" y="235" font-weight="bold">Persistent Q waves</text>
+    <text x="667" y="255">weeks</text>
+  </g>
+  <text x="380" y="288" text-anchor="middle" font-size="13" fill="#555">Persistent ST elevation for weeks after MI → suspect LV aneurysm</text>
+</svg>

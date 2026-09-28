@@ -1,0 +1,52 @@
+[
+ {
+  "id": "acs-stemi",
+  "title": "Acute coronary syndrome (ACS) — STEMI / NSTE-ACS",
+  "title_th": "ภาวะหัวใจขาดเลือดเฉียบพลัน",
+  "subject": "medicine",
+  "system": "cardiovascular",
+  "tags": [
+   "ACS",
+   "STEMI",
+   "NSTEMI",
+   "unstable angina",
+   "myocardial infarction",
+   "fibrinolysis",
+   "primary PCI",
+   "DAPT",
+   "ECG"
+  ],
+  "exam_weight": "high",
+  "path": "notes/medicine/acs-stemi.md",
+  "linked_questions": [
+   "nl2-2021:1",
+   "nl2-2021:7",
+   "nl2-2022-pm:130",
+   "nl2-2023:4",
+   "nl2-2023:225",
+   "nl2-2024:1",
+   "nl2-2024:4",
+   "nl2-2024:5",
+   "nl2-2025-apr:19",
+   "nl2-2025-apr:244",
+   "nl2-2025-apr:249",
+   "nl2-2025-oct:69",
+   "nl2-2026-jan:64",
+   "set1:1",
+   "set1:2",
+   "set1:22",
+   "set1:35",
+   "set1:40",
+   "er-1:43",
+   "er-1:56",
+   "set5:94",
+   "ecg-1:1",
+   "ecg-1:7",
+   "ecg-1:10",
+   "ecg-3:1",
+   "ecg-3:61"
+  ],
+  "guidelines_checked": "2026-09-28",
+  "version": 1
+ }
+]

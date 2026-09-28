@@ -330,7 +330,7 @@ function setThemeIcon(){
 function markActiveNav(){
   const v=state.view;
   document.querySelectorAll('.nav [data-view],#tabbar [data-view]').forEach(b=>{
-    b.classList.toggle('on', b.dataset.view===v || (b.dataset.view==='cat' && v==='home'));
+    b.classList.toggle('on', b.dataset.view===v || (b.dataset.view==='cat' && v==='home') || (b.dataset.view==='study' && v==='note'));
   });
 }
 async function doSignOut(){ if(supa) await supa.auth.signOut(); user=null; invalidateAnalytics(); renderTopbar(); go('home'); }
@@ -432,7 +432,7 @@ function requireLogin(){
    ══════════════════════════════════════════════════════════════════════════ */
 const ROUTES={ home:'', subject:'subject', config:'set', quiz:'quiz', result:'result',
   review:'review', history:'stats', weakness:'weakness', readiness:'readiness',
-  systems:'systems', simconfig:'sim', saved:'saved', study:'study',
+  systems:'systems', simconfig:'sim', saved:'saved', study:'study', note:'note',
   leaderboard:'rank', reports:'reports', search:'search', attempt:'attempt' };
 const VIEW_OF=Object.fromEntries(Object.entries(ROUTES).map(([v,r])=>[r,v]));
 let __applyingHash=false;   /* กันลูป: เขียน hash แล้วอย่าไปตอบสนอง hashchange ของตัวเอง */
@@ -450,6 +450,7 @@ function hashFor(st){
       ? `#/quiz/${id}/q${s.cur+1}` : `#/quiz/${id}`;
   }
   if(st.view==='search') return '#/search/'+encodeURIComponent(window.__searchKw||'');
+  if(st.view==='note') return '#/note/'+encodeURIComponent(st.noteId||'');
   return '#/'+seg;
 }
 /* เขียน hash ลง address bar — replace=true เมื่อเป็นการอัปเดตในหน้าเดิม
@@ -476,6 +477,7 @@ function applyHash(){
   if(!view){ state.view='home'; render(); return; }
   if(view==='subject'){ state.view='subject'; state.subject=parts[1]||''; render(); return; }
   if(view==='config'){  state.view='config';  state.quiz=parts[1]||''; render(); return; }
+  if(view==='note'){ if(!parts[1]){ state.view='study'; render(); return; } state.view='note'; state.noteId=parts[1]; render(); window.scrollTo(0,0); return; }
   if(view==='quiz'){
     /* เข้าลิงก์ทำข้อสอบตรง ๆ แต่ไม่มี session ค้างอยู่ → พาไปหน้าตั้งค่าของชุดนั้นแทน
        เพราะเริ่มทำเองเลยโดยไม่ถามโหมด/จับเวลา จะเสียประสบการณ์มากกว่า */
@@ -885,19 +887,151 @@ async function render(){
   if(state.view==='systems') return renderSystems(app);
   if(state.view==='readiness') return renderReadiness(app);
   if(state.view==='study') return renderStudy(app);
+  if(state.view==='note') return renderNote(app);
   if(state.view==='reports') return renderReports(app);
   if(state.view==='saved') return renderSaved(app);
 }
-function renderStudy(app){
-  app.innerHTML=`<div class="wrap" style="padding-top:16px">
-    <div class="row" style="margin-bottom:10px;align-items:center">
-      <b class="qtitle" style="font-size:19px">สรุปอ่านสอบ High-Yield แยก Ward</b>
-      <span style="flex:1"></span>
-      <button class="btn sm sec" onclick="window.open('study.html','_blank')">เปิดแท็บใหม่</button>
-      <button class="btn sm sec" onclick="go('home')">หน้าแรก</button>
+/* ══ สรุปเนื้อหา (notes) ═══════════════════════════════════════════════════
+   #/study          หน้ารวมหัวข้อ — อ่านจาก notes/index.json
+   #/note/<id>      หน้าอ่านสรุปแต่ละเรื่อง — ไฟล์ markdown ใน notes/<subject>/<id>.md
+   ไฟล์สรุปเขียนเป็น markdown (มี front matter) จึงต้องแปลงเป็น HTML ในเครื่อง
+   ใช้ marked + DOMPurify จาก jsdelivr (CSP อนุญาตอยู่แล้ว) โหลดเฉพาะตอนเปิดหน้าอ่าน
+   เพื่อไม่ให้หน้าแรกหนักขึ้น                                                    */
+const NOTE_SUBJECTS={medicine:'อายุรศาสตร์',pediatrics:'กุมารเวชศาสตร์',obgyn:'สูติ-นรีเวช',surgery:'ศัลยศาสตร์',
+  ortho:'ออร์โธปิดิกส์',psychiatry:'จิตเวชศาสตร์',emergency:'เวชศาสตร์ฉุกเฉิน',eye:'จักษุวิทยา',ent:'โสต ศอ นาสิก',
+  derm:'ตจวิทยา',forensic:'นิติเวชศาสตร์',ethics:'จริยศาสตร์',community:'เวชศาสตร์ชุมชน'};
+const NOTE_SYSTEMS={cardiovascular:'Cardiovascular',respiratory:'Respiratory',gastrointestinal:'GI / Hepatology',
+  renal:'Renal',endocrine:'Endocrine',hematology:'Hematology',infectious:'Infectious',neurology:'Neurology',
+  rheumatology:'Rheumatology',dermatology:'Dermatology'};
+var __notesIdx=null, __notesQ='', __notesSub='all', __notesStar=false;
+async function loadNotesIndex(){
+  if(__notesIdx) return __notesIdx;
+  const r=await fetch('notes/index.json',{cache:'no-cache'});
+  if(!r.ok) throw new Error('โหลด notes/index.json ไม่ได้ ('+r.status+')');
+  __notesIdx=await r.json(); return __notesIdx;
+}
+function loadScriptOnce(src){
+  return new Promise((ok,fail)=>{
+    if(document.querySelector('script[src="'+src+'"]')){ ok(); return; }
+    const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=()=>fail(new Error('โหลดไลบรารีไม่ได้: '+src));
+    document.head.appendChild(s);
+  });
+}
+async function renderStudy(app){
+  app.innerHTML=`<div class="wrap notes-wrap"><div class="muted" style="padding:40px 0">กำลังโหลดรายการสรุป…</div></div>`;
+  let idx;
+  try{ idx=await loadNotesIndex(); }
+  catch(e){ app.innerHTML=`<div class="wrap notes-wrap"><div class="card" style="padding:20px">โหลดรายการสรุปไม่สำเร็จ — ${esc(e.message)}</div></div>`; return; }
+  if(state.view!=='study') return;
+  const subs=[...new Set(idx.map(n=>n.subject))];
+  app.innerHTML=`<div class="wrap notes-wrap">
+    <div class="notes-head">
+      <div>
+        <h1 class="notes-h1">${ic('book')}สรุปเนื้อหา</h1>
+        <div class="muted">สรุปรายโรคตาม guideline ล่าสุด (ไทย · US · EU) เน้นจุดที่ข้อสอบ NL2 ชอบถาม — ${idx.length} เรื่อง</div>
+      </div>
+      <button class="btn sm sec" onclick="window.open('study.html','_blank')">สรุป High-Yield แยก Ward (ฉบับเดิม)</button>
     </div>
-    <iframe src="study.html" title="สรุปอ่านสอบ" style="width:100%;height:82vh;border:1px solid var(--line);border-radius:12px;background:var(--paper)"></iframe>
+    <div class="notes-tools">
+      <div class="notes-search">${ic('search')}<input id="notesQ" type="search" placeholder="ค้นหาโรค / หัวข้อ เช่น STEMI, thyroid" value="${esc(__notesQ)}" oninput="__notesQ=this.value;notesFilter()"></div>
+      <div class="notes-chips">
+        <button class="chip${__notesSub==='all'?' on':''}" onclick="__notesSub='all';renderStudy(document.getElementById('app'))">ทั้งหมด</button>
+        ${subs.map(s=>`<button class="chip${__notesSub===s?' on':''}" onclick="__notesSub='${s}';renderStudy(document.getElementById('app'))">${esc(NOTE_SUBJECTS[s]||s)}</button>`).join('')}
+        <button class="chip${__notesStar?' on':''}" onclick="__notesStar=!__notesStar;renderStudy(document.getElementById('app'))">★ ออกบ่อย</button>
+      </div>
+    </div>
+    <div id="notesList"></div>
   </div>`;
+  notesFilter();
+}
+function notesFilter(){
+  const box=document.getElementById('notesList'); if(!box||!__notesIdx) return;
+  const q=__notesQ.trim().toLowerCase();
+  const list=__notesIdx.filter(n=>(__notesSub==='all'||n.subject===__notesSub)&&(!__notesStar||n.exam_weight==='high')
+    &&(!q||[n.title,n.title_th,(n.tags||[]).join(' '),n.system].join(' ').toLowerCase().includes(q)));
+  if(!list.length){ box.innerHTML=`<div class="card muted" style="padding:22px;text-align:center">ไม่พบหัวข้อที่ตรงกับเงื่อนไข</div>`; return; }
+  const groups={}; list.forEach(n=>{ (groups[n.subject]=groups[n.subject]||[]).push(n); });
+  box.innerHTML=Object.keys(groups).map(s=>`
+    <h2 class="notes-group">${esc(NOTE_SUBJECTS[s]||s)} <span class="muted">${groups[s].length}</span></h2>
+    <div class="notes-grid">${groups[s].sort((a,b)=>a.title.localeCompare(b.title)).map(n=>`
+      <a class="note-card" href="#/note/${encodeURIComponent(n.id)}">
+        <div class="note-card-top">
+          <span class="note-sys">${esc(NOTE_SYSTEMS[n.system]||n.system||'')}</span>
+          ${n.exam_weight==='high'?'<span class="note-star" title="ออกข้อสอบซ้ำหลายปี">★ ออกบ่อย</span>':''}
+        </div>
+        <div class="note-title">${esc(n.title)}</div>
+        <div class="note-th">${esc(n.title_th||'')}</div>
+        <div class="note-meta">${(n.linked_questions||[]).length?`${ic('flask')}${n.linked_questions.length} ข้อสอบที่เกี่ยวข้อง · `:''}ตรวจ guideline ${esc(n.guidelines_checked||'')}</div>
+      </a>`).join('')}</div>`).join('');
+}
+function quizLabel(k){
+  const [set,n]=String(k).split(':'); const q=(window.QUIZ_DATA||[]).find(x=>x.id===set);
+  return (q?q.title.replace(/\s*\(.*?\)\s*$/,''):set)+' ข้อ '+n;
+}
+async function renderNote(app){
+  const id=state.noteId;
+  app.innerHTML=`<div class="wrap notes-wrap"><div class="muted" style="padding:40px 0">กำลังโหลดสรุป…</div></div>`;
+  let meta, md;
+  try{
+    const idx=await loadNotesIndex();
+    meta=idx.find(n=>n.id===id); if(!meta) throw new Error('ไม่พบหัวข้อ "'+id+'"');
+    const [r]=await Promise.all([fetch(meta.path,{cache:'no-cache'}),
+      loadScriptOnce('https://cdn.jsdelivr.net/npm/marked@12/marked.min.js'),
+      loadScriptOnce('https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js')]);
+    if(!r.ok) throw new Error('โหลดไฟล์สรุปไม่ได้ ('+r.status+')');
+    md=await r.text();
+  }catch(e){
+    app.innerHTML=`<div class="wrap notes-wrap"><div class="card" style="padding:20px">${esc(e.message)}<div style="margin-top:12px"><button class="btn sm sec" onclick="go('study')">กลับไปหน้าสรุปเนื้อหา</button></div></div></div>`;
+    return;
+  }
+  if(state.view!=='note'||state.noteId!==id) return;
+  md=md.replace(/^---\n[\s\S]*?\n---\n/,'');
+  let html=DOMPurify.sanitize(marked.parse(md,{gfm:true}),{ADD_TAGS:['details','summary'],ADD_ATTR:['target','markdown']});
+  const art=document.createElement('article'); art.className='note-body'; art.innerHTML=html;
+  /* จัดหน้าเพิ่มหลังแปลง markdown */
+  art.querySelectorAll('h1').forEach(h=>h.remove());                         // ใช้หัวเรื่องจาก index แทน
+  const toc=[]; art.querySelectorAll('h2').forEach((h,i)=>{ h.id='s'+i; toc.push({id:h.id,t:h.textContent}); });
+  art.querySelectorAll('table').forEach(t=>{ const w=document.createElement('div'); w.className='note-table'; t.replaceWith(w); w.appendChild(t); });
+  art.querySelectorAll('blockquote').forEach(b=>{
+    const t=b.textContent.trim();
+    if(t.startsWith('💡')) b.classList.add('co-pearl'); else if(t.startsWith('🚩')) b.classList.add('co-red'); else if(t.startsWith('⚠️')) b.classList.add('co-warn');
+  });
+  art.querySelectorAll('img').forEach(im=>{
+    im.loading='lazy'; im.decoding='async';
+    if(im.title==='half'){ im.classList.add('half'); im.removeAttribute('title'); }
+    im.addEventListener('click',()=>lbxOpen(im.src,im.alt));
+    /* รูป + บรรทัดคำบรรยาย *...* ที่อยู่ย่อหน้าเดียวกัน → <figure> + <figcaption> จัดกึ่งกลาง */
+    const p=im.parentElement; if(!p||p.tagName!=='P') return;
+    const fig=document.createElement('figure'); fig.className='note-fig';
+    p.parentNode.insertBefore(fig,p); fig.appendChild(im);
+    const cap=p.querySelector('em');
+    if(cap){ const fc=document.createElement('figcaption'); fc.innerHTML=cap.innerHTML; fig.appendChild(fc); cap.remove(); }
+    if(!p.textContent.trim() && !p.querySelector('img')) p.remove();
+  });
+  art.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener noreferrer'; });
+  /* ลิงก์ไปข้อสอบ #/quiz/<set>/q<n> → พาไปหน้าตั้งค่าของชุดนั้น (เริ่มทำข้อเดียวตรง ๆ ยังไม่รองรับ) */
+  art.querySelectorAll('a[href^="#/quiz/"]').forEach(a=>{ const m=/^#\/quiz\/([^/]+)/.exec(a.getAttribute('href')); if(m) a.setAttribute('href','#/set/'+m[1]); });
+  const lq=meta.linked_questions||[];
+  app.innerHTML=`<div class="wrap notes-wrap note-page">
+    <div class="note-crumb"><a href="#/study">${ic('left')}สรุปเนื้อหา</a><span>/</span>${esc(NOTE_SUBJECTS[meta.subject]||meta.subject)}</div>
+    <header class="note-hero">
+      <div class="note-card-top">
+        <span class="note-sys">${esc(NOTE_SYSTEMS[meta.system]||meta.system||'')}</span>
+        ${meta.exam_weight==='high'?'<span class="note-star">★ ออกบ่อย</span>':''}
+      </div>
+      <h1 class="notes-h1">${esc(meta.title)}</h1>
+      <div class="note-th">${esc(meta.title_th||'')}</div>
+      <div class="note-meta">ตรวจ guideline ล่าสุด ${esc(meta.guidelines_checked||'-')} · version ${esc(String(meta.version||1))}</div>
+    </header>
+    <div class="note-layout">
+      <nav class="note-toc" id="noteToc"><button class="note-toc-btn" onclick="this.parentElement.classList.toggle('open')">${ic('menu')}สารบัญ</button>
+        <ol>${toc.map(x=>`<li><a href="javascript:void(0)" onclick="document.getElementById('${x.id}').scrollIntoView({behavior:'smooth'});document.getElementById('noteToc').classList.remove('open')">${esc(x.t)}</a></li>`).join('')}</ol>
+      </nav>
+      <div id="noteBody"></div>
+    </div>
+    ${lq.length?`<div class="card note-practice"><b>${ic('flask')}ฝึกข้อสอบเรื่องนี้</b><div class="note-qlinks">${lq.map(k=>{const s=String(k).split(':')[0];return `<a class="chip" href="#/set/${encodeURIComponent(s)}">${esc(quizLabel(k))}</a>`;}).join('')}</div></div>`:''}
+  </div>`;
+  document.getElementById('noteBody').appendChild(art);
 }
 
 /* ---------- HOME ----------
@@ -966,7 +1100,7 @@ async function renderHome(app){
     ${homeMetricsHTML({at,totalQ,totalDone,weekDone,avg})}
     <div class="cta">
       <button class="btn" onclick="startCombined()">${ic('play')}เริ่มทำข้อสอบเลย</button>
-      <button class="btn outline" onclick="go('study')">${ic('book')}อ่านสรุป High-Yield</button>
+      <button class="btn outline" onclick="go('study')">${ic('book')}อ่านสรุปเนื้อหา</button>
       <button class="btn outline" onclick="scrollToCat()">${ic('grid')}เลือกตามรายวิชา</button>
     </div>
   </div>

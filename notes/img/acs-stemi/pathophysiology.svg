@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" font-family="sans-serif">
+  <rect width="760" height="330" fill="#ffffff"/>
+  <text x="380" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#222">Plaque rupture → thrombus → สเปกตรัมของ ACS</text>
+  <!-- panel template: artery tube -->
+  <g>
+    <!-- Panel 1: stable plaque -->
+    <rect x="20" y="70" width="230" height="90" rx="10" fill="#fbe3e3" stroke="#b03a2e" stroke-width="2"/>
+    <path d="M90,160 Q135,105 180,160 Z" fill="#f4d03f" stroke="#b7950b" stroke-width="2"/>
+    <text x="135" y="195" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">Stable plaque</text>
+    <text x="135" y="215" text-anchor="middle" font-size="13" fill="#444">fibrous cap หนา · ตีบคงที่</text>
+    <text x="135" y="235" text-anchor="middle" font-size="13" fill="#444">→ stable angina</text>
+    <!-- Panel 2: partial occlusion -->
+    <rect x="265" y="70" width="230" height="90" rx="10" fill="#fbe3e3" stroke="#b03a2e" stroke-width="2"/>
+    <path d="M335,160 Q380,105 425,160 Z" fill="#f4d03f" stroke="#b7950b" stroke-width="2"/>
+    <path d="M348,137 Q380,96 412,137 Q380,131 348,137 Z" fill="#8e1b1b"/>
+    <text x="380" y="195" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">Thrombus อุดบางส่วน</text>
+    <text x="380" y="215" text-anchor="middle" font-size="13" fill="#444">ischemia ชั้น subendocardium</text>
+    <text x="380" y="235" text-anchor="middle" font-size="13" fill="#444">→ UA / NSTEMI (ST↓, T กลับหัว)</text>
+    <!-- Panel 3: total occlusion -->
+    <rect x="510" y="70" width="230" height="90" rx="10" fill="#fbe3e3" stroke="#b03a2e" stroke-width="2"/>
+    <path d="M580,160 Q625,105 670,160 Z" fill="#f4d03f" stroke="#b7950b" stroke-width="2"/>
+    <path d="M588,72 L662,72 L662,128 Q625,120 588,128 Z" fill="#8e1b1b"/>
+    <text x="625" y="195" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">อุดตันสมบูรณ์</text>
+    <text x="625" y="215" text-anchor="middle" font-size="13" fill="#444">transmural ischemia</text>
+    <text x="625" y="235" text-anchor="middle" font-size="13" fill="#444">→ STEMI (ST↑) → เปิดหลอดเลือดด่วน</text>
+  </g>
+  <g fill="#1f4e79" font-size="22">
+    <text x="252" y="122">➜</text>
+    <text x="497" y="122">➜</text>
+  </g>
+  <text x="380" y="275" text-anchor="middle" font-size="14" fill="#222">ยาต้านเกล็ดเลือด (aspirin + P2Y12) หยุดการสร้าง thrombus เพิ่ม · anticoagulant หยุด fibrin</text>
+  <text x="380" y="300" text-anchor="middle" font-size="14" fill="#222">fibrinolytic / PCI เปิดหลอดเลือดที่อุดแล้ว · statin ทำให้ plaque เสถียร</text>
+  <text x="380" y="320" text-anchor="middle" font-size="12" fill="#666">สีเหลือง = lipid-rich plaque · สีแดงเข้ม = thrombus</text>
+</svg>
