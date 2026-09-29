@@ -822,3 +822,53 @@ tr.hrow:hover td{background:var(--paper2)}
   .note-body img.half{max-width:80%}
   .notes-h1{font-size:22px}
 }
+
+/* ── สรุปเนื้อหา: ปุ่มบนหัว, ซ่อนสารบัญ, หน้าล็อก, พิมพ์/PDF ── */
+.note-hero{position:relative}
+.note-actions{position:absolute;top:0;right:0;display:flex;gap:8px}
+.note-actions .btn{display:inline-flex;align-items:center;gap:6px}
+.note-actions .i{width:16px;height:16px}
+.note-layout.toc-hidden{grid-template-columns:minmax(0,1fr)}
+.note-layout.toc-hidden .note-toc{display:none}
+.note-layout.toc-hidden .note-body{max-width:1000px;margin:0 auto}
+.notes-lock{max-width:520px;margin:48px auto;padding:32px 28px;text-align:center}
+.notes-lock h2{font-size:20px;margin:10px 0 6px}
+.notes-lock p{margin:0 0 18px}
+.notes-lock .btn{display:inline-flex;align-items:center;gap:6px}
+.notes-lock-ic .i{width:40px;height:40px;color:var(--accent)}
+@media (max-width:900px){
+  .note-actions{position:static;margin-top:12px}
+  .note-actions .note-toc-toggle{display:none}
+  .note-layout.toc-hidden .note-toc{display:block}
+}
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  html,body{background:#fff !important;color:#111 !important}
+  body>header,#tabbar,body>footer,.loader-bg,.qdash,.lbx,
+  .note-crumb,.note-actions,.note-toc,.note-practice{display:none !important}
+  #app{padding:0 !important;margin:0 !important}
+  .wrap,.notes-wrap{max-width:none !important;padding:0 !important;margin:0 !important}
+  .note-layout{display:block !important}
+  .note-hero{border-bottom:1px solid #999}
+  .notes-h1{color:#111 !important;font-size:22pt}
+  .note-th,.note-meta,.muted{color:#444 !important}
+  .note-sys,.note-star{border:1px solid #999;background:#fff !important;color:#111 !important}
+  .note-body{max-width:none !important;font-size:10.5pt;line-height:1.55;color:#111 !important}
+  .note-body strong,.note-body h2,.note-body h3{color:#000 !important}
+  .note-body h2{font-size:14pt;break-after:avoid;border-bottom:1px solid #bbb}
+  .note-body h3{break-after:avoid}
+  .note-body a{color:#0b5394 !important;text-decoration:none}
+  .note-table{overflow:visible;border-color:#bbb}
+  .note-table th{background:#eee !important;color:#000 !important}
+  .note-table th,.note-table td{border-color:#bbb !important;color:#111 !important}
+  .note-table tr,.note-fig,.note-body blockquote,.note-body details{break-inside:avoid}
+  .note-body blockquote{background:#f4f4f4 !important;border-left-color:#888 !important;color:#111 !important}
+  .note-body blockquote.co-pearl{background:#eef8f1 !important;border-left-color:#2e8b57 !important}
+  .note-body blockquote.co-warn{background:#fff6e5 !important;border-left-color:#d9820b !important}
+  .note-body blockquote.co-red{background:#fdecec !important;border-left-color:#c0392b !important}
+  .note-body details{background:#fafafa !important;border-color:#ccc !important}
+  .note-body summary{color:#0b5394 !important}
+  .note-body img{border-color:#ccc;max-height:230mm}
+  .note-body code{background:#eee !important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

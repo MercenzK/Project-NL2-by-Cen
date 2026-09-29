@@ -920,7 +920,20 @@ function loadScriptOnce(src){
     document.head.appendChild(s);
   });
 }
+/* สรุปเนื้อหาเปิดให้อ่านเฉพาะผู้ที่เข้าสู่ระบบแล้ว (ถ้าเว็บต่อ Supabase ได้)
+   หมายเหตุ: เป็นการกันที่หน้าเว็บ — ไฟล์ .md บน GitHub Pages ยังเปิดตรงได้ถ้ารู้ URL */
+function notesLocked(app){
+  if(!CLOUD || user) return false;
+  app.innerHTML=`<div class="wrap notes-wrap"><div class="card notes-lock">
+    <div class="notes-lock-ic">${ic('book')}</div>
+    <h2>สรุปเนื้อหาสำหรับสมาชิก</h2>
+    <p class="muted">เข้าสู่ระบบด้วยบัญชี @up.ac.th ก่อนเพื่ออ่านสรุปรายโรค</p>
+    <button class="btn" onclick="openAuth()">${ic('user')}เข้าสู่ระบบ</button>
+  </div></div>`;
+  return true;
+}
 async function renderStudy(app){
+  if(notesLocked(app)) return;
   app.innerHTML=`<div class="wrap notes-wrap"><div class="muted" style="padding:40px 0">กำลังโหลดรายการสรุป…</div></div>`;
   let idx;
   try{ idx=await loadNotesIndex(); }
@@ -972,6 +985,7 @@ function quizLabel(k){
   return (q?q.title.replace(/\s*\(.*?\)\s*$/,''):set)+' ข้อ '+n;
 }
 async function renderNote(app){
+  if(notesLocked(app)) return;
   const id=state.noteId;
   app.innerHTML=`<div class="wrap notes-wrap"><div class="muted" style="padding:40px 0">กำลังโหลดสรุป…</div></div>`;
   let meta, md;
@@ -1025,8 +1039,12 @@ async function renderNote(app){
       <h1 class="notes-h1">${esc(meta.title)}</h1>
       <div class="note-th">${esc(meta.title_th||'')}</div>
       <div class="note-meta">ตรวจ guideline ล่าสุด ${esc(meta.guidelines_checked||'-')} · version ${esc(String(meta.version||1))}</div>
+      <div class="note-actions">
+        <button class="btn sm sec note-toc-toggle" onclick="noteTocToggle()" title="ซ่อน/แสดงสารบัญด้านซ้าย">${ic('menu')}<span id="tocTglTxt">${noteTocHidden()?'แสดงสารบัญ':'ซ่อนสารบัญ'}</span></button>
+        <button class="btn sm" onclick="notePrint()" title="บันทึกเป็น PDF หรือพิมพ์">${ic('download')}PDF / พิมพ์</button>
+      </div>
     </header>
-    <div class="note-layout">
+    <div class="note-layout${noteTocHidden()?' toc-hidden':''}" id="noteLayout">
       <nav class="note-toc" id="noteToc"><button class="note-toc-btn" onclick="this.parentElement.classList.toggle('open')">${ic('menu')}สารบัญ</button>
         <ol>${toc.map(x=>`<li><a href="javascript:void(0)" onclick="document.getElementById('${x.id}').scrollIntoView({behavior:'smooth'});document.getElementById('noteToc').classList.remove('open')">${esc(x.t)}</a></li>`).join('')}</ol>
       </nav>
@@ -1035,6 +1053,25 @@ async function renderNote(app){
     ${lq.length?`<div class="card note-practice"><b>${ic('flask')}ฝึกข้อสอบเรื่องนี้</b><div class="note-qlinks">${lq.map(k=>{const s=String(k).split(':')[0];return `<a class="chip" href="#/set/${encodeURIComponent(s)}">${esc(quizLabel(k))}</a>`;}).join('')}</div></div>`:''}
   </div>`;
   document.getElementById('noteBody').appendChild(art);
+}
+
+/* ซ่อนสารบัญด้านซ้ายเพื่ออ่านเต็มจอ — จำค่าไว้ในเครื่อง */
+function noteTocHidden(){ try{ return localStorage.getItem('noteTocHidden')==='1'; }catch(e){ return false; } }
+function noteTocToggle(){
+  const h=!noteTocHidden(); try{ localStorage.setItem('noteTocHidden',h?'1':'0'); }catch(e){}
+  const l=document.getElementById('noteLayout'); if(l) l.classList.toggle('toc-hidden',h);
+  const t=document.getElementById('tocTglTxt'); if(t) t.textContent=h?'แสดงสารบัญ':'ซ่อนสารบัญ';
+}
+/* PDF / พิมพ์ — ใช้หน้าต่างพิมพ์ของเบราว์เซอร์ (เลือก "บันทึกเป็น PDF" ได้)
+   กางเฉลย MCQ ทุกข้อก่อนพิมพ์ แล้วคืนสภาพหลังพิมพ์ · ตั้งชื่อไฟล์ผ่าน document.title */
+function notePrint(){
+  const body=document.querySelector('.note-body'); if(!body) return;
+  const closed=[...body.querySelectorAll('details:not([open])')]; closed.forEach(d=>d.open=true);
+  const t0=document.title; const h=document.querySelector('.note-hero .notes-h1');
+  if(h) document.title=h.textContent.trim()+' — NL2 Med Quiz';
+  const done=()=>{ closed.forEach(d=>d.open=false); document.title=t0; window.removeEventListener('afterprint',done); };
+  window.addEventListener('afterprint',done);
+  window.print();
 }
 
 /* ---------- HOME ----------
