@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 812" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="812" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Alcohol-associated hepatitis: diagnosis and treatment</text>
+<rect x="20" y="48" width="720" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="73.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Heavy drinker with new or worsening jaundice</text>
+<text x="380.0" y="91.8" text-anchor="middle" font-size="14" fill="#1d2433">NIAAA: jaundice ≤ 60 d after heavy use (&gt; 50 g/d, ≥ 6 mo) · bilirubin &gt; 3 mg/dL</text>
+<text x="380.0" y="110" text-anchor="middle" font-size="14" fill="#1d2433">AST 50–400 U/L · AST:ALT &gt; 1.5 · no other cause</text>
+<text x="380.0" y="128.2" text-anchor="middle" font-size="14" fill="#1d2433">Ultrasound (exclude obstruction, abscess, HCC) · biopsy only if uncertain</text>
+<polyline points="380,144 380,176" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="90" y="176" width="580" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="201.8" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Assess severity: MELD score</text>
+<text x="380.0" y="220" text-anchor="middle" font-size="14" fill="#1d2433">(historical: Maddrey DF ≥ 32 = severe)</text>
+<polyline points="380,236 380,242 195,242 195,247.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,247.2 195,268" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,242 565,242 565,247.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,247.2 565,268" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="140" y="254.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">MELD ≤ 20</text>
+<text x="625" y="254.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">MELD &gt; 20</text>
+<rect x="20" y="268" width="350" height="130" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="301.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Moderate AH</text>
+<text x="195.0" y="319.7" text-anchor="middle" font-size="14" fill="#1d2433">Supportive care</text>
+<text x="195.0" y="337.9" text-anchor="middle" font-size="14" fill="#1d2433">Abstinence + AUD treatment</text>
+<text x="195.0" y="356.1" text-anchor="middle" font-size="14" fill="#1d2433">Nutrition, thiamine</text>
+<text x="195.0" y="374.3" text-anchor="middle" font-size="14" fill="#1d2433">No corticosteroids</text>
+<rect x="390" y="268" width="350" height="130" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="301.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Severe AH</text>
+<text x="565.0" y="319.7" text-anchor="middle" font-size="14" fill="#1d2433">Screen for infection, GI bleeding,</text>
+<text x="565.0" y="337.9" text-anchor="middle" font-size="14" fill="#1d2433">AKI/HRS, uncontrolled diabetes</text>
+<text x="565.0" y="356.1" text-anchor="middle" font-size="14" fill="#1d2433">(treat first; steroids can follow</text>
+<text x="565.0" y="374.3" text-anchor="middle" font-size="14" fill="#1d2433">once controlled)</text>
+<polyline points="565,398 565,430" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="430" width="350" height="88" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="565.0" y="460.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Prednisolone 40 mg/day</text>
+<text x="565.0" y="478.9" text-anchor="middle" font-size="14" fill="#1d2433">(IV methylprednisolone 32 mg/day</text>
+<text x="565.0" y="497.1" text-anchor="middle" font-size="14" fill="#1d2433">if unable to take orally)</text>
+<polyline points="565,518 565,550" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="550" width="350" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="584.9" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Lille score at day 4 or 7</text>
+<polyline points="565,610 565,624 475,624 475,636" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="475,636 475,658" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,624 655,624 655,636" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="655,636 655,658" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="450" y="638" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">&lt; 0.45</text>
+<text x="700" y="638" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">≥ 0.45</text>
+<rect x="390" y="658" width="170" height="110" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="475.0" y="699.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Responder</text>
+<text x="475.0" y="717.9" text-anchor="middle" font-size="14" fill="#1d2433">Continue to</text>
+<text x="475.0" y="736.1" text-anchor="middle" font-size="14" fill="#1d2433">complete 28 days</text>
+<rect x="570" y="658" width="170" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="655.0" y="690.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Non-responder</text>
+<text x="655.0" y="708.8" text-anchor="middle" font-size="14" fill="#1d2433">Stop steroids</text>
+<text x="655.0" y="727" text-anchor="middle" font-size="14" fill="#1d2433">Consider early</text>
+<text x="655.0" y="745.2" text-anchor="middle" font-size="14" fill="#1d2433">LT referral</text>
+<rect x="20" y="430" width="350" height="338" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="489.8" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">For every patient with AH</text>
+<text x="195.0" y="508" text-anchor="middle" font-size="14" fill="#1d2433">Abstinence is the key to survival</text>
+<text x="195.0" y="526.2" text-anchor="middle" font-size="14" fill="#1d2433">Alcohol withdrawal: benzodiazepine</text>
+<text x="195.0" y="556.4" text-anchor="middle" font-size="14" fill="#1d2433">(lorazepam / oxazepam safer in</text>
+<text x="195.0" y="574.6" text-anchor="middle" font-size="14" fill="#1d2433">poor liver function)</text>
+<text x="195.0" y="592.8" text-anchor="middle" font-size="14" fill="#1d2433">Thiamine before glucose</text>
+<text x="195.0" y="611" text-anchor="middle" font-size="14" fill="#1d2433">35 kcal/kg/day, protein 1.2–1.5 g/kg</text>
+<text x="195.0" y="629.2" text-anchor="middle" font-size="14" fill="#1d2433">Zinc and vitamin repletion</text>
+<text x="195.0" y="663.4" text-anchor="middle" font-size="14" fill="#1d2433">Relapse prevention: baclofen</text>
+<text x="195.0" y="681.6" text-anchor="middle" font-size="14" fill="#1d2433">(safe in cirrhosis), psychosocial care</text>
+<text x="195.0" y="699.8" text-anchor="middle" font-size="14" fill="#1d2433">Vaccinate: HAV, HBV, influenza,</text>
+<text x="195.0" y="718" text-anchor="middle" font-size="14" fill="#1d2433">pneumococcus</text>
+<text x="380" y="782" text-anchor="middle" font-size="12" fill="#666">AH = alcohol-associated hepatitis · AUD = alcohol use disorder · HRS = hepatorenal syndrome · LT = liver transplantation</text>
+<text x="380" y="800" text-anchor="middle" font-size="12" fill="#666">Adapted from ACG clinical guideline: alcohol-associated liver disease 2024 and StatPearls (NIAAA criteria, Lille cutoff)</text>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 661" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="661" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Adult CAP: severity and empirical treatment</text>
+<rect x="110" y="48" width="540" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="71.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Suspected CAP</text>
+<text x="380.0" y="91.2" text-anchor="middle" font-size="15" fill="#1d2433">Cough, fever, dyspnoea, focal crackles/bronchial breathing</text>
+<text x="380.0" y="110.8" text-anchor="middle" font-size="15" fill="#1d2433">Confirm with chest X-ray (or lung ultrasound)</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="110" y="156" width="540" height="76" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="179.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Assess severity</text>
+<text x="380.0" y="199.2" text-anchor="middle" font-size="15" fill="#1d2433">CURB-65 (Confusion, Urea &gt; 7, RR ≥ 30, BP low, age ≥ 65)</text>
+<text x="380.0" y="218.8" text-anchor="middle" font-size="15" fill="#1d2433">and ATS/IDSA severe CAP criteria</text>
+<polyline points="110,194 70,194 70,248.1" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="70,248.1 70,278" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,232 380,278" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="650,194 690,194 690,248.1" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="690,248.1 690,278" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="278" width="220" height="180" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="130.0" y="324.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Low (CURB-65 0–1)</text>
+<text x="130.0" y="344" text-anchor="middle" font-size="15" fill="#1d2433">Outpatient</text>
+<text x="130.0" y="363.5" text-anchor="middle" font-size="15" fill="#1d2433">No comorbidity:</text>
+<text x="130.0" y="383" text-anchor="middle" font-size="15" fill="#1d2433">amoxicillin, doxycycline</text>
+<text x="130.0" y="402.5" text-anchor="middle" font-size="15" fill="#1d2433">(macrolide if low</text>
+<text x="130.0" y="422" text-anchor="middle" font-size="15" fill="#1d2433">resistance)</text>
+<rect x="270" y="278" width="220" height="180" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="324.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Moderate / admit</text>
+<text x="380.0" y="344" text-anchor="middle" font-size="15" fill="#1d2433">Nonsevere inpatient</text>
+<text x="380.0" y="363.5" text-anchor="middle" font-size="15" fill="#1d2433">β-lactam (ceftriaxone,</text>
+<text x="380.0" y="383" text-anchor="middle" font-size="15" fill="#1d2433">amp/sulbactam)</text>
+<text x="380.0" y="402.5" text-anchor="middle" font-size="15" fill="#1d2433">+ macrolide</text>
+<text x="380.0" y="422" text-anchor="middle" font-size="15" fill="#1d2433">or resp. fluoroquinolone</text>
+<rect x="520" y="278" width="220" height="180" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="630.0" y="324.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Severe CAP</text>
+<text x="630.0" y="344" text-anchor="middle" font-size="15" fill="#1d2433">1 major or ≥ 3 minor</text>
+<text x="630.0" y="363.5" text-anchor="middle" font-size="15" fill="#1d2433">ICU · β-lactam +</text>
+<text x="630.0" y="383" text-anchor="middle" font-size="15" fill="#1d2433">macrolide (or FQ)</text>
+<text x="630.0" y="402.5" text-anchor="middle" font-size="15" fill="#1d2433">± steroids (ATS 2025)</text>
+<text x="630.0" y="422" text-anchor="middle" font-size="15" fill="#1d2433">MRSA/PsA cover if risk</text>
+<polyline points="130,458 130,476.2 630,476.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,458 380,476.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="630,458 630,476.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<circle cx="380" cy="488" r="4" fill="#444"/>
+<polyline points="380,476.2 380,510" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="510" width="720" height="110" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="541" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">For all</text>
+<text x="380.0" y="560.5" text-anchor="middle" font-size="15" fill="#1d2433">Antibiotics within 4 h of hospital arrival · review IV → oral at 48 h</text>
+<text x="380.0" y="580" text-anchor="middle" font-size="15" fill="#1d2433">Duration ≥ 5 days and until clinically stable (ATS 2025: 3–5 days if nonsevere and stable)</text>
+<text x="380.0" y="599.5" text-anchor="middle" font-size="15" fill="#1d2433">Not improving by day 3: think complication (empyema, abscess) or wrong pathogen</text>
+<text x="380" y="643" text-anchor="middle" font-size="13" fill="#666">PsA = Pseudomonas aeruginosa · Adapted from ATS/IDSA 2019, ATS 2025 update and NICE NG250 (2025)</text>
+</svg>

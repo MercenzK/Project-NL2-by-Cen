@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 762" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="762" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Lung nodule and lung cancer: approach</text>
+<rect x="20" y="48" width="720" height="56" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="71.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Screening (USPSTF 2021): age 50–80, ≥ 20 pack-years,</text>
+<text x="380.0" y="91" text-anchor="middle" font-size="15" fill="#1d2433">current smoker or quit within 15 years → annual low-dose CT</text>
+<polyline points="380,104 380,136" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="80" y="136" width="600" height="56" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="159.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Lung nodule found → compare with old images</text>
+<text x="380.0" y="179" text-anchor="middle" font-size="15" fill="#1d2433">Solid nodule stable ≥ 2 years or benign calcification → benign</text>
+<polyline points="380,192 380,224" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="170" y="224" width="420" height="52" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="255.2" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Solid nodule size (Fleischner 2017)</text>
+<polyline points="380,276 380,281.9 130,281.9 130,287.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="130,287.9 130,310" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,281.9 380,310" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,281.9 630,281.9 630,287.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="630,287.9 630,310" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="310" width="220" height="110" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="130.0" y="341" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">&lt; 6 mm</text>
+<text x="130.0" y="360.5" text-anchor="middle" font-size="15" fill="#1d2433">Low risk: no follow-up</text>
+<text x="130.0" y="380" text-anchor="middle" font-size="15" fill="#1d2433">High risk: optional</text>
+<text x="130.0" y="399.5" text-anchor="middle" font-size="15" fill="#1d2433">CT at 12 months</text>
+<rect x="270" y="310" width="220" height="110" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="350.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">6–8 mm</text>
+<text x="380.0" y="370.2" text-anchor="middle" font-size="15" fill="#1d2433">CT at 6–12 months</text>
+<text x="380.0" y="389.8" text-anchor="middle" font-size="15" fill="#1d2433">then 18–24 months</text>
+<rect x="520" y="310" width="220" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="630.0" y="341" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">&gt; 8 mm</text>
+<text x="630.0" y="360.5" text-anchor="middle" font-size="15" fill="#1d2433">CT at 3 months,</text>
+<text x="630.0" y="380" text-anchor="middle" font-size="15" fill="#1d2433">PET-CT or</text>
+<text x="630.0" y="399.5" text-anchor="middle" font-size="15" fill="#1d2433">tissue sampling</text>
+<polyline points="630,420 630,434.7 380,434.7" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,434.7 380,462" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="80" y="462" width="600" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="485.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Suspected lung cancer (mass, growth, spiculation, symptoms)</text>
+<text x="380.0" y="505.2" text-anchor="middle" font-size="15" fill="#1d2433">Contrast CT chest + upper abdomen → PET-CT</text>
+<text x="380.0" y="524.8" text-anchor="middle" font-size="15" fill="#1d2433">Tissue + nodal staging: EBUS-TBNA or CT-guided biopsy</text>
+<polyline points="380,538 380,544 190,544 190,549.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="190,549.9 190,572" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,544 570,544 570,549.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="570,549.9 570,572" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="572" width="340" height="150" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="190.0" y="603.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">NSCLC (~85%)</text>
+<text x="190.0" y="623" text-anchor="middle" font-size="15" fill="#1d2433">Stage I–II: surgery (lobectomy)</text>
+<text x="190.0" y="642.5" text-anchor="middle" font-size="15" fill="#1d2433">± adjuvant chemotherapy</text>
+<text x="190.0" y="662" text-anchor="middle" font-size="15" fill="#1d2433">Stage III: chemoradiation</text>
+<text x="190.0" y="681.5" text-anchor="middle" font-size="15" fill="#1d2433">Stage IV: EGFR/ALK/ROS1, PD-L1</text>
+<text x="190.0" y="701" text-anchor="middle" font-size="15" fill="#1d2433">→ targeted or immunotherapy</text>
+<rect x="400" y="572" width="340" height="150" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="570.0" y="603.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">SCLC</text>
+<text x="570.0" y="623" text-anchor="middle" font-size="15" fill="#1d2433">Limited: chemotherapy</text>
+<text x="570.0" y="642.5" text-anchor="middle" font-size="15" fill="#1d2433">+ radiotherapy</text>
+<text x="570.0" y="662" text-anchor="middle" font-size="15" fill="#1d2433">Extensive: platinum chemotherapy</text>
+<text x="570.0" y="681.5" text-anchor="middle" font-size="15" fill="#1d2433">Prophylactic cranial irradiation</text>
+<text x="570.0" y="701" text-anchor="middle" font-size="15" fill="#1d2433">if good response</text>
+<text x="380" y="744" text-anchor="middle" font-size="13" fill="#666">Adapted from USPSTF 2021, Fleischner Society 2017 and StatPearls (Lung Cancer)</text>
+</svg>

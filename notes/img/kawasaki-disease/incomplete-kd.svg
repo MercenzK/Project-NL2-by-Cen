@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 710" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="710" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Evaluation of suspected incomplete Kawasaki disease</text>
+<rect x="130" y="48" width="500" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="71.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Suspected incomplete Kawasaki disease</text>
+<text x="380.0" y="91.2" text-anchor="middle" font-size="15" fill="#1d2433">Fever ≥ 5 days + 2–3 principal features</text>
+<text x="380.0" y="110.8" text-anchor="middle" font-size="15" fill="#1d2433">or infant with fever ≥ 7 days unexplained</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="230" y="156" width="300" height="62" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="182.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">CRP ≥ 3.0 mg/dL</text>
+<text x="380.0" y="202" text-anchor="middle" font-size="15" fill="#1d2433">and/or ESR ≥ 40 mm/h?</text>
+<polyline points="230,187 110,187 110,250" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="170" y="178" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="20" y="250" width="180" height="98" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="110.0" y="284.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Serial clinical</text>
+<text x="110.0" y="304.2" text-anchor="middle" font-size="15" fill="#1d2433">evaluation</text>
+<text x="110.0" y="323.8" text-anchor="middle" font-size="15" fill="#1d2433">If peeling → echo</text>
+<polyline points="380,218 380,250" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="240.9" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="230" y="250" width="300" height="120" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="278.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">≥ 3 supplementary labs?</text>
+<text x="380.0" y="296.7" text-anchor="middle" font-size="14" fill="#1d2433">Anemia · platelets ≥ 450,000</text>
+<text x="380.0" y="314.9" text-anchor="middle" font-size="14" fill="#1d2433">after day 7 · albumin ≤ 3.0 g/dL</text>
+<text x="380.0" y="333.1" text-anchor="middle" font-size="14" fill="#1d2433">ALT ↑ · WBC ≥ 15,000</text>
+<text x="380.0" y="351.3" text-anchor="middle" font-size="14" fill="#1d2433">urine WBC ≥ 10/hpf</text>
+<polyline points="530,310 590,310" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="560" y="302" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="592" y="260" width="150" height="100" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="667.0" y="294.8" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Treat</text>
+<text x="667.0" y="315.6" text-anchor="middle" font-size="16" fill="#1d2433">IVIG</text>
+<text x="667.0" y="336.4" text-anchor="middle" font-size="16" fill="#1d2433">+ aspirin</text>
+<polyline points="380,370 380,400" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="392" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="230" y="400" width="300" height="62" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="426.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Echocardiogram</text>
+<text x="380.0" y="446" text-anchor="middle" font-size="15" fill="#1d2433">positive?</text>
+<polyline points="530,431 667,431" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="667,431 667,360" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="600" y="423" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<polyline points="380,462 380,492" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="484" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="170" y="492" width="420" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="515.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Repeat echo and clinical review</text>
+<text x="380.0" y="535.2" text-anchor="middle" font-size="15" fill="#1d2433">Fever persists → consider treatment</text>
+<text x="380.0" y="554.8" text-anchor="middle" font-size="15" fill="#1d2433">or consult pediatric cardiologist</text>
+<rect x="40" y="600" width="680" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="626.8" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Positive echo: LAD or RCA Z-score ≥ 2.5, or ≥ 3 suggestive features</text>
+<text x="380.0" y="645" text-anchor="middle" font-size="14" fill="#1d2433">(perivascular brightness, LV dysfunction, MR, pericardial effusion)</text>
+<text x="380" y="692" text-anchor="middle" font-size="13" fill="#666">Adapted from the 2017 AHA Kawasaki disease statement (criteria unchanged in the 2024 update)</text>
+</svg>

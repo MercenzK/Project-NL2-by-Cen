@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 646" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="646" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Obstructive sleep apnea: diagnosis and treatment</text>
+<rect x="80" y="48" width="600" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="71.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Suspected OSA</text>
+<text x="380.0" y="91.2" text-anchor="middle" font-size="15" fill="#1d2433">Loud snoring, witnessed apneas, daytime sleepiness (ESS &gt; 9)</text>
+<text x="380.0" y="110.8" text-anchor="middle" font-size="15" fill="#1d2433">Resistant hypertension, AF, stroke → screen (STOP-BANG)</text>
+<polyline points="380,124 380,130.7 190,130.7 190,136.6" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="190,136.6 190,160" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,130.7 570,130.7 570,136.6" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="570,136.6 570,160" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="190" y="134.9" font-size="15" font-weight="bold" fill="#333" text-anchor="middle"></text>
+<rect x="20" y="160" width="340" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="190.0" y="184" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Adult</text>
+<text x="190.0" y="203.5" text-anchor="middle" font-size="15" fill="#1d2433">In-lab polysomnography (gold standard)</text>
+<text x="190.0" y="223" text-anchor="middle" font-size="15" fill="#1d2433">or home sleep test if high pretest</text>
+<text x="190.0" y="242.5" text-anchor="middle" font-size="15" fill="#1d2433">probability and no major comorbidity</text>
+<rect x="400" y="160" width="340" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="570.0" y="184" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Child</text>
+<text x="570.0" y="203.5" text-anchor="middle" font-size="15" fill="#1d2433">Screen all children for snoring</text>
+<text x="570.0" y="223" text-anchor="middle" font-size="15" fill="#1d2433">Polysomnography if snoring</text>
+<text x="570.0" y="242.5" text-anchor="middle" font-size="15" fill="#1d2433">+ symptoms/signs</text>
+<polyline points="190,256 190,288" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="570,256 570,288" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="288" width="340" height="96" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="190.0" y="312" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Severity by AHI (events/hour)</text>
+<text x="190.0" y="331.5" text-anchor="middle" font-size="15" fill="#1d2433">Mild 5–15</text>
+<text x="190.0" y="351" text-anchor="middle" font-size="15" fill="#1d2433">Moderate &gt; 15–30</text>
+<text x="190.0" y="370.5" text-anchor="middle" font-size="15" fill="#1d2433">Severe &gt; 30</text>
+<rect x="400" y="288" width="340" height="96" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="570.0" y="321.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Adenotonsillar hypertrophy</text>
+<text x="570.0" y="341.2" text-anchor="middle" font-size="15" fill="#1d2433">→ adenotonsillectomy</text>
+<text x="570.0" y="360.8" text-anchor="middle" font-size="15" fill="#1d2433">(first-line)</text>
+<polyline points="190,384 190,416" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="570,384 570,416" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="416" width="340" height="190" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="190.0" y="457.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Treatment (adult)</text>
+<text x="190.0" y="477.2" text-anchor="middle" font-size="15" fill="#1d2433">Weight loss · avoid alcohol/sedatives</text>
+<text x="190.0" y="496.8" text-anchor="middle" font-size="15" fill="#1d2433">Positional therapy · treat nasal obstruction</text>
+<text x="190.0" y="516.2" text-anchor="middle" font-size="15" fill="#1d2433">CPAP = most effective</text>
+<text x="190.0" y="535.8" text-anchor="middle" font-size="15" fill="#1d2433">(adherence &gt; 4 h/night on &gt; 70% nights)</text>
+<text x="190.0" y="555.2" text-anchor="middle" font-size="15" fill="#1d2433">Oral appliance if CPAP not tolerated</text>
+<text x="190.0" y="574.8" text-anchor="middle" font-size="15" fill="#1d2433">Surgery / hypoglossal stimulation: selected</text>
+<rect x="400" y="416" width="340" height="190" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="570.0" y="477.2" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">If surgery not done or residual</text>
+<text x="570.0" y="496.8" text-anchor="middle" font-size="15" fill="#1d2433">Mild OSA: intranasal corticosteroid</text>
+<text x="570.0" y="516.2" text-anchor="middle" font-size="15" fill="#1d2433">Persistent OSA: CPAP</text>
+<text x="570.0" y="535.8" text-anchor="middle" font-size="15" fill="#1d2433">Overweight: weight loss</text>
+<text x="570.0" y="555.2" text-anchor="middle" font-size="15" fill="#1d2433">plus other therapy</text>
+<text x="380" y="628" text-anchor="middle" font-size="13" fill="#666">AHI = apnea–hypopnea index · ESS = Epworth Sleepiness Scale · Adapted from StatPearls (OSA) and AAP 2012</text>
+</svg>

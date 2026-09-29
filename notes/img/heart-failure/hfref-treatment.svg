@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 744" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="744" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Chronic HFrEF treatment</text>
+<rect x="180" y="50" width="400" height="64" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="77.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Symptomatic HFrEF</text>
+<text x="380.0" y="97" text-anchor="middle" font-size="15" fill="#1d2433">LVEF &lt; 50% (ESC 2026) · ≤ 40% (classic)</text>
+<polyline points="380,114 380,146" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="90" y="146" width="580" height="120" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="380.0" y="182" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Foundational medical therapy — start all 4 early</text>
+<text x="380.0" y="201.5" text-anchor="middle" font-size="15" fill="#1d2433">1. ARNI (or ACEI / ARB)   2. Beta-blocker</text>
+<text x="380.0" y="221" text-anchor="middle" font-size="15" fill="#1d2433">3. MRA   4. SGLT2 inhibitor</text>
+<text x="380.0" y="240.5" text-anchor="middle" font-size="15" fill="#1d2433">+ loop diuretic for congestion (symptoms only)</text>
+<polyline points="380,266 380,298" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="190" y="298" width="380" height="56" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="331.2" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Uptitrate every 1–2 weeks to target dose</text>
+<polyline points="380,354 380,386" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="170" y="386" width="420" height="70" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="416.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Reassess at ~3 months</text>
+<text x="380.0" y="436" text-anchor="middle" font-size="15" fill="#1d2433">Still symptomatic or LVEF ≤ 35%?</text>
+<polyline points="170,421 110,421 110,469.3" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="590,421 650,421 650,469.3" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,456 380,469.3" fill="none" stroke="#444" stroke-width="2.2"/>
+<circle cx="380" cy="456" r="0"/>
+<polyline points="110,469.3 110,494" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,469.3 380,494" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="650,469.3 650,494" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="494" width="180" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="110.0" y="526.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Device</text>
+<text x="110.0" y="544.8" text-anchor="middle" font-size="14" fill="#1d2433">LBBB + QRS ≥ 150 ms</text>
+<text x="110.0" y="563" text-anchor="middle" font-size="14" fill="#1d2433">→ CRT</text>
+<text x="110.0" y="581.2" text-anchor="middle" font-size="14" fill="#1d2433">LVEF ≤ 35% → ICD</text>
+<rect x="250" y="494" width="260" height="110" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="517.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Additional therapy</text>
+<text x="380.0" y="535.7" text-anchor="middle" font-size="14" fill="#1d2433">Sinus HR ≥ 70: ivabradine</text>
+<text x="380.0" y="553.9" text-anchor="middle" font-size="14" fill="#1d2433">Worsening HF: vericiguat</text>
+<text x="380.0" y="572.1" text-anchor="middle" font-size="14" fill="#1d2433">Black pts / ACEI intol.:</text>
+<text x="380.0" y="590.3" text-anchor="middle" font-size="14" fill="#1d2433">hydralazine + ISDN</text>
+<rect x="560" y="494" width="180" height="110" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="650.0" y="526.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Symptom / rate</text>
+<text x="650.0" y="544.8" text-anchor="middle" font-size="14" fill="#1d2433">AF or persistent</text>
+<text x="650.0" y="563" text-anchor="middle" font-size="14" fill="#1d2433">symptoms:</text>
+<text x="650.0" y="581.2" text-anchor="middle" font-size="14" fill="#1d2433">digoxin</text>
+<rect x="90" y="634" width="580" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="660.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Comorbidities: iron deficiency → IV iron · valve disease → repair</text>
+<text x="380.0" y="680" text-anchor="middle" font-size="15" fill="#1d2433">Advanced HF → transplant / LVAD / palliative care</text>
+<text x="380" y="726" text-anchor="middle" font-size="13" fill="#666">ARNI = sacubitril/valsartan · MRA = spironolactone/eplerenone · Adapted from ESC 2021/2026 and HFCT guidelines</text>
+</svg>

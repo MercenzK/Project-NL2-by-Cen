@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 812" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="812" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Rheumatic mitral stenosis: management</text>
+<rect x="110" y="48" width="540" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="71.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Rheumatic mitral stenosis on echocardiography</text>
+<text x="380.0" y="91.2" text-anchor="middle" font-size="15" fill="#1d2433">Measure MVA (planimetry), mean gradient, PASP,</text>
+<text x="380.0" y="110.8" text-anchor="middle" font-size="15" fill="#1d2433">valve morphology, MR, LA thrombus (TOE)</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="160" y="156" width="440" height="56" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="189.6" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Clinically significant MS: MVA ≤ 1.5 cm²?</text>
+<polyline points="160,184 110,184 110,225.3" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="600,184 650,184 650,225.3" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="110,225.3 110,250" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="650,225.3 650,250" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="135" y="176" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<text x="625" y="176" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="20" y="250" width="220" height="110" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="130.0" y="281" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Mild–moderate MS</text>
+<text x="130.0" y="300.5" text-anchor="middle" font-size="15" fill="#1d2433">Follow-up echo</text>
+<text x="130.0" y="320" text-anchor="middle" font-size="15" fill="#1d2433">Treat AF, give</text>
+<text x="130.0" y="339.5" text-anchor="middle" font-size="15" fill="#1d2433">secondary prophylaxis</text>
+<rect x="420" y="250" width="320" height="110" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="580.0" y="281" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Symptomatic</text>
+<text x="580.0" y="300.5" text-anchor="middle" font-size="15" fill="#1d2433">(or high embolic risk,</text>
+<text x="580.0" y="320" text-anchor="middle" font-size="15" fill="#1d2433">haemodynamic decompensation,</text>
+<text x="580.0" y="339.5" text-anchor="middle" font-size="15" fill="#1d2433">planned pregnancy)</text>
+<polyline points="580,360 580,392" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="360" y="392" width="380" height="96" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="550.0" y="425.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Favourable anatomy?</text>
+<text x="550.0" y="445.2" text-anchor="middle" font-size="15" fill="#1d2433">Pliable valve, ≤ mild MR,</text>
+<text x="550.0" y="464.8" text-anchor="middle" font-size="15" fill="#1d2433">no LA thrombus</text>
+<polyline points="360,440 300,440 300,503.4" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="300,503.4 300,532" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="580,488 580,503.4" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="580,503.4 580,532" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="330" y="432" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<text x="605" y="498.9" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="160" y="532" width="280" height="96" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="300.0" y="556" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Surgical mitral valve</text>
+<text x="300.0" y="575.5" text-anchor="middle" font-size="15" fill="#1d2433">repair / replacement</text>
+<text x="300.0" y="595" text-anchor="middle" font-size="15" fill="#1d2433">(or PMC if surgery</text>
+<text x="300.0" y="614.5" text-anchor="middle" font-size="15" fill="#1d2433">high risk)</text>
+<rect x="460" y="532" width="280" height="96" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="600.0" y="565.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Percutaneous mitral</text>
+<text x="600.0" y="585.2" text-anchor="middle" font-size="15" fill="#1d2433">commissurotomy (PMC)</text>
+<text x="600.0" y="604.8" text-anchor="middle" font-size="15" fill="#1d2433">(balloon valvotomy)</text>
+<rect x="20" y="662" width="720" height="110" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="693" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">All patients with rheumatic MS</text>
+<text x="380.0" y="712.5" text-anchor="middle" font-size="15" fill="#1d2433">Beta-blocker or rate control for symptoms (prolong diastole) · diuretic for congestion</text>
+<text x="380.0" y="732" text-anchor="middle" font-size="15" fill="#1d2433">AF or prior embolism or LA thrombus → warfarin (VKA), not DOAC</text>
+<text x="380.0" y="751.5" text-anchor="middle" font-size="15" fill="#1d2433">Secondary prophylaxis of rheumatic fever (benzathine penicillin)</text>
+<text x="380" y="794" text-anchor="middle" font-size="13" fill="#666">MVA = mitral valve area · Adapted from 2025 ESC/EACTS and 2020 ACC/AHA valvular heart disease guidelines</text>
+</svg>

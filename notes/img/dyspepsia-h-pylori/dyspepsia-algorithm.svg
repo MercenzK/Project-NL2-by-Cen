@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 776" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="776" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Dyspepsia and H. pylori: diagnostic and treatment pathway</text>
+<rect x="20" y="48" width="720" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="72.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Dyspepsia: epigastric pain/burning, postprandial fullness, early satiety</text>
+<text x="380.0" y="90.9" text-anchor="middle" font-size="14" fill="#1d2433">Exclude cardiac, biliary and pancreatic causes · review NSAIDs / aspirin</text>
+<text x="380.0" y="109.1" text-anchor="middle" font-size="14" fill="#1d2433">(heartburn or regurgitation predominant → manage as GERD)</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="60" y="156" width="640" height="76" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="180.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Alarm features or older age?</text>
+<text x="380.0" y="198.9" text-anchor="middle" font-size="14" fill="#1d2433">Weight loss · dysphagia · GI bleeding · iron deficiency anemia · persistent vomiting</text>
+<text x="380.0" y="217.1" text-anchor="middle" font-size="14" fill="#1d2433">Age ≥ 60 y (ACG/CAG) or &gt; 45–55 y (Maastricht VI) · family history of gastric cancer</text>
+<polyline points="380,232 380,238 195,238 195,243.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,243.2 195,264" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,238 565,238 565,243.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,243.2 565,264" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="150" y="250.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<text x="620" y="250.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="20" y="264" width="350" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="296.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Upper GI endoscopy (EGD)</text>
+<text x="195.0" y="314.8" text-anchor="middle" font-size="14" fill="#1d2433">Biopsy: H. pylori (rapid urease/histology)</text>
+<text x="195.0" y="333" text-anchor="middle" font-size="14" fill="#1d2433">and any suspicious lesion</text>
+<text x="195.0" y="351.2" text-anchor="middle" font-size="14" fill="#1d2433">Ulcer / cancer / normal (FD)</text>
+<rect x="390" y="264" width="350" height="110" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="565.0" y="296.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Young, no alarm features</text>
+<text x="565.0" y="314.8" text-anchor="middle" font-size="14" fill="#1d2433">Test-and-treat: UBT or stool antigen</text>
+<text x="565.0" y="333" text-anchor="middle" font-size="14" fill="#1d2433">(ACG/CAG, Maastricht VI)</text>
+<text x="565.0" y="351.2" text-anchor="middle" font-size="14" fill="#1d2433">Thai consensus 2015: PPI trial first</text>
+<polyline points="195,374 195,406" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,374 565,406" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="195,406 195,406" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="20" y="406" width="720" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="430.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">H. pylori positive → eradication therapy</text>
+<text x="380.0" y="448.9" text-anchor="middle" font-size="14" fill="#1d2433">Bismuth quadruple 14 d when susceptibility unknown (Maastricht VI, ACG 2024)</text>
+<text x="380.0" y="467.1" text-anchor="middle" font-size="14" fill="#1d2433">Thai consensus 2015: 14-d triple, or 10-d sequential / concomitant as first line</text>
+<polyline points="380,482 380,514" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="60" y="514" width="640" height="76" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="538.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Test of cure in everyone treated</text>
+<text x="380.0" y="556.9" text-anchor="middle" font-size="14" fill="#1d2433">UBT or stool antigen ≥ 4 weeks after therapy and ≥ 2 weeks off PPI</text>
+<text x="380.0" y="575.1" text-anchor="middle" font-size="14" fill="#1d2433">Serology cannot confirm eradication</text>
+<polyline points="380,590 380,596 195,596 195,601.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,601.2 195,622" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,596 565,596 565,601.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,601.2 565,622" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="150" y="608.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Negative</text>
+<text x="620" y="608.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Still positive</text>
+<rect x="20" y="622" width="350" height="110" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="654.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Eradicated</text>
+<text x="195.0" y="672.8" text-anchor="middle" font-size="14" fill="#1d2433">Persistent symptoms = functional</text>
+<text x="195.0" y="691" text-anchor="middle" font-size="14" fill="#1d2433">dyspepsia (if EGD normal)</text>
+<text x="195.0" y="709.2" text-anchor="middle" font-size="14" fill="#1d2433">PPI → TCA → prokinetic</text>
+<rect x="390" y="622" width="350" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="654.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Eradication failure</text>
+<text x="565.0" y="672.8" text-anchor="middle" font-size="14" fill="#1d2433">2nd line: levofloxacin-based or BQT</text>
+<text x="565.0" y="691" text-anchor="middle" font-size="14" fill="#1d2433">(not used before)</text>
+<text x="565.0" y="709.2" text-anchor="middle" font-size="14" fill="#1d2433">After 2 failures → susceptibility test</text>
+<text x="380" y="746" text-anchor="middle" font-size="12.5" fill="#666">UBT = urea breath test · BQT = bismuth quadruple therapy · FD = functional dyspepsia · TCA = tricyclic antidepressant</text>
+<text x="380" y="764" text-anchor="middle" font-size="12.5" fill="#666">Adapted from ACG/CAG dyspepsia 2017, Maastricht VI/Florence 2022, ACG H. pylori 2024 and Thailand consensus 2015</text>
+</svg>

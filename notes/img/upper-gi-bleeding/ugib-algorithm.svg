@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 960" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="960" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Acute upper GI bleeding: variceal vs non-variceal</text>
+<rect x="20" y="48" width="720" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="73.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Hematemesis / melena / coffee-ground vomitus</text>
+<text x="380.0" y="91.8" text-anchor="middle" font-size="14" fill="#1d2433">ABC · 2 large-bore IV · crystalloid · type &amp; crossmatch</text>
+<text x="380.0" y="110" text-anchor="middle" font-size="14" fill="#1d2433">Intubate if altered consciousness or ongoing massive hematemesis</text>
+<text x="380.0" y="128.2" text-anchor="middle" font-size="14" fill="#1d2433">Risk score: Glasgow-Blatchford (pre-EGD) ≤ 1 → outpatient</text>
+<polyline points="380,144 380,176" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="90" y="176" width="580" height="66" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="204.8" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Suspected variceal bleeding? (known cirrhosis, stigmata of portal HT)</text>
+<text x="380.0" y="223" text-anchor="middle" font-size="14" fill="#1d2433">Uncertain → start vasoactive drug + IV PPI + antibiotics until EGD</text>
+<polyline points="380,242 380,248 195,248 195,253.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,253.2 195,274" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,248 565,248 565,253.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,253.2 565,274" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="150" y="260.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<text x="620" y="260.1" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="20" y="274" width="350" height="150" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="299.3" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Variceal — before EGD</text>
+<text x="195.0" y="317.5" text-anchor="middle" font-size="14" fill="#1d2433">Vasoactive drug ASAP, continue 2–5 d</text>
+<text x="195.0" y="335.7" text-anchor="middle" font-size="14" fill="#1d2433">Octreotide 50 µg IV bolus → 50 µg/h</text>
+<text x="195.0" y="353.9" text-anchor="middle" font-size="14" fill="#1d2433">(or terlipressin / somatostatin)</text>
+<text x="195.0" y="372.1" text-anchor="middle" font-size="14" fill="#1d2433">Ceftriaxone 1 g IV q 24 h</text>
+<text x="195.0" y="390.3" text-anchor="middle" font-size="14" fill="#1d2433">Transfuse to Hb 7–8 g/dL</text>
+<text x="195.0" y="408.5" text-anchor="middle" font-size="14" fill="#1d2433">No routine FFP / platelets / TXA</text>
+<polyline points="195,424 195,456" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="456" width="350" height="88" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="195.0" y="486.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">EGD within 12 h (after resuscitation)</text>
+<text x="195.0" y="504.9" text-anchor="middle" font-size="14" fill="#1d2433">Erythromycin 250 mg IV 30–120 min before</text>
+<text x="195.0" y="523.1" text-anchor="middle" font-size="14" fill="#1d2433">Endoscopic variceal ligation (EVL)</text>
+<polyline points="195,544 195,576" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="576" width="350" height="88" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="195.0" y="606.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">High risk: Child C 10–13 or</text>
+<text x="195.0" y="624.9" text-anchor="middle" font-size="14" fill="#1d2433">Child B &gt; 7 with active bleeding at EGD</text>
+<text x="195.0" y="643.1" text-anchor="middle" font-size="14" fill="#1d2433">→ pre-emptive TIPS within 72 h</text>
+<polyline points="195,664 195,696" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="696" width="350" height="88" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="726.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Uncontrolled bleeding / early rebleed</text>
+<text x="195.0" y="744.9" text-anchor="middle" font-size="14" fill="#1d2433">Balloon tamponade or esophageal SEMS</text>
+<text x="195.0" y="763.1" text-anchor="middle" font-size="14" fill="#1d2433">(bridge) → rescue TIPS</text>
+<polyline points="195,784 195,816" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="816" width="350" height="88" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="846.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Secondary prophylaxis</text>
+<text x="195.0" y="864.9" text-anchor="middle" font-size="14" fill="#1d2433">NSBB (carvedilol / propranolol) + EVL</text>
+<text x="195.0" y="883.1" text-anchor="middle" font-size="14" fill="#1d2433">Lactulose to prevent hepatic encephalopathy</text>
+<rect x="390" y="274" width="350" height="150" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="565.0" y="299.3" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Non-variceal — before EGD</text>
+<text x="565.0" y="317.5" text-anchor="middle" font-size="14" fill="#1d2433">High-dose IV PPI may be considered</text>
+<text x="565.0" y="335.7" text-anchor="middle" font-size="14" fill="#1d2433">Transfuse if Hb ≤ 7 g/dL</text>
+<text x="565.0" y="353.9" text-anchor="middle" font-size="14" fill="#1d2433">(≤ 8 g/dL if cardiovascular disease)</text>
+<text x="565.0" y="372.1" text-anchor="middle" font-size="14" fill="#1d2433">No octreotide / TXA for non-variceal</text>
+<text x="565.0" y="390.3" text-anchor="middle" font-size="14" fill="#1d2433">Warfarin + unstable → vitamin K + 4F-PCC</text>
+<text x="565.0" y="408.5" text-anchor="middle" font-size="14" fill="#1d2433">Aspirin (secondary prevention): continue</text>
+<polyline points="565,424 565,456" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="456" width="350" height="88" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="565.0" y="486.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">EGD within 24 h</text>
+<text x="565.0" y="504.9" text-anchor="middle" font-size="14" fill="#1d2433">Forrest classification of the ulcer</text>
+<text x="565.0" y="523.1" text-anchor="middle" font-size="14" fill="#1d2433">guides endoscopic therapy</text>
+<polyline points="565,544 565,576" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="576" width="350" height="88" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="606.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">FIa / FIb / FIIa (active bleeding, NBVV)</text>
+<text x="565.0" y="624.9" text-anchor="middle" font-size="14" fill="#1d2433">Clip / thermal ± epinephrine (never alone)</text>
+<text x="565.0" y="643.1" text-anchor="middle" font-size="14" fill="#1d2433">→ IV PPI 80 mg bolus → 8 mg/h × 72 h</text>
+<polyline points="565,664 565,696" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="696" width="350" height="88" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="726.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">FIIb (adherent clot) → consider removal</text>
+<text x="565.0" y="744.9" text-anchor="middle" font-size="14" fill="#1d2433">FIIc / FIII (flat spot, clean base)</text>
+<text x="565.0" y="763.1" text-anchor="middle" font-size="14" fill="#1d2433">→ no endoscopic therapy, oral PPI</text>
+<polyline points="565,784 565,816" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="816" width="350" height="88" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="565.0" y="846.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Rebleeding → repeat EGD</text>
+<text x="565.0" y="864.9" text-anchor="middle" font-size="14" fill="#1d2433">→ TAE → surgery</text>
+<text x="565.0" y="883.1" text-anchor="middle" font-size="14" fill="#1d2433">Test &amp; treat H. pylori · review NSAIDs</text>
+<text x="380" y="930" text-anchor="middle" font-size="12.5" fill="#666">NBVV = non-bleeding visible vessel · TAE = transcatheter arterial embolization · SEMS = self-expanding metal stent</text>
+<text x="380" y="948" text-anchor="middle" font-size="12.5" fill="#666">Adapted from Baveno VII (2022), ESGE NVUGIH guideline 2021 and StatPearls (doses)</text>
+</svg>

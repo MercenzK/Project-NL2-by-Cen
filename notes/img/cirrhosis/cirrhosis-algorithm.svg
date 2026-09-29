@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 696" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="696" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Cirrhosis: surveillance and complications</text>
+<rect x="20" y="48" width="720" height="60" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="73.8" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Cirrhosis: every visit</text>
+<text x="380.0" y="92" text-anchor="middle" font-size="14" fill="#1d2433">Treat cause (alcohol, HBV, HCV, MASLD) · vaccinate · nutrition · avoid NSAIDs</text>
+<polyline points="380,108 380,114 195,114 195,119.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,119.2 195,140" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,114 565,114 565,119.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,119.2 565,140" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="140" width="350" height="120" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="168.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">HCC surveillance</text>
+<text x="195.0" y="186.7" text-anchor="middle" font-size="14" fill="#1d2433">Ultrasound + AFP every 6 months</text>
+<text x="195.0" y="204.9" text-anchor="middle" font-size="14" fill="#1d2433">(cirrhosis of any cause;</text>
+<text x="195.0" y="223.1" text-anchor="middle" font-size="14" fill="#1d2433">~2% HCC risk per year)</text>
+<text x="195.0" y="241.3" text-anchor="middle" font-size="14" fill="#1d2433">Stop only if life expectancy &lt; 1–2 y</text>
+<rect x="390" y="140" width="350" height="120" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="565.0" y="168.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Varices / portal hypertension</text>
+<text x="565.0" y="186.7" text-anchor="middle" font-size="14" fill="#1d2433">LSM ≤ 15 kPa + PLT ≥ 150 → no CSPH</text>
+<text x="565.0" y="204.9" text-anchor="middle" font-size="14" fill="#1d2433">CSPH → NSBB (carvedilol preferred)</text>
+<text x="565.0" y="223.1" text-anchor="middle" font-size="14" fill="#1d2433">Not on NSBB: EGD if LSM ≥ 20</text>
+<text x="565.0" y="241.3" text-anchor="middle" font-size="14" fill="#1d2433">or PLT ≤ 150 (repeat 2–3 y)</text>
+<polyline points="195,260 195,292" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="292" width="350" height="96" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="195.0" y="326.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Ultrasound result</text>
+<text x="195.0" y="344.9" text-anchor="middle" font-size="14" fill="#1d2433">&lt; 1 cm → repeat US + AFP 3–6 mo</text>
+<text x="195.0" y="363.1" text-anchor="middle" font-size="14" fill="#1d2433">≥ 1 cm or AFP rising → multiphase CT/MRI</text>
+<polyline points="195,388 195,420" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="420" width="350" height="120" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="448.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Multiphase CT or MRI</text>
+<text x="195.0" y="466.7" text-anchor="middle" font-size="14" fill="#1d2433">APHE + washout, ≥ 1 cm → HCC</text>
+<text x="195.0" y="484.9" text-anchor="middle" font-size="14" fill="#1d2433">(no biopsy needed in cirrhosis)</text>
+<text x="195.0" y="503.1" text-anchor="middle" font-size="14" fill="#1d2433">Peripheral nodular enhancement</text>
+<text x="195.0" y="521.3" text-anchor="middle" font-size="14" fill="#1d2433">+ centripetal fill-in → hemangioma</text>
+<rect x="390" y="292" width="350" height="248" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="323.9" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Decompensation (new event)</text>
+<text x="565.0" y="342.1" text-anchor="middle" font-size="14" fill="#1d2433">Ascites → diagnostic paracentesis:</text>
+<text x="565.0" y="360.3" text-anchor="middle" font-size="14" fill="#1d2433">SAAG ≥ 1.1 = portal hypertension</text>
+<text x="565.0" y="378.5" text-anchor="middle" font-size="14" fill="#1d2433">PMN ≥ 250/mm³ → SBP: antibiotic</text>
+<text x="565.0" y="396.7" text-anchor="middle" font-size="14" fill="#1d2433">+ albumin</text>
+<text x="565.0" y="426.9" text-anchor="middle" font-size="14" fill="#1d2433">Overt HE → lactulose (2–3 soft</text>
+<text x="565.0" y="445.1" text-anchor="middle" font-size="14" fill="#1d2433">stools/day) + find precipitant</text>
+<text x="565.0" y="463.3" text-anchor="middle" font-size="14" fill="#1d2433">Add rifaximin for recurrence</text>
+<text x="565.0" y="481.5" text-anchor="middle" font-size="14" fill="#1d2433">AKI → stop diuretics; HRS-AKI →</text>
+<text x="565.0" y="499.7" text-anchor="middle" font-size="14" fill="#1d2433">terlipressin + albumin</text>
+<text x="565.0" y="517.9" text-anchor="middle" font-size="14" fill="#1d2433">Variceal bleed → see UGIB note</text>
+<rect x="20" y="572" width="720" height="60" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="606.9" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Decompensated cirrhosis or MELD ≥ 15 → refer for liver transplant evaluation</text>
+<polyline points="195,540 195,572" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,540 565,572" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="380" y="650" text-anchor="middle" font-size="12" fill="#666">LSM = liver stiffness by transient elastography (kPa) · PLT = platelets ×10⁹/L</text>
+<text x="380" y="668" text-anchor="middle" font-size="12" fill="#666">CSPH = clinically significant portal hypertension · APHE = arterial phase hyperenhancement</text>
+<text x="380" y="686" text-anchor="middle" font-size="12" fill="#666">Adapted from AASLD HCC guidance 2023, Baveno VII 2022 and StatPearls (HE, ascites, esophageal varices)</text>
+</svg>

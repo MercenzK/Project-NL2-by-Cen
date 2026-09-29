@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 761" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="761" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">HIV-associated PCP: diagnosis and treatment</text>
+<rect x="80" y="48" width="600" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="72" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Suspected PCP</text>
+<text x="380.0" y="91.5" text-anchor="middle" font-size="15" fill="#1d2433">HIV with CD4 &lt; 200 (or unknown status) ± oral thrush</text>
+<text x="380.0" y="111" text-anchor="middle" font-size="15" fill="#1d2433">Subacute dyspnea, dry cough, fever · desaturation on exertion</text>
+<text x="380.0" y="130.5" text-anchor="middle" font-size="15" fill="#1d2433">CXR: bilateral perihilar ground-glass (normal CXR → HRCT)</text>
+<polyline points="380,144 380,176" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="80" y="176" width="600" height="96" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="200" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Confirm (do not delay treatment if suspicion is high)</text>
+<text x="380.0" y="219.5" text-anchor="middle" font-size="15" fill="#1d2433">Induced sputum or BAL: DFA / GMS stain / PCR</text>
+<text x="380.0" y="239" text-anchor="middle" font-size="15" fill="#1d2433">Supportive: β-D-glucan ↑, LDH ↑</text>
+<text x="380.0" y="258.5" text-anchor="middle" font-size="15" fill="#1d2433">ABG on room air: PaO2 and A-a gradient</text>
+<polyline points="380,272 380,304" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="200" y="304" width="360" height="52" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="335.2" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">PaO2 &lt; 70 mmHg or A-a gradient ≥ 35?</text>
+<polyline points="200,330 140,330 140,367.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="140,367.2 140,388" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="560,330 620,330 620,367.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="620,367.2 620,388" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="170" y="322" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<text x="590" y="322" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="20" y="388" width="340" height="150" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="190.0" y="419.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Mild–moderate</text>
+<text x="190.0" y="439" text-anchor="middle" font-size="15" fill="#1d2433">Oral TMP-SMX</text>
+<text x="190.0" y="458.5" text-anchor="middle" font-size="15" fill="#1d2433">TMP 15–20 mg/kg/day in 3 doses</text>
+<text x="190.0" y="478" text-anchor="middle" font-size="15" fill="#1d2433">(or 2 DS tablets tid)</text>
+<text x="190.0" y="497.5" text-anchor="middle" font-size="15" fill="#1d2433">Alt: TMP + dapsone, primaquine +</text>
+<text x="190.0" y="517" text-anchor="middle" font-size="15" fill="#1d2433">clindamycin, atovaquone</text>
+<rect x="400" y="388" width="340" height="150" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="570.0" y="419.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Moderate–severe</text>
+<text x="570.0" y="439" text-anchor="middle" font-size="15" fill="#1d2433">IV TMP-SMX (same dose, q6–8h)</text>
+<text x="570.0" y="458.5" text-anchor="middle" font-size="15" fill="#1d2433">+ prednisone within 72 h:</text>
+<text x="570.0" y="478" text-anchor="middle" font-size="15" fill="#1d2433">40 mg bid d1–5 → 40 mg od d6–10</text>
+<text x="570.0" y="497.5" text-anchor="middle" font-size="15" fill="#1d2433">→ 20 mg od d11–21</text>
+<text x="570.0" y="517" text-anchor="middle" font-size="15" fill="#1d2433">Alt: primaquine + clinda, IV pentamidine</text>
+<polyline points="190,538 190,556.2 570,556.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="570,538 570,556.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<circle cx="380" cy="568" r="4" fill="#444"/>
+<polyline points="380,556.2 380,590" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="590" width="720" height="130" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="621.2" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">For all</text>
+<text x="380.0" y="640.8" text-anchor="middle" font-size="15" fill="#1d2433">Total 21 days · start ART within 2 weeks (watch for IRIS)</text>
+<text x="380.0" y="660.2" text-anchor="middle" font-size="15" fill="#1d2433">Check G6PD before dapsone or primaquine · monitor rash, K+, cytopenia</text>
+<text x="380.0" y="679.8" text-anchor="middle" font-size="15" fill="#1d2433">No improvement after 4–8 days → re-evaluate (BAL) before switching</text>
+<text x="380.0" y="699.2" text-anchor="middle" font-size="15" fill="#1d2433">Then secondary prophylaxis: TMP-SMX 1 DS daily until CD4 ≥ 200 for ≥ 3 months</text>
+<text x="380" y="743" text-anchor="middle" font-size="13" fill="#666">DS = double-strength (TMP 160/SMX 800 mg) · Adapted from NIH/CDC/IDSA Adult OI Guidelines (updated 2026)</text>
+</svg>

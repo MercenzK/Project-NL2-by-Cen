@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 774" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="774" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Syncope: initial evaluation and risk stratification</text>
+<rect x="110" y="48" width="540" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="71.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Transient loss of consciousness (T-LOC)</text>
+<text x="380.0" y="91.2" text-anchor="middle" font-size="15" fill="#1d2433">Rapid onset, short duration, spontaneous full recovery</text>
+<text x="380.0" y="110.8" text-anchor="middle" font-size="15" fill="#1d2433">Exclude seizure, head trauma, intoxication, hypoglycemia</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="110" y="156" width="540" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="180" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Initial evaluation (all patients)</text>
+<text x="380.0" y="199.5" text-anchor="middle" font-size="15" fill="#1d2433">History (trigger, prodrome, posture, exertion, palpitations)</text>
+<text x="380.0" y="219" text-anchor="middle" font-size="15" fill="#1d2433">Physical exam incl. murmur · orthostatic BP</text>
+<text x="380.0" y="238.5" text-anchor="middle" font-size="15" fill="#1d2433">12-lead ECG</text>
+<polyline points="380,252 380,284" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="250" y="284" width="260" height="52" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="315.6" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Risk stratification</text>
+<polyline points="250,310 130,310 130,347.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,336 380,347.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="510,310 630,310 630,347.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="130,347.2 130,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,347.2 380,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="630,347.2 630,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="368" width="220" height="160" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="130.0" y="404.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Low risk</text>
+<text x="130.0" y="424" text-anchor="middle" font-size="15" fill="#1d2433">Typical reflex features</text>
+<text x="130.0" y="443.5" text-anchor="middle" font-size="15" fill="#1d2433">(trigger, prodrome,</text>
+<text x="130.0" y="463" text-anchor="middle" font-size="15" fill="#1d2433">prolonged standing)</text>
+<text x="130.0" y="482.5" text-anchor="middle" font-size="15" fill="#1d2433">Normal ECG</text>
+<text x="130.0" y="502" text-anchor="middle" font-size="15" fill="#1d2433">No heart disease</text>
+<rect x="270" y="368" width="220" height="160" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="404.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Neither high</text>
+<text x="380.0" y="424" text-anchor="middle" font-size="15" fill="#1d2433">nor low risk</text>
+<text x="380.0" y="443.5" text-anchor="middle" font-size="15" fill="#1d2433">Observe in ED /</text>
+<text x="380.0" y="463" text-anchor="middle" font-size="15" fill="#1d2433">syncope unit</text>
+<text x="380.0" y="482.5" text-anchor="middle" font-size="15" fill="#1d2433">Decide on</text>
+<text x="380.0" y="502" text-anchor="middle" font-size="15" fill="#1d2433">further tests</text>
+<rect x="520" y="368" width="220" height="160" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="630.0" y="404.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">High risk</text>
+<text x="630.0" y="424" text-anchor="middle" font-size="15" fill="#1d2433">Exertional or supine</text>
+<text x="630.0" y="443.5" text-anchor="middle" font-size="15" fill="#1d2433">Palpitations first</text>
+<text x="630.0" y="463" text-anchor="middle" font-size="15" fill="#1d2433">Structural heart dz / HF</text>
+<text x="630.0" y="482.5" text-anchor="middle" font-size="15" fill="#1d2433">Abnormal ECG, FHx SCD</text>
+<text x="630.0" y="502" text-anchor="middle" font-size="15" fill="#1d2433">SBP &lt; 90 → admit</text>
+<polyline points="130,528 130,578" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,528 380,545.5 630,545.5" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="630,528 630,545.5" fill="none" stroke="#444" stroke-width="2.2"/>
+<circle cx="505" cy="553" r="4" fill="#444"/>
+<polyline points="505,545.5 505,578" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="578" width="220" height="150" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="130.0" y="609.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Reflex syncope</text>
+<text x="130.0" y="629" text-anchor="middle" font-size="15" fill="#1d2433">Explain and reassure</text>
+<text x="130.0" y="648.5" text-anchor="middle" font-size="15" fill="#1d2433">Avoid triggers</text>
+<text x="130.0" y="668" text-anchor="middle" font-size="15" fill="#1d2433">Counter-pressure</text>
+<text x="130.0" y="687.5" text-anchor="middle" font-size="15" fill="#1d2433">manoeuvres</text>
+<text x="130.0" y="707" text-anchor="middle" font-size="15" fill="#1d2433">Tilt test if uncertain</text>
+<rect x="270" y="578" width="470" height="150" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="505.0" y="609.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Targeted tests by suspected mechanism</text>
+<text x="505.0" y="629" text-anchor="middle" font-size="15" fill="#1d2433">Reflex / orthostatic, unclear → tilt table test</text>
+<text x="505.0" y="648.5" text-anchor="middle" font-size="15" fill="#1d2433">Arrhythmia, frequent → Holter (24–48 h)</text>
+<text x="505.0" y="668" text-anchor="middle" font-size="15" fill="#1d2433">Arrhythmia, infrequent → event recorder / ILR</text>
+<text x="505.0" y="687.5" text-anchor="middle" font-size="15" fill="#1d2433">Structural → echocardiography</text>
+<text x="505.0" y="707" text-anchor="middle" font-size="15" fill="#1d2433">Exertional → exercise test (after echo)</text>
+<text x="380" y="756" text-anchor="middle" font-size="13" fill="#666">ILR = implantable loop recorder · Adapted from 2018 ESC and 2017 ACC/AHA/HRS syncope guidelines</text>
+</svg>

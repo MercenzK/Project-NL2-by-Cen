@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 866" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="866" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Acetaminophen poisoning: assessment and acetylcysteine</text>
+<rect x="20" y="48" width="720" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="72.7" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Suspected acetaminophen (paracetamol) ingestion</text>
+<text x="380.0" y="90.9" text-anchor="middle" font-size="14" fill="#1d2433">History: time, dose (mg/kg), pattern, formulation, co-ingestants, alcohol</text>
+<text x="380.0" y="109.1" text-anchor="middle" font-size="14" fill="#1d2433">Labs: APAP level, AST/ALT, INR, creatinine, glucose, pregnancy test</text>
+<polyline points="380,124 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="120" y="156" width="520" height="52" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="186.9" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Ingestion pattern and reliability of the history?</text>
+<polyline points="380,208 380,214 135,214 135,219.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,219.2 135,240" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,214 380,240" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,214 625,214 625,219.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,219.2 625,240" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="240" width="230" height="170" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="135.0" y="284.4" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Acute, known time</text>
+<text x="135.0" y="302.6" text-anchor="middle" font-size="14" fill="#1d2433">(all within 24 h)</text>
+<text x="135.0" y="320.8" text-anchor="middle" font-size="14" fill="#1d2433">&lt; 4 h: activated charcoal</text>
+<text x="135.0" y="339" text-anchor="middle" font-size="14" fill="#1d2433">(airway safe), level at 4 h</text>
+<text x="135.0" y="357.2" text-anchor="middle" font-size="14" fill="#1d2433">4–24 h: level now</text>
+<text x="135.0" y="375.4" text-anchor="middle" font-size="14" fill="#1d2433">→ plot on nomogram</text>
+<rect x="265" y="240" width="230" height="170" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="275.3" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Unknown or</text>
+<text x="380.0" y="293.5" text-anchor="middle" font-size="14" fill="#1d2433">unreliable time</text>
+<text x="380.0" y="311.7" text-anchor="middle" font-size="14" fill="#1d2433">Start NAC now</text>
+<text x="380.0" y="329.9" text-anchor="middle" font-size="14" fill="#1d2433">Check level + AST/ALT</text>
+<text x="380.0" y="348.1" text-anchor="middle" font-size="14" fill="#1d2433">Stop if level</text>
+<text x="380.0" y="366.3" text-anchor="middle" font-size="14" fill="#1d2433">undetectable and</text>
+<text x="380.0" y="384.5" text-anchor="middle" font-size="14" fill="#1d2433">AST/ALT normal</text>
+<rect x="510" y="240" width="230" height="170" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="625.0" y="293.5" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Repeated supra-</text>
+<text x="625.0" y="311.7" text-anchor="middle" font-size="14" fill="#1d2433">therapeutic (&gt; 24 h)</text>
+<text x="625.0" y="329.9" text-anchor="middle" font-size="14" fill="#1d2433">Nomogram NOT valid</text>
+<text x="625.0" y="348.1" text-anchor="middle" font-size="14" fill="#1d2433">NAC if level &gt; 20 μg/mL</text>
+<text x="625.0" y="366.3" text-anchor="middle" font-size="14" fill="#1d2433">or AST/ALT abnormal</text>
+<polyline points="135,410 135,442" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="442" width="230" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="474.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">On or above</text>
+<text x="135.0" y="492.8" text-anchor="middle" font-size="14" fill="#1d2433">treatment line</text>
+<text x="135.0" y="511" text-anchor="middle" font-size="14" fill="#1d2433">(≥ 150 μg/mL at 4 h)</text>
+<text x="135.0" y="529.2" text-anchor="middle" font-size="14" fill="#1d2433">→ NAC</text>
+<polyline points="135,552 135,563.9 380,563.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,563.9 380,586" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,410 380,586" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,410 625,563.9 380,563.9" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="20" y="586" width="720" height="96" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="611.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Acetylcysteine (NAC): ≥ 300 mg/kg in the first 20–24 h</text>
+<text x="380.0" y="629.8" text-anchor="middle" font-size="14" fill="#1d2433">IV 21-h: 150 mg/kg over 1 h → 50 mg/kg over 4 h → 100 mg/kg over 16 h</text>
+<text x="380.0" y="648" text-anchor="middle" font-size="14" fill="#1d2433">Oral: 140 mg/kg → 70 mg/kg q4h · Do not wait for the level if it delays NAC beyond 8 h</text>
+<text x="380.0" y="666.2" text-anchor="middle" font-size="14" fill="#1d2433">(empirical NAC if dose &gt; 200 mg/kg or &gt; 10 g, Dart 2023)</text>
+<polyline points="380,682 380,714" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="714" width="350" height="110" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="746.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Stop NAC when all met</text>
+<text x="195.0" y="764.8" text-anchor="middle" font-size="14" fill="#1d2433">APAP &lt; 10 μg/mL · INR &lt; 2</text>
+<text x="195.0" y="783" text-anchor="middle" font-size="14" fill="#1d2433">AST/ALT normal or fallen</text>
+<text x="195.0" y="801.2" text-anchor="middle" font-size="14" fill="#1d2433">25–50% from peak · clinically well</text>
+<rect x="390" y="714" width="350" height="110" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="746.6" text-anchor="middle" font-size="14" font-weight="bold" fill="#1d2433">Liver failure</text>
+<text x="565.0" y="764.8" text-anchor="middle" font-size="14" fill="#1d2433">King's College: pH &lt; 7.3, or</text>
+<text x="565.0" y="783" text-anchor="middle" font-size="14" fill="#1d2433">PT &gt; 100 s + Cr &gt; 3.3 + grade III–IV HE</text>
+<text x="565.0" y="801.2" text-anchor="middle" font-size="14" fill="#1d2433">→ refer transplant; HD if level &gt; 900</text>
+<text x="380" y="838" text-anchor="middle" font-size="12" fill="#666">APAP = acetaminophen · HE = hepatic encephalopathy · HD = hemodialysis (level > 900 μg/mL with acidosis or altered consciousness)</text>
+<text x="380" y="856" text-anchor="middle" font-size="12" fill="#666">Adapted from Dart RC et al. US/Canada consensus 2023 and StatPearls Acetaminophen Toxicity (2026)</text>
+</svg>

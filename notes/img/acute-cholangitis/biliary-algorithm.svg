@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 784" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="784" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Acute cholangitis and cholecystitis: management by severity</text>
+<rect x="20" y="48" width="720" height="76" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="73.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Suspected acute biliary infection</text>
+<text x="380.0" y="90.5" text-anchor="middle" font-size="13" fill="#1d2433">Fever / chills, RUQ pain, jaundice, Murphy sign · CBC, CRP, LFT, lipase, blood culture</text>
+<text x="380.0" y="107.4" text-anchor="middle" font-size="13" fill="#1d2433">Abdominal ultrasound first (CT / MRCP if unclear)</text>
+<polyline points="380,124 380,130.1 195,130.1 195,135.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,135.2 195,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,130.1 565,130.1 565,135.2" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,135.2 565,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="156" width="350" height="78" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="195.0" y="182.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Acute cholangitis</text>
+<text x="195.0" y="199.6" text-anchor="middle" font-size="13" fill="#1d2433">Systemic inflammation + cholestasis</text>
+<text x="195.0" y="216.5" text-anchor="middle" font-size="13" fill="#1d2433">+ biliary dilatation / stone on imaging</text>
+<rect x="390" y="156" width="350" height="78" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="182.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Acute cholecystitis</text>
+<text x="565.0" y="199.6" text-anchor="middle" font-size="13" fill="#1d2433">Local signs (Murphy, RUQ tenderness)</text>
+<text x="565.0" y="216.5" text-anchor="middle" font-size="13" fill="#1d2433">+ systemic inflammation + imaging</text>
+<polyline points="195,234 195,266" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,234 565,266" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="266" width="350" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="195.0" y="293.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">All: fluid resuscitation + blood culture</text>
+<text x="195.0" y="310" text-anchor="middle" font-size="13" fill="#1d2433">+ empirical IV antibiotics · grade severity</text>
+<rect x="390" y="266" width="350" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="565.0" y="293.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">All: fluid + antibiotics + analgesia</text>
+<text x="565.0" y="310" text-anchor="middle" font-size="13" fill="#1d2433">Grade severity · assess CCI and ASA-PS</text>
+<polyline points="195,328 195,360" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,328 565,360" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="360" width="350" height="92" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="385.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade III (severe): organ dysfunction</text>
+<text x="195.0" y="402.1" text-anchor="middle" font-size="13" fill="#1d2433">Respiratory / circulatory support (ICU)</text>
+<text x="195.0" y="419" text-anchor="middle" font-size="13" fill="#1d2433">→ urgent biliary drainage as soon as</text>
+<text x="195.0" y="435.9" text-anchor="middle" font-size="13" fill="#1d2433">condition allows (ERCP; PTBD if not feasible)</text>
+<rect x="20" y="462" width="350" height="76" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="195.0" y="487.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade II (moderate)</text>
+<text x="195.0" y="504.6" text-anchor="middle" font-size="13" fill="#1d2433">→ early biliary drainage</text>
+<text x="195.0" y="521.5" text-anchor="middle" font-size="13" fill="#1d2433">(endoscopic or percutaneous)</text>
+<rect x="20" y="548" width="350" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="573.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade I (mild)</text>
+<text x="195.0" y="590.5" text-anchor="middle" font-size="13" fill="#1d2433">Antibiotics usually sufficient</text>
+<text x="195.0" y="607.4" text-anchor="middle" font-size="13" fill="#1d2433">→ drain if no response to initial treatment</text>
+<rect x="390" y="360" width="350" height="92" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="385.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade III (severe): organ dysfunction</text>
+<text x="565.0" y="402.1" text-anchor="middle" font-size="13" fill="#1d2433">Organ support · high risk or unstable →</text>
+<text x="565.0" y="419" text-anchor="middle" font-size="13" fill="#1d2433">urgent / early gallbladder drainage</text>
+<text x="565.0" y="435.9" text-anchor="middle" font-size="13" fill="#1d2433">(PTGBD) · LC only in selected cases</text>
+<rect x="390" y="462" width="350" height="76" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="487.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade II (moderate)</text>
+<text x="565.0" y="504.6" text-anchor="middle" font-size="13" fill="#1d2433">Fit (CCI ≤ 5, ASA-PS ≤ 2) → early LC</text>
+<text x="565.0" y="521.5" text-anchor="middle" font-size="13" fill="#1d2433">Not fit → antibiotics ± GB drainage</text>
+<rect x="390" y="548" width="350" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="565.0" y="573.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Grade I (mild)</text>
+<text x="565.0" y="590.5" text-anchor="middle" font-size="13" fill="#1d2433">Fit → early laparoscopic cholecystectomy</text>
+<text x="565.0" y="607.4" text-anchor="middle" font-size="13" fill="#1d2433">Not fit → antibiotics, delayed LC</text>
+<polyline points="195,624 195,656" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,624 565,656" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="656" width="350" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="681.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">After stabilization: treat the cause</text>
+<text x="195.0" y="698.5" text-anchor="middle" font-size="13" fill="#1d2433">ES + CBD stone removal</text>
+<text x="195.0" y="715.4" text-anchor="middle" font-size="13" fill="#1d2433">Cholecystectomy if gallstones</text>
+<rect x="390" y="656" width="350" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="565.0" y="681.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">After drainage in unfit patients</text>
+<text x="565.0" y="698.5" text-anchor="middle" font-size="13" fill="#1d2433">Delayed (interval) cholecystectomy</text>
+<text x="565.0" y="715.4" text-anchor="middle" font-size="13" fill="#1d2433">when condition improves</text>
+<text x="380" y="756" text-anchor="middle" font-size="12" fill="#666">PTBD = percutaneous transhepatic biliary drainage · PTGBD = percutaneous transhepatic gallbladder drainage · LC = laparoscopic</text>
+<text x="380" y="774" text-anchor="middle" font-size="12" fill="#666">cholecystectomy · ES = endoscopic sphincterotomy · Adapted from Tokyo Guidelines 2018 (TG18) flowcharts</text>
+</svg>

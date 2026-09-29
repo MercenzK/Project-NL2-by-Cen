@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 806" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="806" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Irritable bowel syndrome: diagnosis and stepwise treatment</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Recurrent abdominal pain related to defecation</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">+ change in stool frequency or form (Rome IV: ≥ 1 day/week, 3 months, onset ≥ 6 months)</text>
+<polyline points="380,110 380,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="470" height="94" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="255.0" y="168.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Alarm features?</text>
+<text x="255.0" y="185.1" text-anchor="middle" font-size="13" fill="#1d2433">Rectal bleeding, weight loss, anemia, nocturnal symptoms, fever,</text>
+<text x="255.0" y="202.0" text-anchor="middle" font-size="13" fill="#1d2433">abdominal mass, ascites, family history of colorectal cancer,</text>
+<text x="255.0" y="218.9" text-anchor="middle" font-size="13" fill="#1d2433">onset after age 50</text>
+<rect x="560" y="142" width="180" height="94" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="650.0" y="176.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Investigate</text>
+<text x="650.0" y="193.6" text-anchor="middle" font-size="13" fill="#1d2433">Colonoscopy or</text>
+<text x="650.0" y="210.5" text-anchor="middle" font-size="13" fill="#1d2433">targeted tests</text>
+<polyline points="490,189 560,189" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="525" y="182" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<polyline points="255,236 255,268" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="278" y="257.0" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="20" y="268" width="720" height="62" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="295.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Simple tests: CBC, CRP or ESR, celiac serology</text>
+<text x="380.0" y="312.0" text-anchor="middle" font-size="13" fill="#1d2433">Diarrhea: fecal calprotectin (IBD) · endemic area: stool for parasites</text>
+<polyline points="380,330 380,362" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="362" width="720" height="62" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="380.0" y="389.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Positive diagnosis of IBS — no colonoscopy needed</text>
+<text x="380.0" y="406.0" text-anchor="middle" font-size="13" fill="#1d2433">Subtype by Bristol stool form: IBS-C / IBS-D / IBS-M · explain gut-brain interaction</text>
+<polyline points="380,424 380,456" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="456" width="720" height="78" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="380.0" y="482.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">First line (review after 3 months)</text>
+<text x="380.0" y="499.6" text-anchor="middle" font-size="13" fill="#1d2433">Exercise, dietary advice, soluble fiber (ispaghula) · antispasmodic or peppermint oil for pain</text>
+<text x="380.0" y="516.5" text-anchor="middle" font-size="13" fill="#1d2433">IBS-D: loperamide · IBS-C: polyethylene glycol</text>
+<polyline points="380,534 380,566" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="566" width="720" height="94" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="592.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Second line</text>
+<text x="380.0" y="609.1" text-anchor="middle" font-size="13" fill="#1d2433">Low-dose tricyclic (amitriptyline 10 mg at night → 30–50 mg) or SSRI · low-FODMAP diet (dietitian)</text>
+<text x="380.0" y="626.0" text-anchor="middle" font-size="13" fill="#1d2433">IBS-D: 5-HT3 antagonist (e.g. ondansetron), rifaximin, eluxadoline</text>
+<text x="380.0" y="642.9" text-anchor="middle" font-size="13" fill="#1d2433">IBS-C: linaclotide, lubiprostone, plecanatide</text>
+<polyline points="380,660 380,692" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="692" width="720" height="62" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="719.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Refractory (≈ 12 months of drug therapy)</text>
+<text x="380.0" y="736.0" text-anchor="middle" font-size="13" fill="#1d2433">IBS-specific CBT or gut-directed hypnotherapy · review the diagnosis</text>
+<text x="380" y="778" text-anchor="middle" font-size="12" fill="#666">IBS-C / D / M = constipation / diarrhea / mixed predominant · CBT = cognitive behavioral therapy</text>
+<text x="380" y="796" text-anchor="middle" font-size="12" fill="#666">Adapted from British Society of Gastroenterology IBS guideline (2021) and Second Asian Consensus on IBS (2019)</text>
+</svg>

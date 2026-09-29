@@ -1,70 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 830" font-family="sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 890" font-family="sans-serif">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
-<rect width="760" height="830" fill="#ffffff"/>
+<rect width="760" height="890" fill="#ffffff"/>
 <text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Suspected acute aortic dissection</text>
 <rect x="190" y="48" width="380" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
 <text x="380.0" y="74.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Suspected acute aortic syndrome</text>
-<text x="380.0" y="95.0" text-anchor="middle" font-size="16" fill="#1d2433">Chest / back / abdominal pain</text>
-<polyline points="380,110 380,134" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<rect x="240" y="134" width="280" height="56" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
-<text x="380.0" y="167.6" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Hemodynamically unstable?</text>
-<polyline points="520,162 568,162" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="544" y="154" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
-<rect x="570" y="120" width="170" height="84" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
-<text x="655.0" y="147.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Bedside TTE/TEE</text>
-<text x="655.0" y="167.2" text-anchor="middle" font-size="15" fill="#1d2433">Resuscitate</text>
-<text x="655.0" y="186.8" text-anchor="middle" font-size="15" fill="#1d2433">Call surgeon</text>
-<polyline points="380,190 380,224" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="402" y="214" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
-<rect x="240" y="224" width="280" height="58" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
-<text x="380.0" y="248.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">ADD-RS score</text>
-<text x="380.0" y="269.0" text-anchor="middle" font-size="16" fill="#1d2433">(0–3 categories)</text>
-<polyline points="240,253 110,253 110,298" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="175" y="245" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">0–1</text>
-<rect x="20" y="300" width="180" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
-<text x="110.0" y="325.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">D-dimer</text>
-<text x="110.0" y="346.0" text-anchor="middle" font-size="16" fill="#1d2433">≥ 500 ng/mL?</text>
-<polyline points="110,360 110,398" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="132" y="388" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
-<rect x="20" y="400" width="180" height="64" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
-<text x="110.0" y="427.5" text-anchor="middle" font-size="15" fill="#1d2433">Consider other</text>
-<text x="110.0" y="447.0" text-anchor="middle" font-size="15" fill="#1d2433">diagnoses</text>
-<polyline points="200,330 258,330" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="229" y="322" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
-<polyline points="380,282 380,298" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="405" y="294" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">2–3</text>
-<rect x="260" y="300" width="240" height="60" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
-<text x="380.0" y="325.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">ECG-gated CTA</text>
-<text x="380.0" y="346.0" text-anchor="middle" font-size="16" fill="#1d2433">neck to pelvis</text>
-<polyline points="380,360 380,390" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<rect x="230" y="390" width="300" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
-<text x="380.0" y="415.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Ascending aorta involved?</text>
-<text x="380.0" y="436.0" text-anchor="middle" font-size="16" fill="#1d2433">(Stanford A)</text>
-<polyline points="530,420 568,420" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="549" y="412" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
-<rect x="570" y="380" width="170" height="80" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
-<text x="655.0" y="405.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Type A</text>
-<text x="655.0" y="425.2" text-anchor="middle" font-size="15" fill="#1d2433">Emergency</text>
-<text x="655.0" y="444.8" text-anchor="middle" font-size="15" fill="#1d2433">open surgery</text>
-<polyline points="380,450 380,488" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="402" y="478" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
-<rect x="200" y="490" width="360" height="84" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
-<text x="380.0" y="517.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Complicated type B?</text>
-<text x="380.0" y="537.2" text-anchor="middle" font-size="15" fill="#1d2433">Rupture, malperfusion, refractory</text>
-<text x="380.0" y="556.8" text-anchor="middle" font-size="15" fill="#1d2433">pain/HTN, rapid expansion</text>
-<polyline points="560,532 588,532" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="574" y="524" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
-<rect x="590" y="494" width="150" height="76" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
-<text x="665.0" y="527.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">TEVAR</text>
-<text x="665.0" y="547.0" text-anchor="middle" font-size="15" fill="#1d2433">(first-line)</text>
-<polyline points="380,574 380,608" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="402" y="598" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
-<rect x="170" y="610" width="420" height="84" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
-<text x="380.0" y="637.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Uncomplicated type B: medical therapy</text>
-<text x="380.0" y="657.2" text-anchor="middle" font-size="15" fill="#1d2433">IV β-blocker → HR ≤ 60/min, SBP 100–120</text>
-<text x="380.0" y="676.8" text-anchor="middle" font-size="15" fill="#1d2433">+ imaging surveillance</text>
-<rect x="40" y="720" width="680" height="60" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
-<text x="380.0" y="745.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">All patients: IV opioid analgesia · IV β-blocker first, then vasodilator</text>
-<text x="380.0" y="765.0" text-anchor="middle" font-size="15" fill="#1d2433">Never give anticoagulant or fibrinolytic until dissection excluded</text>
-<text x="380" y="812" text-anchor="middle" font-size="13" fill="#666">ADD-RS = Aortic Dissection Detection Risk Score · Adapted from 2022 ACC/AHA and 2024 ESC guidelines</text>
+<text x="380.0" y="95" text-anchor="middle" font-size="16" fill="#1d2433">Chest / back / abdominal pain</text>
+<polyline points="380,110 380,156" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="240" y="156" width="280" height="56" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="189.6" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Hemodynamically unstable?</text>
+<polyline points="520,184 568,184" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="544" y="176" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="570" y="142" width="170" height="84" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="655.0" y="169.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Bedside TTE/TEE</text>
+<text x="655.0" y="189.2" text-anchor="middle" font-size="15" fill="#1d2433">Resuscitate</text>
+<text x="655.0" y="208.8" text-anchor="middle" font-size="15" fill="#1d2433">Call surgeon</text>
+<polyline points="380,212 380,258" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="242" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="240" y="258" width="280" height="58" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="282.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">ADD-RS score</text>
+<text x="380.0" y="303" text-anchor="middle" font-size="16" fill="#1d2433">(0–3 categories)</text>
+<polyline points="240,287 110,287 110,346" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="175" y="279" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">0–1</text>
+<rect x="20" y="348" width="180" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="110.0" y="373.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">D-dimer</text>
+<text x="110.0" y="394" text-anchor="middle" font-size="16" fill="#1d2433">≥ 500 ng/mL?</text>
+<polyline points="110,408 110,458" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="132" y="448" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="20" y="460" width="180" height="64" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="110.0" y="487.5" text-anchor="middle" font-size="15" fill="#1d2433">Consider other</text>
+<text x="110.0" y="507" text-anchor="middle" font-size="15" fill="#1d2433">diagnoses</text>
+<polyline points="200,378 258,378" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="229" y="370" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<polyline points="380,316 380,346" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="405" y="342" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">2–3</text>
+<rect x="260" y="348" width="240" height="60" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="373.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">ECG-gated CTA</text>
+<text x="380.0" y="394" text-anchor="middle" font-size="16" fill="#1d2433">neck to pelvis</text>
+<polyline points="380,408 380,450" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="230" y="450" width="300" height="60" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="475.2" text-anchor="middle" font-size="16" font-weight="bold" fill="#1d2433">Ascending aorta involved?</text>
+<text x="380.0" y="496" text-anchor="middle" font-size="16" fill="#1d2433">(Stanford A)</text>
+<polyline points="530,480 568,480" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="549" y="472" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="570" y="440" width="170" height="80" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="655.0" y="465.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Type A</text>
+<text x="655.0" y="485.2" text-anchor="middle" font-size="15" fill="#1d2433">Emergency</text>
+<text x="655.0" y="504.8" text-anchor="middle" font-size="15" fill="#1d2433">open surgery</text>
+<polyline points="380,510 380,548" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="538" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="200" y="550" width="360" height="84" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="577.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Complicated type B?</text>
+<text x="380.0" y="597.2" text-anchor="middle" font-size="15" fill="#1d2433">Rupture, malperfusion, refractory</text>
+<text x="380.0" y="616.8" text-anchor="middle" font-size="15" fill="#1d2433">pain/HTN, rapid expansion</text>
+<polyline points="560,592 588,592" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="574" y="584" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Yes</text>
+<rect x="590" y="554" width="150" height="76" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="665.0" y="587.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">TEVAR</text>
+<text x="665.0" y="607" text-anchor="middle" font-size="15" fill="#1d2433">(first-line)</text>
+<polyline points="380,634 380,668" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="402" y="658" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">No</text>
+<rect x="170" y="670" width="420" height="84" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="380.0" y="697.8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">Uncomplicated type B: medical therapy</text>
+<text x="380.0" y="717.2" text-anchor="middle" font-size="15" fill="#1d2433">IV β-blocker → HR ≤ 60/min, SBP 100–120</text>
+<text x="380.0" y="736.8" text-anchor="middle" font-size="15" fill="#1d2433">+ imaging surveillance</text>
+<rect x="40" y="780" width="680" height="60" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="805.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#1d2433">All patients: IV opioid analgesia · IV β-blocker first, then vasodilator</text>
+<text x="380.0" y="825" text-anchor="middle" font-size="15" fill="#1d2433">Never give anticoagulant or fibrinolytic until dissection excluded</text>
+<text x="380" y="872" text-anchor="middle" font-size="13" fill="#666">ADD-RS = Aortic Dissection Detection Risk Score · Adapted from 2022 ACC/AHA and 2024 ESC guidelines</text>
 </svg>
