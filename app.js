@@ -865,7 +865,10 @@ async function render(){
   const app=document.getElementById('app');
   /* โหลดคลังไม่สำเร็จ → คงข้อความบอกสาเหตุไว้เสมอ อย่าวาดหน้าแรกที่ว่างเปล่าทับ
      (การล็อกอินสำเร็จจะยิง render() ตามมาทีหลัง ถ้าไม่กันตรงนี้ข้อความจะหายไป) */
-  if(__dataFailed || !(window.QUIZ_DATA||[]).length){ __bootFailedNotice(); return; }
+  if(__dataFailed){ __bootFailedNotice(); return; }
+  /* ยังโหลดสารบัญไม่เสร็จ (เช่น Supabase ยิง onAuthStateChange มาก่อน) → รอ ไม่ใช่ถือว่าโหลดพัง
+     ตัวบูตจะเรียก render() ให้เองเมื่อสารบัญพร้อม */
+  if(!(window.QUIZ_DATA||[]).length){ showLoader('กำลังโหลดคลังข้อสอบ...'); return; }
   if(VIEWS_NEED_ALL.has(state.view)) await needAllSets();
   /* หน้าตั้งค่าก่อนเริ่มทำ ต้องมีข้อสอบชุดนั้นจริง ๆ ถึงจะบอกจำนวนข้อ/สุ่มได้ */
   if(state.view==='config' && state.quiz) await ensureSet(state.quiz);
