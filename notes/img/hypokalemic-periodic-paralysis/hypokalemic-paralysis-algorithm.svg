@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 706" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="706" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Hypokalemic paralysis: approach</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Acute flaccid weakness (proximal, legs &gt; arms) + serum K &lt; 3.5 mmol/L</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">ECG (U waves, ST depression, long QU) · Mg, phosphate · TSH, FT4 · venous HCO3 / ABG · spot urine K and creatinine</text>
+<polyline points="380,110 380,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="720" height="62" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Danger: respiratory weakness, arrhythmia or K &lt; 2.5 → monitored bed</text>
+<text x="380.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">Oral KCl preferred · IV KCl in saline (not dextrose), ≤ 10 mmol/h peripheral · correct Mg first or together</text>
+<polyline points="380,204 380,236" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="236" width="720" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="263.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Shift or renal loss? → urine K:creatinine ratio (or spot urine K)</text>
+<polyline points="380,282 380,290 195,290" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,290 195,314" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,290 565,290" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,290 565,314" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="314" width="350" height="80" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="341.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">K:Cr &lt; 13 mEq/g (low urine K)</text>
+<text x="195.0" y="358.6" text-anchor="middle" font-size="13" fill="#1d2433">Transcellular shift with normal acid–base</text>
+<text x="195.0" y="375.5" text-anchor="middle" font-size="13" fill="#1d2433">(or GI loss / poor intake)</text>
+<rect x="390" y="314" width="350" height="80" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="341.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">K:Cr &gt; 13 mEq/g or urine K &gt; 15 mmol/L</text>
+<text x="565.0" y="358.6" text-anchor="middle" font-size="13" fill="#1d2433">Renal potassium loss</text>
+<text x="565.0" y="375.5" text-anchor="middle" font-size="13" fill="#1d2433">→ check HCO3 and blood pressure</text>
+<polyline points="195,394 195,402 102,402" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="102,402 102,426" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="195,402 288,402" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="288,402 288,426" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,394 565,402 472,402" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="472,402 472,426" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,402 658,402" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="658,402 658,426" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="426" width="165" height="130" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="102.5" y="453.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Thyrotoxic PP</text>
+<text x="102.5" y="470.2" text-anchor="middle" font-size="12" fill="#1d2433">Asian men, 20–40 y</text>
+<text x="102.5" y="487.2" text-anchor="middle" font-size="12" fill="#1d2433">Tachycardia, tremor</text>
+<text x="102.5" y="504.1" text-anchor="middle" font-size="12" fill="#1d2433">Low TSH, high FT4</text>
+<text x="102.5" y="521.0" text-anchor="middle" font-size="12" fill="#1d2433">Propranolol + small</text>
+<text x="102.5" y="537.9" text-anchor="middle" font-size="12" fill="#1d2433">KCl → antithyroid Rx</text>
+<rect x="205" y="426" width="165" height="130" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="287.5" y="453.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Familial HypoPP</text>
+<text x="287.5" y="470.2" text-anchor="middle" font-size="12" fill="#1d2433">Onset &lt; 20 y</text>
+<text x="287.5" y="487.2" text-anchor="middle" font-size="12" fill="#1d2433">Family history</text>
+<text x="287.5" y="504.1" text-anchor="middle" font-size="12" fill="#1d2433">Normal TSH</text>
+<text x="287.5" y="521.0" text-anchor="middle" font-size="12" fill="#1d2433">Oral KCl · prevent</text>
+<text x="287.5" y="537.9" text-anchor="middle" font-size="12" fill="#1d2433">with acetazolamide</text>
+<rect x="390" y="426" width="165" height="130" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="472.5" y="453.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Acidosis (normal AG)</text>
+<text x="472.5" y="470.2" text-anchor="middle" font-size="12" fill="#1d2433">Distal RTA: urine</text>
+<text x="472.5" y="487.2" text-anchor="middle" font-size="12" fill="#1d2433">pH &gt; 5.5 · Sjögren,</text>
+<text x="472.5" y="504.1" text-anchor="middle" font-size="12" fill="#1d2433">stones, nephro-</text>
+<text x="472.5" y="521.0" text-anchor="middle" font-size="12" fill="#1d2433">calcinosis</text>
+<text x="472.5" y="537.9" text-anchor="middle" font-size="12" fill="#1d2433">Rx: K citrate</text>
+<rect x="575" y="426" width="165" height="130" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="657.5" y="453.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Alkalosis</text>
+<text x="657.5" y="470.2" text-anchor="middle" font-size="12" fill="#1d2433">High BP: aldosteronism,</text>
+<text x="657.5" y="487.2" text-anchor="middle" font-size="12" fill="#1d2433">Cushing, Liddle</text>
+<text x="657.5" y="504.1" text-anchor="middle" font-size="12" fill="#1d2433">Normal BP: diuretics,</text>
+<text x="657.5" y="521.0" text-anchor="middle" font-size="12" fill="#1d2433">vomiting, Gitelman,</text>
+<text x="657.5" y="537.9" text-anchor="middle" font-size="12" fill="#1d2433">Bartter</text>
+<polyline points="102,556 102,566" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="288,556 288,566" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="472,556 472,566" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="658,556 658,566" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="102,566 658,566" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,566 380,592" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="592" width="720" height="62" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="619.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Treat the cause · replace Mg · recheck K every 2–4 h · shift disorders: monitor K for 24 h</text>
+<text x="380.0" y="636.0" text-anchor="middle" font-size="13" fill="#1d2433">Shift disorders (TPP, HypoPP): total body K is normal → risk of rebound hyperkalemia with aggressive KCl</text>
+<text x="380" y="678" text-anchor="middle" font-size="12" fill="#666">PP = periodic paralysis · HypoPP = hypokalemic periodic paralysis · K:Cr = urine potassium-to-creatinine ratio · AG = anion gap</text>
+<text x="380" y="696" text-anchor="middle" font-size="12" fill="#666">Adapted from StatPearls: Hypokalemia, Hypokalemic Periodic Paralysis, Thyrotoxic PP, Renal Tubular Acidosis</text>
+</svg>

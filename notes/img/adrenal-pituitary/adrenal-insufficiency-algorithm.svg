@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 706" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="706" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Adrenal insufficiency: diagnose and treat</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Suspected adrenal insufficiency</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">Fatigue, anorexia, weight loss, hypotension, low Na, low glucose ± high K</text>
+<polyline points="380,110 380,118 195,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,118 195,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 565,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,118 565,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="350" height="156" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="195.0" y="182.3" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Unstable = adrenal crisis</text>
+<text x="195.0" y="199.2" text-anchor="middle" font-size="13" fill="#1d2433">Draw cortisol + ACTH, do NOT wait for results</text>
+<text x="195.0" y="216.1" text-anchor="middle" font-size="13" fill="#1d2433">Hydrocortisone 100 mg IV/IM now</text>
+<text x="195.0" y="233.0" text-anchor="middle" font-size="13" fill="#1d2433">then 200 mg/24 h (infusion or q6h)</text>
+<text x="195.0" y="249.9" text-anchor="middle" font-size="13" fill="#1d2433">0.9% saline (+ dextrose if low glucose)</text>
+<text x="195.0" y="266.9" text-anchor="middle" font-size="13" fill="#1d2433">Treat trigger · child: 50 mg/m²</text>
+<rect x="390" y="142" width="350" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="565.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Stable</text>
+<text x="565.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">Morning (8 AM) serum cortisol + ACTH</text>
+<polyline points="565,204 565,236" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="390" y="236" width="350" height="62" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="263.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Cortisol &lt; 5 µg/dL → AI likely</text>
+<text x="565.0" y="280.1" text-anchor="middle" font-size="13" fill="#1d2433">5–18 → 250 µg ACTH test (peak &lt; 18 = AI)</text>
+<polyline points="195,298 195,308" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,298 565,308" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,308 565,308" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,308 380,334" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="334" width="720" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="361.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Cortisol deficiency confirmed → where is the lesion? Look at ACTH</text>
+<polyline points="380,380 380,388 195,388" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,388 195,412" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,388 565,388" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,388 565,412" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="412" width="350" height="100" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="432.8" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Primary (Addison): ACTH high</text>
+<text x="195.0" y="449.7" text-anchor="middle" font-size="12" fill="#1d2433">Hyperpigmentation · high K · high renin</text>
+<text x="195.0" y="466.6" text-anchor="middle" font-size="12" fill="#1d2433">Hydrocortisone 15–25 mg/day in 2–3 doses</text>
+<text x="195.0" y="483.5" text-anchor="middle" font-size="12" fill="#1d2433">+ Fludrocortisone 50–100 µg/day</text>
+<text x="195.0" y="500.4" text-anchor="middle" font-size="12" fill="#1d2433">Test 21-hydroxylase antibodies</text>
+<rect x="390" y="412" width="350" height="100" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="565.0" y="441.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Secondary / tertiary: ACTH low–normal</text>
+<text x="565.0" y="458.1" text-anchor="middle" font-size="12" fill="#1d2433">No hyperpigmentation · K usually normal</text>
+<text x="565.0" y="475.1" text-anchor="middle" font-size="12" fill="#1d2433">Glucocorticoid only (no fludrocortisone)</text>
+<text x="565.0" y="491.9" text-anchor="middle" font-size="12" fill="#1d2433">Find the cause below</text>
+<polyline points="195,512 195,544" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,512 565,520 475,520" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="475,520 475,544" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="565,520 655,520" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="655,520 655,544" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="544" width="350" height="110" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="569.8" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Every patient</text>
+<text x="195.0" y="586.7" text-anchor="middle" font-size="12" fill="#1d2433">Steroid emergency card + injection kit</text>
+<text x="195.0" y="603.6" text-anchor="middle" font-size="12" fill="#1d2433">Sick-day rules: raise dose in illness</text>
+<text x="195.0" y="620.5" text-anchor="middle" font-size="12" fill="#1d2433">Stress dose for surgery and labor</text>
+<text x="195.0" y="637.4" text-anchor="middle" font-size="12" fill="#1d2433">Prevents the next crisis</text>
+<rect x="390" y="544" width="170" height="110" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="475.0" y="561.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Exogenous steroid</text>
+<text x="475.0" y="578.2" text-anchor="middle" font-size="12" fill="#1d2433">Herbal remedy, pills,</text>
+<text x="475.0" y="595.1" text-anchor="middle" font-size="12" fill="#1d2433">injections, long-term Rx</text>
+<text x="475.0" y="612.1" text-anchor="middle" font-size="12" fill="#1d2433">Cushingoid look</text>
+<text x="475.0" y="629.0" text-anchor="middle" font-size="12" fill="#1d2433">AM cortisol &gt; 10</text>
+<text x="475.0" y="645.9" text-anchor="middle" font-size="12" fill="#1d2433">= axis recovered</text>
+<rect x="570" y="544" width="170" height="110" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="655.0" y="561.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Pituitary disease</text>
+<text x="655.0" y="578.2" text-anchor="middle" font-size="12" fill="#1d2433">Sheehan, tumor,</text>
+<text x="655.0" y="595.1" text-anchor="middle" font-size="12" fill="#1d2433">apoplexy, surgery</text>
+<text x="655.0" y="612.1" text-anchor="middle" font-size="12" fill="#1d2433">Check other axes</text>
+<text x="655.0" y="629.0" text-anchor="middle" font-size="12" fill="#1d2433">Pituitary MRI</text>
+<text x="655.0" y="645.9" text-anchor="middle" font-size="12" fill="#1d2433">Steroid before LT4</text>
+<text x="380" y="678" text-anchor="middle" font-size="12" fill="#666">AI = adrenal insufficiency · cortisol 5 µg/dL ≈ 140 nmol/L · 10 µg/dL ≈ 300 nmol/L · 18 µg/dL ≈ 500 nmol/L</text>
+<text x="380" y="696" text-anchor="middle" font-size="12" fill="#666">Adapted from Endocrine Society PAI guideline 2016 and ESE/ES glucocorticoid-induced AI guideline 2024</text>
+</svg>

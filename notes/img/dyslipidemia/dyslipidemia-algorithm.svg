@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 658" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="658" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Dyslipidemia: who gets what</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Fasting lipid profile: TC, TG, HDL-C → LDL-C (Friedewald; direct LDL if TG ≥ 400)</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">Look for secondary causes: DM, hypothyroidism, nephrotic syndrome, alcohol, drugs</text>
+<polyline points="380,110 380,118 135,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,118 135,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 502,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="502,118 502,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="230" height="196" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="177.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">TG &gt; 500 mg/dL</text>
+<text x="135.0" y="193.9" text-anchor="middle" font-size="12" fill="#1d2433">(≥ 1,000: pancreatitis risk)</text>
+<text x="135.0" y="210.8" text-anchor="middle" font-size="12" fill="#1d2433">Eruptive xanthoma,</text>
+<text x="135.0" y="227.7" text-anchor="middle" font-size="12" fill="#1d2433">lipemic serum</text>
+<text x="135.0" y="244.6" text-anchor="middle" font-size="12" fill="#1d2433">Stop alcohol, cut sugar</text>
+<text x="135.0" y="261.5" text-anchor="middle" font-size="12" fill="#1d2433">and carbohydrate, control DM</text>
+<text x="135.0" y="278.4" text-anchor="middle" font-size="12" fill="#1d2433">Fibrate ± omega-3 &gt; 2 g/day</text>
+<text x="135.0" y="295.3" text-anchor="middle" font-size="12" fill="#1d2433">No gemfibrozil + statin</text>
+<text x="135.0" y="312.2" text-anchor="middle" font-size="12" fill="#1d2433">No cholestyramine</text>
+<rect x="265" y="142" width="475" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="502.5" y="169.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">LDL-C driven: choose the risk group → statin first</text>
+<polyline points="502,188 502,196 277,196" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="277,196 277,459.0" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="305" y="206" width="435" height="62" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="522.5" y="224.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Clinical ASCVD</text>
+<text x="522.5" y="241.6" text-anchor="middle" font-size="12" fill="#1d2433">ACS: high-intensity statin now · LDL &lt; 55 and ≥ 50% fall</text>
+<text x="522.5" y="258.5" text-anchor="middle" font-size="12" fill="#1d2433">CCS: LDL &lt; 70 (&lt; 55 if possible) · add ezetimibe → PCSK9i</text>
+<polyline points="277,237.0 305,237.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="305" y="280" width="435" height="62" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="522.5" y="298.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">LDL ≥ 190 or familial hypercholesterolemia</text>
+<text x="522.5" y="315.6" text-anchor="middle" font-size="12" fill="#1d2433">LDL ≥ 190: moderate → high intensity · &lt; 100 and ≥ 50% fall</text>
+<text x="522.5" y="332.5" text-anchor="middle" font-size="12" fill="#1d2433">FH: high intensity · LDL &lt; 70 and ≥ 50% fall</text>
+<polyline points="277,311.0 305,311.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="305" y="354" width="435" height="62" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="522.5" y="372.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Diabetes, age ≥ 40</text>
+<text x="522.5" y="389.6" text-anchor="middle" font-size="12" fill="#1d2433">0–1 risk factor: statin · LDL &lt; 100 and ≥ 30% fall</text>
+<text x="522.5" y="406.5" text-anchor="middle" font-size="12" fill="#1d2433">≥ 2 risk factors: LDL &lt; 70 and ≥ 50% fall</text>
+<polyline points="277,385.0 305,385.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="305" y="428" width="435" height="62" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="522.5" y="446.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Others age ≥ 35: Thai CV Risk Score</text>
+<text x="522.5" y="463.6" text-anchor="middle" font-size="12" fill="#1d2433">≥ 10%: low–moderate statin · LDL &lt; 100 and ≥ 30% fall</text>
+<text x="522.5" y="480.5" text-anchor="middle" font-size="12" fill="#1d2433">&lt; 10%: lifestyle (statin if subclinical disease)</text>
+<polyline points="277,459.0 305,459.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="135,338 135,500" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="522,490 522,500" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,500 522,500" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,500 380,526" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="526" width="720" height="80" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="553.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Follow-up: lipids 4–12 weeks after starting, then every 3–12 months · AST/ALT before statin</text>
+<text x="380.0" y="570.6" text-anchor="middle" font-size="13" fill="#1d2433">Myalgia: check CK, hold statin 2–4 weeks, then rechallenge same or lower dose</text>
+<text x="380.0" y="587.5" text-anchor="middle" font-size="13" fill="#1d2433">Myalgia/weakness + CK &gt; 10× ULN = possible rhabdomyolysis → stop statin now</text>
+<text x="380" y="630" text-anchor="middle" font-size="12" fill="#666">ASCVD = atherosclerotic CVD · ACS/CCS = acute/chronic coronary syndrome · PCSK9i = PCSK9 inhibitor · LDL in mg/dL</text>
+<text x="380" y="648" text-anchor="middle" font-size="12" fill="#666">Adapted from RCPT (Thailand) 2024 Clinical Practice Guideline on Management of Dyslipidemia</text>
+</svg>

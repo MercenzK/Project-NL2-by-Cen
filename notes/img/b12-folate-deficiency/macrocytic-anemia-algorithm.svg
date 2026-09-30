@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 636" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="636" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Macrocytic anemia: find B12 deficiency first</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Macrocytic anemia (MCV &gt; 100 fL)</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">Reticulocyte count + peripheral blood smear</text>
+<polyline points="380,110 380,118 135,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,118 135,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 380,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 625,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,118 625,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="230" height="100" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="135.0" y="171.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Reticulocytes high</text>
+<text x="135.0" y="188.2" text-anchor="middle" font-size="12" fill="#1d2433">Hemolysis or recovery</text>
+<text x="135.0" y="205.1" text-anchor="middle" font-size="12" fill="#1d2433">from bleeding</text>
+<text x="135.0" y="221.9" text-anchor="middle" font-size="12" fill="#1d2433">→ DAT, smear</text>
+<rect x="265" y="142" width="230" height="100" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="171.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Reticulocytes low</text>
+<text x="380.0" y="188.2" text-anchor="middle" font-size="12" fill="#1d2433">Megaloblastic picture</text>
+<text x="380.0" y="205.1" text-anchor="middle" font-size="12" fill="#1d2433">Hypersegmented PMN,</text>
+<text x="380.0" y="221.9" text-anchor="middle" font-size="12" fill="#1d2433">macro-ovalocytes, LDH ↑</text>
+<rect x="510" y="142" width="230" height="100" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="625.0" y="171.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Reticulocytes low,</text>
+<text x="625.0" y="188.2" text-anchor="middle" font-size="12" fill="#1d2433">non-megaloblastic</text>
+<text x="625.0" y="205.1" text-anchor="middle" font-size="12" fill="#1d2433">Alcohol, liver, thyroid,</text>
+<text x="625.0" y="221.9" text-anchor="middle" font-size="12" fill="#1d2433">drugs, MDS → marrow</text>
+<polyline points="380,242 380,274" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="274" width="720" height="62" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="301.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Serum B12 (or active B12) + folate — draw before any treatment</text>
+<text x="380.0" y="318.1" text-anchor="middle" font-size="13" fill="#1d2433">Neurological signs (subacute combined degeneration)? → start IM B12 now, do not wait for results</text>
+<polyline points="380,336 380,344 135,344" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,344 135,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,344 380,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,344 625,344" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,344 625,368" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="368" width="230" height="80" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="395.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">B12 &lt; 180 ng/L</text>
+<text x="135.0" y="412.6" text-anchor="middle" font-size="12" fill="#1d2433">(&lt; 133 pmol/L)</text>
+<text x="135.0" y="429.5" text-anchor="middle" font-size="12" fill="#1d2433">Deficiency confirmed</text>
+<rect x="265" y="368" width="230" height="80" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="395.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">B12 180–350 ng/L</text>
+<text x="380.0" y="412.6" text-anchor="middle" font-size="12" fill="#1d2433">Indeterminate</text>
+<text x="380.0" y="429.5" text-anchor="middle" font-size="12" fill="#1d2433">→ MMA (↑ in B12 only)</text>
+<rect x="510" y="368" width="230" height="80" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="625.0" y="395.7" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">B12 &gt; 350 ng/L</text>
+<text x="625.0" y="412.6" text-anchor="middle" font-size="12" fill="#1d2433">Deficiency unlikely</text>
+<text x="625.0" y="429.5" text-anchor="middle" font-size="12" fill="#1d2433">Low folate? other cause</text>
+<polyline points="135,448 135,458" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,448 380,458" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,458 380,458" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="257,458 257,484" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="484" width="720" height="100" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="380.0" y="513.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Treat by cause</text>
+<text x="380.0" y="530.1" text-anchor="middle" font-size="13" fill="#1d2433">Autoimmune gastritis, total gastrectomy, terminal ileal resection → lifelong IM B12</text>
+<text x="380.0" y="547.0" text-anchor="middle" font-size="13" fill="#1d2433">Diet (vegan) → oral B12 · drug (metformin, PPI) or nitrous oxide → IM or oral, review cause</text>
+<text x="380.0" y="564.0" text-anchor="middle" font-size="13" fill="#1d2433">Folate deficiency → folic acid 1–5 mg/day, but only after B12 is given or excluded</text>
+<text x="380" y="608" text-anchor="middle" font-size="12" fill="#666">MMA = methylmalonic acid · PMN = neutrophil · MDS = myelodysplastic syndrome · IM = intramuscular</text>
+<text x="380" y="626" text-anchor="middle" font-size="12" fill="#666">Adapted from NICE NG239 (2024) Vitamin B12 deficiency in over 16s and StatPearls (B12, folic acid deficiency)</text>
+</svg>

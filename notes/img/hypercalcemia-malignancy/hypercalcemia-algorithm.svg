@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 664" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="664" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Hypercalcemia: approach and treatment</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Hypercalcemia: corrected Ca = measured Ca + 0.8 × (4.0 − albumin g/dL)</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">Confirm (repeat / ionized Ca) · ECG (short QT) · creatinine, volume status, Mg, phosphate</text>
+<polyline points="380,110 380,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="720" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="169.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Severity: mild &lt; 12 · moderate 12–14 · severe &gt; 14 mg/dL (or rapid rise with symptoms)</text>
+<polyline points="380,188 380,196 195,196" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,196 195,220" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,196 565,196" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,196 565,220" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="220" width="350" height="148" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="256.4" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Mild or asymptomatic</text>
+<text x="195.0" y="273.2" text-anchor="middle" font-size="13" fill="#1d2433">No urgent lowering needed</text>
+<text x="195.0" y="290.2" text-anchor="middle" font-size="13" fill="#1d2433">Oral hydration</text>
+<text x="195.0" y="307.1" text-anchor="middle" font-size="13" fill="#1d2433">Stop thiazide, lithium,</text>
+<text x="195.0" y="324.0" text-anchor="middle" font-size="13" fill="#1d2433">calcium and vitamin D supplements</text>
+<text x="195.0" y="340.9" text-anchor="middle" font-size="13" fill="#1d2433">Work up the cause</text>
+<rect x="390" y="220" width="350" height="148" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="565.0" y="256.4" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Moderate symptomatic or severe</text>
+<text x="565.0" y="273.2" text-anchor="middle" font-size="13" fill="#1d2433">1) IV 0.9% NaCl 1–2 L, then 200–500 mL/h</text>
+<text x="565.0" y="290.2" text-anchor="middle" font-size="13" fill="#1d2433">(urine output 100–150 mL/h)</text>
+<text x="565.0" y="307.1" text-anchor="middle" font-size="13" fill="#1d2433">2) Calcitonin 4–8 IU/kg SC/IM q6–12 h × 48–72 h</text>
+<text x="565.0" y="324.0" text-anchor="middle" font-size="13" fill="#1d2433">3) Zoledronic acid 4 mg IV over 15–30 min</text>
+<text x="565.0" y="340.9" text-anchor="middle" font-size="13" fill="#1d2433">or denosumab 120 mg SC (renal failure)</text>
+<polyline points="195,368 195,378" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,368 565,378" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,378 565,378" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,378 380,404" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="404" width="720" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="431.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Find the cause → intact PTH (with 25-OH and 1,25-(OH)2 vitamin D, PTHrP, SPEP as needed)</text>
+<polyline points="380,450 380,458 195,458" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,458 195,482" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,458 565,458" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,458 565,482" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="482" width="350" height="130" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="195.0" y="517.8" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">PTH high or inappropriately normal</text>
+<text x="195.0" y="534.7" text-anchor="middle" font-size="13" fill="#1d2433">Primary hyperparathyroidism (adenoma)</text>
+<text x="195.0" y="551.6" text-anchor="middle" font-size="13" fill="#1d2433">Tertiary HPT (CKD) · lithium</text>
+<text x="195.0" y="568.5" text-anchor="middle" font-size="13" fill="#1d2433">FHH: low urine calcium</text>
+<text x="195.0" y="585.4" text-anchor="middle" font-size="13" fill="#1d2433">→ parathyroidectomy if criteria met</text>
+<rect x="390" y="482" width="350" height="130" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="517.8" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">PTH suppressed (low)</text>
+<text x="565.0" y="534.7" text-anchor="middle" font-size="13" fill="#1d2433">PTHrP: squamous cell, breast, renal cancer</text>
+<text x="565.0" y="551.6" text-anchor="middle" font-size="13" fill="#1d2433">Osteolytic metastases · myeloma (M-spike)</text>
+<text x="565.0" y="568.5" text-anchor="middle" font-size="13" fill="#1d2433">1,25-D: lymphoma, sarcoid, TB → steroid</text>
+<text x="565.0" y="585.4" text-anchor="middle" font-size="13" fill="#1d2433">Vitamin D toxicity, milk-alkali, thiazide</text>
+<text x="380" y="636" text-anchor="middle" font-size="12" fill="#666">HPT = hyperparathyroidism · FHH = familial hypocalciuric hypercalcemia · SPEP = serum protein electrophoresis</text>
+<text x="380" y="654" text-anchor="middle" font-size="12" fill="#666">Adapted from Endocrine Society hypercalcemia of malignancy guideline (2022) and StatPearls Hypercalcemia (2024)</text>
+</svg>

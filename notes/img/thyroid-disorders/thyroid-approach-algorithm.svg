@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 678" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="678" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Thyroid disorders: TSH-first approach</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Suspected thyroid disease: goiter, nodule, hyper- or hypothyroid symptoms</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">Start with TSH (most sensitive test) + free T4 · add FT3 if TSH low and FT4 normal</text>
+<polyline points="380,110 380,118 135,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,118 135,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 380,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 625,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,118 625,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="230" height="62" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Thyrotoxicosis</text>
+<text x="135.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">TSH low · FT4/FT3 high</text>
+<rect x="265" y="142" width="230" height="62" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="380.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Euthyroid goiter</text>
+<text x="380.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">TSH and FT4 normal</text>
+<rect x="510" y="142" width="230" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="625.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Hypothyroidism</text>
+<text x="625.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">TSH high</text>
+<polyline points="135,204 135,214 32,214" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="32,214 32,448.0" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="60" y="226" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="155.0" y="243.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Painful gland + fever</text>
+<text x="155.0" y="260.1" text-anchor="middle" font-size="12" fill="#1d2433">Subacute thyroiditis</text>
+<text x="155.0" y="277.1" text-anchor="middle" font-size="12" fill="#1d2433">NSAID ± β-blocker</text>
+<text x="155.0" y="293.9" text-anchor="middle" font-size="12" fill="#1d2433">No thionamide</text>
+<polyline points="32,264.0 60,264.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="60" y="318" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="155.0" y="335.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Diffuse goiter ± eye signs</text>
+<text x="155.0" y="352.1" text-anchor="middle" font-size="12" fill="#1d2433">TRAb positive = Graves</text>
+<text x="155.0" y="369.1" text-anchor="middle" font-size="12" fill="#1d2433">MMI + β-blocker</text>
+<text x="155.0" y="385.9" text-anchor="middle" font-size="12" fill="#1d2433">PTU in 1st trimester</text>
+<polyline points="32,356.0 60,356.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="60" y="410" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="155.0" y="427.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Nodule + low TSH</text>
+<text x="155.0" y="444.1" text-anchor="middle" font-size="12" fill="#1d2433">Thyroid scan: hot nodule</text>
+<text x="155.0" y="461.1" text-anchor="middle" font-size="12" fill="#1d2433">Toxic adenoma / TMNG</text>
+<text x="155.0" y="477.9" text-anchor="middle" font-size="12" fill="#1d2433">RAI or surgery</text>
+<polyline points="32,448.0 60,448.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,204 380,214 277,214" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="277,214 277,448.0" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="305" y="226" width="190" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="400.0" y="243.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Anti-TPO positive</text>
+<text x="400.0" y="260.1" text-anchor="middle" font-size="12" fill="#1d2433">Hashimoto (euthyroid)</text>
+<text x="400.0" y="277.1" text-anchor="middle" font-size="12" fill="#1d2433">No drug needed</text>
+<text x="400.0" y="293.9" text-anchor="middle" font-size="12" fill="#1d2433">Check TSH yearly</text>
+<polyline points="277,264.0 305,264.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="305" y="318" width="190" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="400.0" y="335.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Antibodies negative</text>
+<text x="400.0" y="352.1" text-anchor="middle" font-size="12" fill="#1d2433">Simple goiter</text>
+<text x="400.0" y="369.1" text-anchor="middle" font-size="12" fill="#1d2433">Observe · surgery only</text>
+<text x="400.0" y="385.9" text-anchor="middle" font-size="12" fill="#1d2433">if compressive</text>
+<polyline points="277,356.0 305,356.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="305" y="410" width="190" height="76" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="400.0" y="427.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Discrete nodule</text>
+<text x="400.0" y="444.1" text-anchor="middle" font-size="12" fill="#1d2433">TSH first, then</text>
+<text x="400.0" y="461.1" text-anchor="middle" font-size="12" fill="#1d2433">ultrasound</text>
+<text x="400.0" y="477.9" text-anchor="middle" font-size="12" fill="#1d2433">→ FNA by risk</text>
+<polyline points="277,448.0 305,448.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="625,204 625,214 522,214" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="522,214 522,448.0" fill="none" stroke="#444" stroke-width="2.2"/>
+<rect x="550" y="226" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="645.0" y="243.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Low FT4 = overt</text>
+<text x="645.0" y="260.1" text-anchor="middle" font-size="12" fill="#1d2433">Levothyroxine</text>
+<text x="645.0" y="277.1" text-anchor="middle" font-size="12" fill="#1d2433">1.6 µg/kg/day</text>
+<text x="645.0" y="293.9" text-anchor="middle" font-size="12" fill="#1d2433">Elderly/CAD: 25–50 µg</text>
+<polyline points="522,264.0 550,264.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="550" y="318" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="645.0" y="335.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Normal FT4 = subclinical</text>
+<text x="645.0" y="352.1" text-anchor="middle" font-size="12" fill="#1d2433">Treat if TSH &gt; 10,</text>
+<text x="645.0" y="369.1" text-anchor="middle" font-size="12" fill="#1d2433">symptoms, or pregnancy</text>
+<text x="645.0" y="385.9" text-anchor="middle" font-size="12" fill="#1d2433">Otherwise recheck</text>
+<polyline points="522,356.0 550,356.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="550" y="410" width="190" height="76" rx="12" fill="#e6f5ea" stroke="#2e8b57" stroke-width="2.5"/>
+<text x="645.0" y="427.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Pregnant on LT4</text>
+<text x="645.0" y="444.1" text-anchor="middle" font-size="12" fill="#1d2433">Increase dose ~25–30%</text>
+<text x="645.0" y="461.1" text-anchor="middle" font-size="12" fill="#1d2433">as soon as pregnancy</text>
+<text x="645.0" y="477.9" text-anchor="middle" font-size="12" fill="#1d2433">is confirmed</text>
+<polyline points="522,448.0 550,448.0" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="380" y="512" text-anchor="middle" font-size="15" font-weight="bold" fill="#c0392b">Emergencies — act before labs return</text>
+<rect x="20" y="526" width="230" height="100" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="546.8" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Thyroid storm</text>
+<text x="135.0" y="563.7" text-anchor="middle" font-size="12" fill="#1d2433">Fever, delirium, AF, heart failure</text>
+<text x="135.0" y="580.6" text-anchor="middle" font-size="12" fill="#1d2433">β-blocker + PTU (or MMI)</text>
+<text x="135.0" y="597.5" text-anchor="middle" font-size="12" fill="#1d2433">Iodine ≥ 1 h after thionamide</text>
+<text x="135.0" y="614.4" text-anchor="middle" font-size="12" fill="#1d2433">Steroid · ICU · treat trigger</text>
+<rect x="265" y="526" width="230" height="100" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="546.8" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Fever/sore throat on ATD</text>
+<text x="380.0" y="563.7" text-anchor="middle" font-size="12" fill="#1d2433">Stop the drug now</text>
+<text x="380.0" y="580.6" text-anchor="middle" font-size="12" fill="#1d2433">Urgent CBC with differential</text>
+<text x="380.0" y="597.5" text-anchor="middle" font-size="12" fill="#1d2433">ANC &lt; 500 = agranulocytosis</text>
+<text x="380.0" y="614.4" text-anchor="middle" font-size="12" fill="#1d2433">Never switch MMI ↔ PTU</text>
+<rect x="510" y="526" width="230" height="100" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="625.0" y="546.8" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Myxedema coma</text>
+<text x="625.0" y="563.7" text-anchor="middle" font-size="12" fill="#1d2433">Hypothermia, low Na, coma</text>
+<text x="625.0" y="580.6" text-anchor="middle" font-size="12" fill="#1d2433">IV hydrocortisone first</text>
+<text x="625.0" y="597.5" text-anchor="middle" font-size="12" fill="#1d2433">IV LT4 200–400 µg load</text>
+<text x="625.0" y="614.4" text-anchor="middle" font-size="12" fill="#1d2433">Ventilate · warm slowly</text>
+<text x="380" y="650" text-anchor="middle" font-size="12" fill="#666">TRAb = TSH-receptor antibody · MMI = methimazole · PTU = propylthiouracil · ATD = antithyroid drug · TMNG = toxic multinodular goiter</text>
+<text x="380" y="668" text-anchor="middle" font-size="12" fill="#666">Adapted from ETA 2018 Graves guideline, ATA 2014 hypothyroidism guideline and StatPearls (storm, myxedema coma)</text>
+</svg>

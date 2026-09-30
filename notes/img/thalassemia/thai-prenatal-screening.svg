@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 594" font-family="sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="760" height="594" fill="#ffffff"/>
+<text x="380" y="32" text-anchor="middle" font-size="21" font-weight="bold" fill="#1f4e79">Thailand: preventing 3 severe thalassemias</text>
+<rect x="20" y="48" width="720" height="62" rx="12" fill="#eaf2fb" stroke="#1f5f99" stroke-width="2.5"/>
+<text x="380.0" y="75.1" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Level 1 screening: pregnant woman AND partner</text>
+<text x="380.0" y="92.0" text-anchor="middle" font-size="13" fill="#1d2433">MCV &lt; 80 fL or MCH &lt; 27 pg (or OF test) → α-thal-1 / β-thal · DCIP → Hb E</text>
+<polyline points="380,110 380,118 195,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="195,118 195,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,118 565,118" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="565,118 565,142" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="142" width="350" height="62" rx="12" fill="#f2f2f2" stroke="#777" stroke-width="2.5"/>
+<text x="195.0" y="160.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Not an at-risk couple</text>
+<text x="195.0" y="177.6" text-anchor="middle" font-size="13" fill="#1d2433">(one partner negative for the pair)</text>
+<text x="195.0" y="194.5" text-anchor="middle" font-size="13" fill="#1d2433">Routine ANC</text>
+<rect x="390" y="142" width="350" height="62" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="565.0" y="169.2" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">At-risk couple</text>
+<text x="565.0" y="186.1" text-anchor="middle" font-size="13" fill="#1d2433">Both positive for a matching pair</text>
+<polyline points="565,204 565,236" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="236" width="720" height="46" rx="12" fill="#fff4e0" stroke="#d9820b" stroke-width="2.5"/>
+<text x="380.0" y="263.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Level 2: Hb typing of both partners (HbA2, HbE, HbF) → which severe disease is possible?</text>
+<polyline points="380,282 380,290 135,290" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,290 135,314" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,290 380,314" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<polyline points="380,290 625,290" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,290 625,314" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="314" width="230" height="112" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="135.0" y="332.4" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">Both may carry α-thal-1</text>
+<text x="135.0" y="349.2" text-anchor="middle" font-size="12" fill="#1d2433">Low MCV, normal HbA2</text>
+<text x="135.0" y="366.2" text-anchor="middle" font-size="12" fill="#1d2433">(or Hb E with low MCV)</text>
+<text x="135.0" y="383.1" text-anchor="middle" font-size="12" fill="#1d2433">→ DNA α-thal-1 (SEA/THAI)</text>
+<text x="135.0" y="400.0" text-anchor="middle" font-size="12" fill="#1d2433">Both + → Hb Bart's</text>
+<text x="135.0" y="416.9" text-anchor="middle" font-size="12" fill="#1d2433">hydrops fetalis 25%</text>
+<rect x="265" y="314" width="230" height="112" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="349.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">β-thal trait × β-thal trait</text>
+<text x="380.0" y="366.1" text-anchor="middle" font-size="12" fill="#1d2433">HbA2 &gt; 3.5% in both</text>
+<text x="380.0" y="383.1" text-anchor="middle" font-size="12" fill="#1d2433">→ homozygous β-thal</text>
+<text x="380.0" y="399.9" text-anchor="middle" font-size="12" fill="#1d2433">(β-thal major) 25%</text>
+<rect x="510" y="314" width="230" height="112" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="625.0" y="349.2" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d2433">β-thal trait × Hb E</text>
+<text x="625.0" y="366.1" text-anchor="middle" font-size="12" fill="#1d2433">HbA2 &gt; 3.5% + HbE</text>
+<text x="625.0" y="383.1" text-anchor="middle" font-size="12" fill="#1d2433">→ β-thal / Hb E</text>
+<text x="625.0" y="399.9" text-anchor="middle" font-size="12" fill="#1d2433">disease 25%</text>
+<polyline points="135,426 135,436" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,426 380,436" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="625,426 625,436" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="135,436 625,436" fill="none" stroke="#444" stroke-width="2.2"/>
+<polyline points="380,436 380,462" fill="none" stroke="#444" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="20" y="462" width="720" height="80" rx="12" fill="#fde2e2" stroke="#c0392b" stroke-width="2.5"/>
+<text x="380.0" y="489.7" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d2433">Level 3: DNA confirmation of parents → prenatal diagnosis</text>
+<text x="380.0" y="506.6" text-anchor="middle" font-size="13" fill="#1d2433">Fetal DNA by CVS, amniocentesis or cordocentesis · Bart's: fetal ultrasound (cardiomegaly, placentomegaly, hydrops)</text>
+<text x="380.0" y="523.5" text-anchor="middle" font-size="13" fill="#1d2433">Genetic counseling · the couple decides whether to continue the pregnancy</text>
+<text x="380" y="566" text-anchor="middle" font-size="12" fill="#666">Hb E × Hb E → homozygous Hb E (mild) · still test α-thal-1 in both because Hb E can hide α-thal-1</text>
+<text x="380" y="584" text-anchor="middle" font-size="12" fill="#666">Adapted from Thai DMSc laboratory guideline as summarised by Phetphichai et al. 2024 (J DMSc 66:317)</text>
+</svg>
